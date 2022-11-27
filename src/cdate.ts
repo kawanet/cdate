@@ -1,5 +1,6 @@
 import {strftime} from "./strftime";
 import type {cDate as cDateFn, cDateNS} from "../types/cdate";
+import {add} from "./add";
 
 const enum d {
     SECOND = 1000,
@@ -102,53 +103,9 @@ class CDate implements cDateNS.CDate {
     }
 
     add(diff: number, unit: cDateNS.Unit): CDate {
-        let {dt} = this;
         diff -= 0;
         if (!diff) return this;
-
-        switch (unit) {
-            case "year":
-                diff *= 12;
-            // go through to the next case
-
-            case "month":
-                dt = this.date();
-                const year = dt.getFullYear();
-                const month = dt.getMonth();
-                const date = dt.getDate();
-                dt.setDate(1);
-                let newMonth = year * 12 + month + diff;
-                dt.setFullYear(Math.trunc(newMonth / 12));
-                newMonth %= 12;
-                dt.setMonth(newMonth);
-                dt.setDate(date);
-                if (newMonth !== dt.getMonth() && date > dt.getDate()) {
-                    dt.setDate(0); // the very last day of the previous month
-                }
-                break;
-
-            case "week":
-                dt = new Date(+dt + diff * d.DAY * 7);
-                break;
-
-            case "day":
-                dt = new Date(+dt + diff * d.DAY);
-                break;
-
-            case "hour":
-                dt = new Date(+dt + diff * d.HOUR);
-                break;
-
-            case "minute":
-                dt = new Date(+dt + diff * d.MINUTE);
-                break;
-
-            case "second":
-                dt = new Date(+dt + diff * d.SECOND);
-                break;
-        }
-
-        return new CDate(dt);
+        return new CDate(add(this.dt, diff, unit));
     }
 
     next(unit: cDateNS.Unit): CDate {
