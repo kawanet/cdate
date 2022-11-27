@@ -12,8 +12,7 @@ export const cDate: typeof cDateFn = (dt) => {
 class CDate implements cDateNS.CDate {
     dt: Date;
 
-    constructor(dt: Date, offset?: number) {
-        if (+offset) dt = new Date(+dt + offset);
+    constructor(dt: Date) {
         this.dt = dt;
     }
 
@@ -42,8 +41,10 @@ class CDate implements cDateNS.CDate {
     }
 
     endOf(unit: cDateNS.Unit): CDate {
-        const date = this.startOf(unit).add(1, unit);
-        return new CDate(date.dt, -1);
+        let dt = startOf(this.dt, unit);
+        dt = add(dt, 1, unit);
+        dt = new Date(+dt - 1);
+        return new CDate(dt);
     }
 
     add(diff: number, unit: cDateNS.Unit): CDate {
