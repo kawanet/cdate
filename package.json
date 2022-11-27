@@ -30,6 +30,10 @@
     "url": "git+https://github.com/kawanet/cdate.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "fixup": "fixup",
+    "build": "tsc -p .",
+    "prepack": "npm run build && npm test && npm run test-timezone",
+    "test": "mocha test",
+    "test-timezone": "for tz in Asia/Tokyo Asia/Kathmandu Europe/London America/St_Johns America/Los_Angeles; do TZ=$tz mocha test || break; done"
   }
 }
