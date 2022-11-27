@@ -1,0 +1,13 @@
+**/*.js
+*.js.map
+*.swp
+*.tgz
+*~
+.DS_Store
+.Thumbs
+._*
+.idea/*.xml
+node_modules/
+package-lock.json
+tmp/
+~$*

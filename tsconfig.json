@@ -1,0 +1,20 @@
+{
+  "include": [
+    "locale/",
+    "src/",
+    "test/",
+    "types/"
+  ],
+  "compilerOptions": {
+    "module": "CommonJS",
+    "noImplicitAny": true,
+    "noImplicitReturns": false,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": false,
+    "skipLibCheck": false,
+    "strictNullChecks": false,
+    "target": "ES2018"
+  }
+}

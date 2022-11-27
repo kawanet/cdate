@@ -1,0 +1,35 @@
+{
+  "name": "cdate",
+  "description": "a compact calendar date",
+  "version": "1.0.0",
+  "author": "@kawanet",
+  "bugs": {
+    "url": "https://github.com/kawanet/cdate/issues"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^18.11.9",
+    "@types/strftime": "^0.9.4",
+    "dayjs": "^1.11.6",
+    "mocha": "^10.1.0",
+    "strftime": "^0.10.1",
+    "typescript": "^4.9.3"
+  },
+  "homepage": "https://github.com/kawanet/cdate#readme",
+  "keywords": [
+    "calendar",
+    "date",
+    "strftime",
+    "moment",
+    "time"
+  ],
+  "license": "MIT",
+  "main": "src/cdate.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kawanet/cdate.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
