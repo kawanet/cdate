@@ -27,6 +27,8 @@ declare namespace cDateNS {
         next(unit: Unit): CDate;
 
         prev(unit: Unit): CDate;
+
+        timezone(offset: number | string): CDate;
     }
 
     interface strftime {

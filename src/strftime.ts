@@ -5,6 +5,7 @@
 import type {cDateNS} from "../types/cdate";
 import {en_US} from "../locale/en_US";
 import {common} from "./common";
+import {tzMinutes} from "./u";
 
 type PickSpec = (spec: string) => (string | ((dt: Date) => (string | number)));
 
@@ -45,15 +46,6 @@ const getTZpick = cacheable((offset: number) => {
         });
     }
 });
-
-const tzMinutes = (offset: number | string): number => {
-    if ("string" === typeof offset) {
-        offset = +offset;
-        return Math.trunc(offset / 100) * 60 + (offset % 100);
-    }
-
-    if (!isNaN(offset)) return offset;
-}
 
 const getTZcalc = cacheable((offset: number) => {
     return (dt: Date): Date => {
