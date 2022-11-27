@@ -34,7 +34,7 @@ declare namespace cDateNS {
 
         extend: (locale: cDateNS.Locale) => strftime;
 
-        timezone: (offset: number) => strftime;
+        timezone: (offset: number | string) => strftime;
     }
 
     type Locale = { [spec: string]: string | ((dt: Date) => string | number) };

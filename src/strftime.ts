@@ -44,25 +44,38 @@ const getTZspec = cacheable((offset: number): cDateNS.Locale => {
             "%z": dt => displayZ(-dt.getTimezoneOffset(), ""),
         };
     }
-})
+});
 
-const factory = (pick: PickSpec, offset?: number) => {
-    const offsetTZ = (offset != null) && ((dt: Date): Date => {
+const tzMinutes = (offset: number | string): number => {
+    if ("string" === typeof offset) {
+        offset = +offset;
+        return Math.trunc(offset / 100) * 60 + (offset % 100);
+    }
+
+    if (!isNaN(offset)) return offset;
+}
+
+const getTZcalc = cacheable((offset: number) => {
+    return (dt: Date): Date => {
         const minutes = offset + dt.getTimezoneOffset();
         if (minutes) {
             dt = new Date(+dt + minutes * 60000);
         }
         return dt;
-    });
+    }
+})
+
+const factory = (pick: PickSpec, offset?: number | string) => {
+    const tz = tzMinutes(offset);
 
     const strftime: cDateNS.strftime = (fmt, dt) => {
         let tuned: Date;
 
         return fmt.replace(/%(?:-?[a-zA-Z%]|:z)/g, spec => {
-            const fn = pick(spec) || (getTZspec(offset))[spec];
+            const fn = pick(spec) || getTZspec(tz)[spec];
 
             if ("function" === typeof fn) {
-                if (!tuned) tuned = offsetTZ ? offsetTZ(dt) : dt;
+                if (!tuned) tuned = (tz != null) ? getTZcalc(tz)(dt) : dt;
                 return fn(tuned) as string;
             } else if (fn == null) {
                 return spec; // Unsupported specifiers
@@ -72,7 +85,7 @@ const factory = (pick: PickSpec, offset?: number) => {
         });
     };
 
-    strftime.extend = locale => factory(merge(picker(locale), pick), offset);
+    strftime.extend = locale => factory(merge(picker(locale), pick), tz);
 
     strftime.timezone = offset => factory(pick, offset);
 
