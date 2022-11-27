@@ -1,13 +1,7 @@
-import {strftime} from "./strftime";
 import type {cDate as cDateFn, cDateNS} from "../types/cdate";
+import {strftime} from "./strftime";
 import {add} from "./add";
-
-const enum d {
-    SECOND = 1000,
-    MINUTE = 60 * SECOND,
-    HOUR = 60 * MINUTE,
-    DAY = 24 * HOUR,
-}
+import {startOf} from "./startof";
 
 export const cDate: typeof cDateFn = (dt) => {
     if (dt == null) dt = new Date();
@@ -44,57 +38,7 @@ class CDate implements cDateNS.CDate {
     }
 
     startOf(unit: cDateNS.UnitForAdd): CDate {
-        let {dt} = this;
-
-        const tz = dt.getTimezoneOffset() * d.MINUTE;
-        let div = 0;
-
-        switch (unit) {
-            case "week": {
-                const m = this.startOf("day");
-                dt = m.dt;
-                dt = new Date(+dt - dt.getDay() * d.DAY);
-                break;
-            }
-
-            case "year": {
-                const m = this.startOf("day");
-                dt = m.dt;
-                dt.setMonth(0);
-                dt.setDate(1);
-                break;
-            }
-
-            case "month": {
-                const m = this.startOf("day");
-                dt = m.dt;
-                dt.setDate(1);
-                break;
-            }
-
-            case "date":
-            case "day":
-                div = d.DAY;
-                break;
-
-            case "hour":
-                div = d.HOUR;
-                break;
-
-            case "minute":
-                div = d.MINUTE;
-                break;
-
-            case "second":
-                div = d.SECOND;
-                break;
-        }
-
-        if (div) {
-            dt = new Date(Math.trunc((+dt - tz) / div) * div + tz);
-        }
-
-        return new CDate(dt);
+        return new CDate(startOf(this.dt, unit));
     }
 
     endOf(unit: cDateNS.Unit): CDate {
