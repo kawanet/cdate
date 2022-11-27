@@ -28,21 +28,21 @@ const displayZ = (offset: number, delim: string) => {
     return (isMinus ? "-" : "+") + (hour < 10 ? "0" + hour : hour) + delim + (min < 10 ? "0" + min : min);
 };
 
-const getTZspec = cacheable((offset: number): cDateNS.Locale => {
+const getTZpick = cacheable((offset: number) => {
     if (offset != null) {
         // constant offset for the time zone offset specified
         const delimZ = displayZ(offset, ":");
         const normalZ = displayZ(offset, "");
-        return {
+        return picker({
             "%:z": () => delimZ,
             "%z": () => normalZ,
-        };
+        });
     } else {
         // dynamic offset for the Date given
-        return {
+        return picker({
             "%:z": dt => displayZ(-dt.getTimezoneOffset(), ":"),
             "%z": dt => displayZ(-dt.getTimezoneOffset(), ""),
-        };
+        });
     }
 });
 
@@ -72,7 +72,7 @@ const factory = (pick: PickSpec, offset?: number | string) => {
         let tuned: Date;
 
         return fmt.replace(/%(?:-?[a-zA-Z%]|:z)/g, spec => {
-            const fn = pick(spec) || getTZspec(tz)[spec];
+            const fn = pick(spec) || getTZpick(tz)(spec);
 
             if ("function" === typeof fn) {
                 if (!tuned) tuned = (tz != null) ? getTZcalc(tz)(dt) : dt;
