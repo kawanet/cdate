@@ -34,6 +34,6 @@
     "build": "tsc -p .",
     "prepack": "npm run build && npm test && npm run test-timezone",
     "test": "mocha test",
-    "test-timezone": "for tz in Asia/Tokyo Asia/Kathmandu Europe/London America/St_Johns America/Los_Angeles; do TZ=$tz mocha test || break; done"
+    "test-timezone": "for tz in Asia/Tokyo Asia/Kathmandu Europe/London America/St_Johns America/Los_Angeles; do echo TZ=$tz mocha test; TZ=$tz mocha test || break; done"
   }
 }

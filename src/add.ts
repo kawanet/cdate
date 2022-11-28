@@ -22,21 +22,26 @@ const addMonth = (dt: Date, months: number): Date => {
     return dt;
 };
 
-const addDay = (dt: Date, days: number): Date => {
+const addDay = (dt: Date, days: number, tz: number): Date => {
+    [tz]; // TODO
+
     const tz1 = dt.getTimezoneOffset();
     dt = new Date(+dt + days * d.DAY);
     const tz2 = dt.getTimezoneOffset();
+
+    // adjustment for Daylight Saving Time (DST)
     if (tz1 !== tz2) {
         dt = new Date(+dt + (tz2 - tz1) * d.MINUTE);
     }
+
     return dt;
+}
+
+const addMS = (dt: Date, msec: number): Date => {
+    return new Date(+dt + msec);
 };
 
-const addMillisecond = (dt: Date, milliseconds: number): Date => {
-    return new Date(+dt + milliseconds);
-};
-
-export const add = (dt: Date, diff: number, unit: string): Date => {
+export const add = (dt: Date, diff: number, unit: string, tz: number): Date => {
     switch (unit) {
         case "year":
             return addMonth(dt, diff * 12);
@@ -45,22 +50,22 @@ export const add = (dt: Date, diff: number, unit: string): Date => {
             return addMonth(dt, diff);
 
         case "week":
-            return addDay(dt, diff * 7);
+            return addDay(dt, diff * 7, tz);
 
         case "day":
-            return addDay(dt, diff);
+            return addDay(dt, diff, tz);
 
         case "hour":
-            return addMillisecond(dt, diff * d.HOUR);
+            return addMS(dt, diff * d.HOUR);
 
         case "minute":
-            return addMillisecond(dt, diff * d.MINUTE);
+            return addMS(dt, diff * d.MINUTE);
 
         case "second":
-            return addMillisecond(dt, diff * d.SECOND);
+            return addMS(dt, diff * d.SECOND);
 
         case "millisecond":
-            return addMillisecond(dt, diff);
+            return addMS(dt, diff);
     }
 
     return dt;

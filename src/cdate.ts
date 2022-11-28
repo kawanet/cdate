@@ -7,7 +7,7 @@ import {tzMinutes} from "./u";
 export const cDate: typeof cDateFn = (dt) => {
     if (dt == null) dt = new Date();
     if (!(dt instanceof Date)) dt = new Date(dt.valueOf ? dt.valueOf() : dt);
-    return new CDate(dt);
+    return new CDate(dt, null);
 };
 
 const cacheable = <T>(fn: ((arg: number) => T)): ((arg: number) => T) => {
@@ -21,7 +21,7 @@ class CDate implements cDateNS.CDate {
     dt: Date;
     tz: number;
 
-    constructor(dt: Date, tz?: number) {
+    constructor(dt: Date, tz: number) {
         this.dt = dt;
         this.tz = tz;
         // this.tz = -dt.getTimezoneOffset();
@@ -53,20 +53,23 @@ class CDate implements cDateNS.CDate {
     }
 
     startOf(unit: cDateNS.UnitForAdd): CDate {
-        return new CDate(startOf(this.dt, unit), this.tz);
+        const {tz} = this;
+        return new CDate(startOf(this.dt, unit, tz), tz);
     }
 
     endOf(unit: cDateNS.Unit): CDate {
-        let dt = startOf(this.dt, unit);
-        dt = add(dt, 1, unit);
+        const {tz} = this;
+        let dt = startOf(this.dt, unit, tz);
+        dt = add(dt, 1, unit, tz);
         dt = new Date(+dt - 1);
-        return new CDate(dt, this.tz);
+        return new CDate(dt, tz);
     }
 
     add(diff: number, unit: cDateNS.Unit): CDate {
         diff -= 0;
         if (!diff) return this;
-        return new CDate(add(this.dt, diff, unit), this.tz);
+        const {tz} = this;
+        return new CDate(add(this.dt, diff, unit, tz), tz);
     }
 
     next(unit: cDateNS.Unit): CDate {
