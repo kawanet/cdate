@@ -34,12 +34,26 @@ declare namespace cDateNS {
     interface strftime {
         (fmt: string, dt?: Date): string;
 
+        (fmt: string, dt?: RODate): string;
+
         extend: (locale: cDateNS.Locale) => strftime;
 
         timezone: (offset: number | string) => strftime;
     }
 
-    type Locale = { [spec: string]: string | ((dt: Date) => string | number) };
+    type Locale = { [specifier: string]: string | ((dt: RODate) => string | number) };
+
+    interface RODate {
+        getMilliseconds: typeof Date.prototype.getMilliseconds,
+        getSeconds: typeof Date.prototype.getSeconds,
+        getMinutes: typeof Date.prototype.getMinutes,
+        getHours: typeof Date.prototype.getHours,
+        getDay: typeof Date.prototype.getDay,
+        getDate: typeof Date.prototype.getDate,
+        getMonth: typeof Date.prototype.getMonth,
+        getFullYear: typeof Date.prototype.getFullYear,
+        getTimezoneOffset: typeof Date.prototype.getTimezoneOffset,
+    }
 }
 
 export const cDate: (dt?: string | number | Date) => cDateNS.CDate;

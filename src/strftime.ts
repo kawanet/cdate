@@ -7,7 +7,7 @@ import {en_US} from "../locale/en_US";
 import {common} from "./common";
 import {tzMinutes} from "./u";
 
-type PickSpec = (spec: string) => (string | ((dt: Date) => (string | number)));
+type PickSpec = (spec: string) => (string | ((dt: cDateNS.RODate) => (string | number)));
 
 const merge = (a: PickSpec, b?: PickSpec): PickSpec => b ? (spec => (a(spec) || b(spec))) : a;
 
@@ -47,28 +47,15 @@ const getTZpick = cacheable((offset: number) => {
     }
 });
 
-const getTZcalc = cacheable((offset: number) => {
-    return (dt: Date): Date => {
-        const minutes = offset + dt.getTimezoneOffset();
-        if (minutes) {
-            dt = new Date(+dt + minutes * 60000);
-        }
-        return dt;
-    }
-})
-
 const factory = (pick: PickSpec, offset?: number | string) => {
     const tz = tzMinutes(offset);
 
     const strftime: cDateNS.strftime = (fmt, dt) => {
-        let tuned: Date;
-
         return fmt.replace(/%(?:-?[a-zA-Z%]|:z)/g, spec => {
             const fn = pick(spec) || getTZpick(tz)(spec);
 
             if ("function" === typeof fn) {
-                if (!tuned) tuned = (tz != null) ? getTZcalc(tz)(dt) : dt;
-                return fn(tuned) as string;
+                return fn(dt) as string;
             } else if (fn == null) {
                 return spec; // Unsupported specifiers
             } else {
