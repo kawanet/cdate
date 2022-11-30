@@ -11,6 +11,10 @@ const enum d {
     DAY = 24 * HOUR,
 }
 
+interface Options {
+    offset: number;
+}
+
 export const cDate: typeof cDateFn = (dt) => {
     if (dt == null) dt = new Date();
     if (!(dt instanceof Date)) dt = new Date(dt.valueOf ? dt.valueOf() : dt);
@@ -18,23 +22,24 @@ export const cDate: typeof cDateFn = (dt) => {
 };
 
 class CDate implements cDateNS.CDate {
-    dt: Date;
-
-    constructor(dt: Date, protected tz: number) {
-        this.dt = dt;
+    constructor(protected dt: Date, protected x: Options) {
+        //
     }
 
     protected create(dt: Date): CDate {
-        return new (this.constructor as any)(dt, this.tz);
+        return new (this.constructor as any)(dt, this.x);
     }
 
     utc(): CDate {
-        return new CDateUTC(this.dt, 0);
+        const x: Options = Object.create(this.x);
+        x.offset = 0;
+        return new CDateUTC(this.dt, x);
     }
 
     timezone(offset: number | string): CDate {
-        offset = tzMinutes(offset);
-        return new CDateTZ(this.dt, offset);
+        const x: Options = Object.create(this.x);
+        x.offset = tzMinutes(offset);
+        return new CDateTZ(this.dt, x);
     }
 
     valueOf(): number {
@@ -58,14 +63,14 @@ class CDate implements cDateNS.CDate {
     }
 
     startOf(unit: cDateNS.UnitForAdd): CDate {
-        const {tz} = this;
-        return this.create(startOf(this.dt, unit, tz));
+        const {x} = this;
+        return this.create(startOf(this.dt, unit, (x && x.offset)));
     }
 
     endOf(unit: cDateNS.Unit): CDate {
-        const {tz} = this;
-        let dt = startOf(this.dt, unit, tz);
-        dt = add(dt, 1, unit, tz);
+        const {x} = this;
+        let dt = startOf(this.dt, unit, (x && x.offset));
+        dt = add(dt, 1, unit, (x && x.offset));
         dt = new Date(+dt - 1);
         return this.create(dt);
     }
@@ -73,8 +78,8 @@ class CDate implements cDateNS.CDate {
     add(diff: number, unit: cDateNS.Unit): CDate {
         diff -= 0;
         if (!diff) return this;
-        const {tz} = this;
-        return this.create(add(this.dt, diff, unit, tz));
+        const {x} = this;
+        return this.create(add(this.dt, diff, unit, (x && x.offset)));
     }
 
     next(unit: cDateNS.Unit): CDate {
@@ -129,9 +134,9 @@ class CDateUTC extends CDate implements cDateNS.RODate {
 }
 
 class CDateTZ extends CDateUTC {
-    constructor(dt: Date, tz: number) {
-        dt = new Date(+dt + tz * d.MINUTE)
-        super(dt, tz);
+    constructor(dt: Date, x: Options) {
+        dt = new Date(+dt + (x && x.offset || 0) * d.MINUTE)
+        super(dt, x);
     }
 
     text(fmt: string): string {
@@ -139,6 +144,7 @@ class CDateTZ extends CDateUTC {
     }
 
     getTimezoneOffset() {
-        return this.tz;
+        const {x} = this;
+        return (x && x.offset || 0);
     }
 }
