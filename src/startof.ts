@@ -1,4 +1,7 @@
-import {add} from "./add";
+import type {cDateNS} from "../types/cdate";
+import {add as _add} from "./add";
+
+const add = _add;
 
 const enum d {
     SECOND = 1000,
@@ -7,59 +10,54 @@ const enum d {
     DAY = 24 * HOUR,
 }
 
-const startOfMonth = (dt: Date, tz: number): Date => {
-    dt = startOfDay(dt, tz);
-    return add(dt, 1 - dt.getDate(), "day", tz);
+const startOfMonth = (dt: cDateNS.DateRW): void => {
+    startOfDay(dt);
+    add(dt, 1 - dt.getDate(), "day");
 };
 
-const startOfDay = (dt: Date, tz0: number): Date => {
-    [tz0]; // TODO
-
+const startOfDay = (dt: cDateNS.DateRW): void => {
     const tz1 = dt.getTimezoneOffset();
-    const tz = tz1 * d.MINUTE;
-    dt = new Date(Math.trunc((+dt - tz) / d.DAY) * d.DAY + tz);
+    truncate(dt, d.DAY);
     const tz2 = dt.getTimezoneOffset();
 
     // adjustment for Daylight Saving Time (DST)
     if (tz1 !== tz2) {
-        dt = new Date(+dt + (tz2 - tz1) * d.MINUTE);
+        dt.setTime(+dt + (tz2 - tz1) * d.MINUTE);
     }
-
-    return dt;
 };
 
-const truncate = (dt: Date, unit: number): Date => {
+const truncate = (dt: cDateNS.DateRW, unit: number): void => {
     const tz = dt.getTimezoneOffset() * d.MINUTE;
-    dt = new Date(Math.trunc((+dt - tz) / unit) * unit + tz);
-    return dt;
+    dt.setTime(Math.trunc((+dt - tz) / unit) * unit + tz);
 };
 
-export const startOf = (dt: Date, unit: string, tz: number): Date => {
+export const startOf = (dt: cDateNS.DateRW, unit: string): void => {
     switch (unit) {
         case "year":
-            dt = startOfMonth(dt, tz);
-            return add(dt, -dt.getMonth(), "month", tz);
+            startOfMonth(dt);
+            return add(dt, -dt.getMonth(), "month");
 
         case "month":
-            return startOfMonth(dt, tz);
+            return startOfMonth(dt);
 
         case "week":
-            dt = startOfDay(dt, tz);
-            return add(dt, -dt.getDay(), "day", tz);
+            startOfDay(dt);
+            return add(dt, -dt.getDay(), "day");
 
         case "date":
         case "day":
-            return startOfDay(dt, tz);
+            return startOfDay(dt);
 
         case "hour":
-            return truncate(dt, d.HOUR);
+            truncate(dt, d.HOUR);
+            break;
 
         case "minute":
-            return truncate(dt, d.MINUTE);
+            truncate(dt, d.MINUTE);
+            break;
 
         case "second":
-            return truncate(dt, d.SECOND);
+            truncate(dt, d.SECOND);
+            break;
     }
-
-    return dt;
 };

@@ -1,3 +1,5 @@
+import type {cDateNS} from "../types/cdate";
+
 const enum d {
     SECOND = 1000,
     MINUTE = 60 * SECOND,
@@ -5,43 +7,47 @@ const enum d {
     DAY = 24 * HOUR,
 }
 
-const addMonth = (dt: Date, months: number): Date => {
-    dt = new Date(+dt);
-    const year = dt.getFullYear();
-    const month = dt.getMonth();
+const addMonth = (dt: cDateNS.DateRW, months: number): void => {
+    // move to the first day of the month
     const date = dt.getDate();
-    dt.setDate(1);
+    addDay(dt, 1 - date);
+
+    // calculate days between the months
+    const before = +dt;
+    const tmp = new Date(before);
+    const year = tmp.getFullYear();
+    const month = tmp.getMonth();
     let newMonth = year * 12 + month + months;
-    dt.setFullYear(Math.trunc(newMonth / 12));
+    tmp.setFullYear(Math.trunc(newMonth / 12));
     newMonth %= 12;
-    dt.setMonth(newMonth);
-    dt.setDate(date);
-    if (newMonth !== dt.getMonth() && date > dt.getDate()) {
-        dt.setDate(0); // the very last day of the previous month
+    tmp.setMonth(newMonth);
+    const days = Math.trunc((+tmp - before) / d.DAY);
+
+    // move days
+    addDay(dt, days + date - 1);
+
+    // check the month carried
+    const newDate = dt.getDate();
+    if (newMonth !== dt.getMonth() && date > newDate) {
+        // the very last day of the previous month
+        addDay(dt, -newDate);
     }
-    return dt;
 };
 
-const addDay = (dt: Date, days: number, tz: number): Date => {
-    [tz]; // TODO
-
+const addDay = (dt: cDateNS.DateRW, days: number): void => {
     const tz1 = dt.getTimezoneOffset();
-    dt = new Date(+dt + days * d.DAY);
+    dt.setTime(+dt + days * d.DAY);
     const tz2 = dt.getTimezoneOffset();
 
     // adjustment for Daylight Saving Time (DST)
     if (tz1 !== tz2) {
-        dt = new Date(+dt + (tz2 - tz1) * d.MINUTE);
+        dt.setTime(+dt + (tz2 - tz1) * d.MINUTE);
     }
-
-    return dt;
 }
 
-const addMS = (dt: Date, msec: number): Date => {
-    return new Date(+dt + msec);
-};
+export const add = (dt: cDateNS.DateRW, diff: number, unit: string): void => {
+    if (!diff) return;
 
-export const add = (dt: Date, diff: number, unit: string, tz: number): Date => {
     switch (unit) {
         case "year":
             return addMonth(dt, diff * 12);
@@ -50,23 +56,29 @@ export const add = (dt: Date, diff: number, unit: string, tz: number): Date => {
             return addMonth(dt, diff);
 
         case "week":
-            return addDay(dt, diff * 7, tz);
+            return addDay(dt, diff * 7);
 
         case "day":
-            return addDay(dt, diff, tz);
+            return addDay(dt, diff);
 
         case "hour":
-            return addMS(dt, diff * d.HOUR);
+            diff *= d.HOUR;
+            break;
 
         case "minute":
-            return addMS(dt, diff * d.MINUTE);
+            diff *= d.MINUTE;
+            break;
 
         case "second":
-            return addMS(dt, diff * d.SECOND);
+            diff *= d.SECOND;
+            break;
 
         case "millisecond":
-            return addMS(dt, diff);
+            break;
+
+        default:
+            return;
     }
 
-    return dt;
+    if (diff) dt.setTime(+dt + diff);
 }

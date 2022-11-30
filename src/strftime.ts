@@ -6,7 +6,7 @@ import type {cDateNS} from "../types/cdate";
 import {en_US} from "../locale/en_US";
 import {common} from "./common";
 
-type PickSpec = (spec: string) => (string | ((dt: cDateNS.RODate) => (string | number)));
+type PickSpec = (spec: string) => (string | ((dt: cDateNS.DateRO) => (string | number)));
 
 const merge = (a: PickSpec, b?: PickSpec): PickSpec => b ? (spec => (a(spec) || b(spec))) : a;
 
