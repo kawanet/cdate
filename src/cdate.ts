@@ -17,13 +17,6 @@ export const cDate: typeof cDateFn = (dt) => {
     return new CDate(dt, null);
 };
 
-const cacheable = <T>(fn: ((arg: number) => T)): ((arg: number) => T) => {
-    const cached: { [key: string]: T } = {};
-    return arg => cached[arg] || (cached[arg] = fn(arg));
-};
-
-const getStrftime = cacheable((tz: number) => (tz ? strftime.timezone(tz) : strftime));
-
 class CDate implements cDateNS.CDate {
     dt: Date;
 
@@ -31,7 +24,7 @@ class CDate implements cDateNS.CDate {
         this.dt = dt;
     }
 
-    create(dt: Date): CDate {
+    protected create(dt: Date): CDate {
         return new (this.constructor as any)(dt, this.tz);
     }
 
@@ -94,10 +87,6 @@ class CDate implements cDateNS.CDate {
 }
 
 class CDateUTC extends CDate implements cDateNS.RODate {
-    create(dt: Date): CDate {
-        return new CDateUTC(dt, this.tz);
-    }
-
     text(fmt: string): string {
         return strftime(fmt, this);
     }
@@ -139,53 +128,14 @@ class CDateUTC extends CDate implements cDateNS.RODate {
     }
 }
 
-const lazy = <T>(fn: () => T): (() => T) => {
-    let v: T;
-    return () => (v || (v = fn()));
-};
-
-class CDateTZ extends CDate implements cDateNS.RODate {
-    create(dt: Date): CDate {
-        return new CDateTZ(dt, this.tz);
+class CDateTZ extends CDateUTC {
+    constructor(dt: Date, tz: number) {
+        dt = new Date(+dt + tz * d.MINUTE)
+        super(dt, tz);
     }
 
     text(fmt: string): string {
-        const strftime = getStrftime(this.tz);
         return strftime(fmt, this);
-    }
-
-    _dt = lazy(() => new Date(+this.dt + this.tz * d.MINUTE))
-
-    getMilliseconds() {
-        return this._dt().getUTCMilliseconds();
-    }
-
-    getSeconds() {
-        return this._dt().getUTCSeconds();
-    }
-
-    getMinutes() {
-        return this._dt().getUTCMinutes();
-    }
-
-    getHours() {
-        return this._dt().getUTCHours();
-    }
-
-    getDay() {
-        return this._dt().getUTCDay();
-    }
-
-    getDate() {
-        return this._dt().getUTCDate();
-    };
-
-    getMonth() {
-        return this._dt().getUTCMonth();
-    }
-
-    getFullYear() {
-        return this._dt().getUTCFullYear();
     }
 
     getTimezoneOffset() {

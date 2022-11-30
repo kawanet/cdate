@@ -60,6 +60,20 @@ const y: ToNumber = dt => dt.getFullYear() % 100;
  */
 const Y: ToNumber = dt => dt.getFullYear();
 
+/**
+ * %z     The +hhmm or -hhmm numeric timezone (that is, the hour and minute offset from UTC). (SU)
+ */
+const makeZ = (delim: string): ToString => {
+    return dt => {
+        let offset = dt.getTimezoneOffset();
+        const isMinus = (offset < 0);
+        if (isMinus) offset = -offset;
+        const hour = Math.floor(offset / 60);
+        const min = offset % 60;
+        return (isMinus ? "-" : "+") + (hour < 10 ? "0" + hour : hour) + delim + (min < 10 ? "0" + min : min);
+    }
+};
+
 export const common = {
     "%-C": C,
     "%C": pad2(C),
@@ -84,6 +98,8 @@ export const common = {
     "%y": pad2(y),
     "%-Y": Y,
     "%Y": pad4(Y),
+    "%:z": makeZ(":"),
+    "%z": makeZ(""),
     "%%": () => "%",  // %%     A literal '%' character.
     "%n": () => "\n", // %n     A newline character. (SU)
     "%t": () => "\t", // %t     A tab character. (SU)
