@@ -10,7 +10,7 @@ declare namespace cDateNS {
     type UnitForAdd = Unit | UnitWithS | UnitShort | UnitMS;
 
     interface CDate {
-        date(): Date;
+        toDate(): Date;
 
         text(format: string): string;
 

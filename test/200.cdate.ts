@@ -13,8 +13,8 @@ describe(TITLE, () => {
         const dt = cDate(+date);
         assert.equal(+dt, +date);
         assert.equal(dt.valueOf(), date.valueOf(), ".valueOf()");
-        assert.ok(dt.date() instanceof Date, ".date()");
-        assert.equal(+dt.date(), +date, ".date()");
+        assert.ok(dt.toDate() instanceof Date, ".date()");
+        assert.equal(+dt.toDate(), +date, ".date()");
     });
 
     it(`cDate(Date)`, () => {

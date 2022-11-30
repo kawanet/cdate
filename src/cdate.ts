@@ -64,12 +64,12 @@ class CDate implements cDateNS.CDate {
         return +this.getDateRO();
     }
 
-    date(): Date {
+    toDate(): Date {
         return new Date(+this);
     }
 
     toJSON(): string {
-        return this.date().toJSON();
+        return this.toDate().toJSON();
     }
 
     toString(): string {
