@@ -29,6 +29,8 @@ declare namespace cDateNS {
         prev(unit: Unit): CDate;
 
         timezone(offset: number | string): CDate;
+
+        locale(locale: cDateNS.Locale): CDate;
     }
 
     interface strftime {
@@ -36,7 +38,7 @@ declare namespace cDateNS {
 
         (fmt: string, dt?: RODate): string;
 
-        extend: (locale: cDateNS.Locale) => strftime;
+        locale: (locale: cDateNS.Locale) => strftime;
     }
 
     type Locale = { [specifier: string]: string | ((dt: RODate) => string | number) };

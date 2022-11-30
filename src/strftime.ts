@@ -27,9 +27,9 @@ const factory = (pick: PickSpec) => {
         });
     };
 
-    strftime.extend = locale => factory(merge(picker(locale), pick));
+    strftime.locale = locale => factory(merge(picker(locale), pick));
 
     return strftime;
 };
 
-export const strftime = factory(picker(common)).extend(en_US);
+export const strftime = factory(picker(common)).locale(en_US);

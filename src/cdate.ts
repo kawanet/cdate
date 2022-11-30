@@ -13,6 +13,7 @@ const enum d {
 
 interface Options {
     offset: number;
+    strftime: typeof strftime;
 }
 
 export const cDate: typeof cDateFn = (dt) => {
@@ -22,22 +23,30 @@ export const cDate: typeof cDateFn = (dt) => {
 };
 
 class CDate implements cDateNS.CDate {
-    constructor(protected dt: Date, protected x: Options) {
-        //
+    protected x: Options;
+
+    constructor(protected dt: Date, x: Options) {
+        if (x) this.x = x;
     }
 
-    protected create(dt: Date): CDate {
-        return new (this.constructor as any)(dt, this.x);
+    protected create(dt: Date, x?: Options): CDate {
+        return new (this.constructor as any)(dt, x || this.x);
+    }
+
+    locale(locale: cDateNS.Locale): CDate {
+        const x = copyOptions(this.x);
+        x.strftime = getStrftime(x).locale(locale);
+        return this.create(this.dt, x);
     }
 
     utc(): CDate {
-        const x: Options = Object.create(this.x);
+        const x = copyOptions(this.x);
         x.offset = 0;
         return new CDateUTC(this.dt, x);
     }
 
     timezone(offset: number | string): CDate {
-        const x: Options = Object.create(this.x);
+        const x = copyOptions(this.x);
         x.offset = tzMinutes(offset);
         return new CDateTZ(this.dt, x);
     }
@@ -59,7 +68,7 @@ class CDate implements cDateNS.CDate {
     }
 
     text(fmt: string): string {
-        return strftime(fmt, this.dt);
+        return getStrftime(this.x)(fmt, this.dt);
     }
 
     startOf(unit: cDateNS.UnitForAdd): CDate {
@@ -93,7 +102,7 @@ class CDate implements cDateNS.CDate {
 
 class CDateUTC extends CDate implements cDateNS.RODate {
     text(fmt: string): string {
-        return strftime(fmt, this);
+        return getStrftime(this.x)(fmt, this);
     }
 
     getMilliseconds() {
@@ -139,12 +148,12 @@ class CDateTZ extends CDateUTC {
         super(dt, x);
     }
 
-    text(fmt: string): string {
-        return strftime(fmt, this);
-    }
-
     getTimezoneOffset() {
         const {x} = this;
         return (x && x.offset || 0);
     }
 }
+
+const copyOptions = (x: Options): Options => Object.create(x || null);
+
+const getStrftime = (x: Options): typeof strftime => (x && x.strftime || strftime);

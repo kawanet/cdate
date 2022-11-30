@@ -2,14 +2,13 @@
 
 import {strict as assert} from "assert";
 import * as samsonjs_strftime from "strftime";
-import {strftime as cdate_strftime} from "../src/strftime";
+import {cDate} from "../";
 import {en_US} from "../locale/en_US";
 import {fr_FR} from "../locale/fr_FR";
 
 const TITLE = __filename.split("/").pop()!;
 
 const samsonjs = {strftime: samsonjs_strftime as any as { localizeByIdentifier: (locale: string) => typeof samsonjs_strftime }};
-const cdate = {strftime: cdate_strftime};
 const locales = {en_US, fr_FR};
 
 describe(TITLE, () => {
@@ -19,11 +18,11 @@ describe(TITLE, () => {
          * @see https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/strftime/index.d.ts
          * @see https://github.com/samsonjs/strftime/blob/master/strftime.js
          */
-        runTests(locale => samsonjs.strftime.localizeByIdentifier(locale));
+        runTests(locale => (fmt, dt) => samsonjs.strftime.localizeByIdentifier(locale)(fmt, dt));
     });
 
     describe("kawanet/cdate", () => {
-        runTests(locale => cdate.strftime.locale(locales[locale]));
+        runTests(locale => (fmt, dt) => cDate(dt).locale(locales[locale]).text(fmt));
     });
 });
 
