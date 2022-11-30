@@ -22,23 +22,42 @@ export const cDate: typeof cDateFn = (dt) => {
 };
 
 class CDate implements cDateNS.CDate {
+    /**
+     * DateRW for manipulating
+     */
     protected dt: cDateNS.DateRW;
+
+    /**
+     * options container
+     */
     protected x: Options;
 
+    /**
+     * the constructor
+     */
     constructor(dt: cDateNS.DateRW, x: Options) {
         this.dt = dt;
         if (x) this.x = x;
     }
 
+    /**
+     * duplicates itself for father manipulation
+     */
     protected copy(): CDate {
         const dt = new Date(+this.dt);
         return new (this.constructor as any)(dt, this.x);
     }
 
-    protected getDateRO(): cDateNS.DateRO {
+    /**
+     * returns DateRO for displaying
+     */
+    protected getDate(): cDateNS.DateRO {
         return this.dt;
     }
 
+    /**
+     * updates strftime option with the give locale
+     */
     locale(locale: cDateNS.Locale): CDate {
         const out = this.copy();
         const x = out.x = copyOptions(out.x);
@@ -46,6 +65,9 @@ class CDate implements cDateNS.CDate {
         return out;
     }
 
+    /**
+     * returns UTC version of CDate
+     */
     utc(): CDate {
         const x = copyOptions(this.x);
         x.offset = 0;
@@ -53,6 +75,9 @@ class CDate implements cDateNS.CDate {
         return new CDateUTC(dt, x);
     }
 
+    /**
+     * returns timezone version of CDate
+     */
     timezone(offset: number | string): CDate {
         const x = copyOptions(this.x);
         offset = x.offset = tzMinutes(offset);
@@ -60,32 +85,53 @@ class CDate implements cDateNS.CDate {
         return new CDateTZ(dt, x);
     }
 
+    /**
+     * returns milliseconds since the epoch
+     */
     valueOf(): number {
-        return +this.getDateRO();
+        return +this.getDate();
     }
 
+    /**
+     * returns a raw Date object
+     */
     toDate(): Date {
         return new Date(+this);
     }
 
+    /**
+     * returns a JSON string
+     */
     toJSON(): string {
         return this.toDate().toJSON();
     }
 
+    /**
+     * returns an ISO string
+     */
     toString(): string {
-        return toISO(this.getDateRO());
+        return toISO(this.getDate());
     }
 
+    /**
+     * returns a text formatted
+     */
     text(fmt: string): string {
-        return getStrftime(this.x)(fmt, this.getDateRO());
+        return getStrftime(this.x)(fmt, this.getDate());
     }
 
+    /**
+     * returns a new CDate object manipulated
+     */
     startOf(unit: cDateNS.UnitForAdd): CDate {
         const out = this.copy();
         startOf(out.dt, unit);
         return out;
     }
 
+    /**
+     * returns a new CDate object manipulated
+     */
     endOf(unit: cDateNS.Unit): CDate {
         const out = this.copy();
         const {dt} = out;
@@ -95,22 +141,34 @@ class CDate implements cDateNS.CDate {
         return out;
     }
 
+    /**
+     * returns a new CDate object manipulated
+     */
     add(diff: number, unit: cDateNS.Unit): CDate {
         const out = this.copy();
         add(out.dt, diff, unit);
         return out;
     }
 
+    /**
+     * returns a new CDate object manipulated
+     */
     next(unit: cDateNS.Unit): CDate {
         return this.add(1, unit);
     }
 
+    /**
+     * returns a new CDate object manipulated
+     */
     prev(unit: cDateNS.Unit): CDate {
         return this.add(-1, unit);
     }
 }
 
 class CDateUTC extends CDate {
+    /**
+     * duplicates itself for father manipulation
+     */
     protected copy(): CDate {
         const dt = dateUTC(+this.dt);
         return new (this.constructor as any)(dt, this.x);
@@ -118,7 +176,10 @@ class CDateUTC extends CDate {
 }
 
 class CDateTZ extends CDateUTC {
-    protected getDateRO(): cDateNS.DateRO {
+    /**
+     * returns DateRO for displaying
+     */
+    protected getDate(): cDateNS.DateRO {
         return dateTZ(+this.dt, this.x.offset);
     }
 }
