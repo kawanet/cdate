@@ -6,13 +6,15 @@ const enum d {
     MINUTE = 60 * SECOND,
 }
 
-class DateUTC implements cDateNS.DateRW {
+abstract class DateUTCBase {
     constructor(protected dt: Date) {
         //
     }
 
+    abstract getTimezoneOffset(): number;
+
     valueOf(): number {
-        return +this.dt;
+        return +this.dt - this.getTimezoneOffset() * d.MINUTE;
     }
 
     toString(): string {
@@ -51,29 +53,27 @@ class DateUTC implements cDateNS.DateRW {
         return this.dt.getUTCFullYear();
     }
 
-    getTimezoneOffset() {
-        return 0; // always UTC
-    }
-
     getTime() {
-        return this.dt.getTime();
-    }
-
-    setTime(msec: number) {
-        return this.dt.setTime(msec);
+        return +this;
     }
 }
 
-class DateTZ extends DateUTC {
+class DateUTC extends DateUTCBase implements cDateNS.DateRW {
+    setTime(msec: number) {
+        return this.dt.setTime(msec);
+    }
+
+    getTimezoneOffset() {
+        return 0; // always UTC
+    }
+}
+
+class DateTZ extends DateUTCBase implements cDateNS.DateRO {
     tz: number;
 
     constructor(dt: Date, tz: number) {
         super(dt);
         this.tz = tz | 0;
-    }
-
-    valueOf(): number {
-        return +this.dt - this.tz * d.MINUTE;
     }
 
     getTimezoneOffset() {
