@@ -12,7 +12,7 @@ declare namespace cDateNS {
     interface CDate {
         date(): Date;
 
-        date(dt: Date): CDate;
+        cdate(dt: Date): CDate;
 
         text(format: string): string;
 
@@ -29,6 +29,8 @@ declare namespace cDateNS {
         next(unit: Unit): CDate;
 
         prev(unit: Unit): CDate;
+
+        utc(): CDate;
 
         timezone(offset: number | string): CDate;
 
