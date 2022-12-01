@@ -16,9 +16,12 @@ interface Options {
 }
 
 export const cDate: typeof cDateFn = (dt) => {
-    if (dt == null) dt = new Date();
-    if (!(dt instanceof Date)) dt = new Date(dt.valueOf ? dt.valueOf() : dt);
-    return new CDate(dt, null);
+    if (dt == null) {
+        dt = new Date();
+    } else if ("string" === typeof dt) {
+        dt = new Date(dt);
+    }
+    return new CDate(+dt, null);
 };
 
 abstract class Base {
@@ -35,7 +38,7 @@ abstract class Base {
     /**
      * returns DateRW for duplication
      */
-    protected abstract rw(): cDateNS.DateRW;
+    protected abstract rw(ms?: number): cDateNS.DateRW;
 
     /**
      * returns DateRO for displaying
@@ -45,16 +48,16 @@ abstract class Base {
     /**
      * the constructor
      */
-    constructor(d: cDateNS.DateRW, x: Options) {
-        this.d = d;
+    constructor(d: number, x: Options) {
+        this.d = this.rw(d);
         this.x = x;
     }
 
     /**
      * duplicates itself for farther manipulation
      */
-    protected copy(): this {
-        return new (this.constructor as any)(this.rw(), this.x);
+    protected copy(ms?: number): this {
+        return new (this.constructor as any)(this.rw(ms), this.x);
     }
 
     /**
@@ -75,8 +78,7 @@ abstract class Common extends Base implements cDateNS.CDate {
     utc(): cDateNS.CDate {
         const x = copyOptions(this.x);
         x.offset = 0;
-        const dt = dateUTC(+this);
-        return new CDateUTC(dt, x);
+        return new CDateUTC(+this, x);
     }
 
     /**
@@ -85,7 +87,7 @@ abstract class Common extends Base implements cDateNS.CDate {
     timezone(offset: number | string): cDateNS.CDate {
         const x = copyOptions(this.x);
         offset = x.offset = tzMinutes(offset);
-        const dt = dateUTC(+this + offset * d.MINUTE);
+        const dt = +this + offset * d.MINUTE;
         return new CDateTZ(dt, x);
     }
 
@@ -99,8 +101,9 @@ abstract class Common extends Base implements cDateNS.CDate {
     /**
      * returns a raw Date object
      */
-    date(): Date {
-        return new Date(+this);
+    date(dt?: Date): any {
+        if (dt == null) return new Date(+this);
+        return this.copy(+dt);
     }
 
     /**
@@ -180,8 +183,9 @@ class CDate extends Common {
     /**
      * returns DateRW for duplication
      */
-    protected rw(): cDateNS.DateRW {
-        return new Date(+this.d);
+    protected rw(ms?: number): cDateNS.DateRW {
+        if (ms == null) ms = +this.d;
+        return new Date(ms);
     }
 }
 
@@ -189,8 +193,9 @@ class CDateUTC extends CDate {
     /**
      * returns DateRW for duplication
      */
-    protected rw(): cDateNS.DateRW {
-        return dateUTC(+this.d);
+    protected rw(ms?: number): cDateNS.DateRW {
+        if (ms == null) ms = +this.d;
+        return dateUTC(ms);
     }
 }
 

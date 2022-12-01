@@ -12,6 +12,8 @@ declare namespace cDateNS {
     interface CDate {
         date(): Date;
 
+        date(dt: Date): CDate;
+
         text(format: string): string;
 
         valueOf(): number;
