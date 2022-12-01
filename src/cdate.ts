@@ -99,7 +99,7 @@ abstract class Common extends Base implements cDateNS.CDate {
     /**
      * returns a raw Date object
      */
-    toDate(): Date {
+    date(): Date {
         return new Date(+this);
     }
 
@@ -107,7 +107,7 @@ abstract class Common extends Base implements cDateNS.CDate {
      * returns a JSON string
      */
     toJSON(): string {
-        return this.toDate().toJSON();
+        return this.date().toJSON();
     }
 
     /**
