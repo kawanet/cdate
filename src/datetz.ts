@@ -72,27 +72,26 @@ class DateUTC extends DateLikeBase {
 
 class DateTZ extends DateLikeBase {
     // dt: Date; // UTC
-    lo: Date; // local time
-    tz: TZ;
+    private t: number; // local time
+    protected tz: TZ;
 
     constructor(dt: Date, tz: TZ) {
         super(new Date(+dt + tz.ms(dt)));
-        this.lo = dt;
+        this.t = +dt;
         this.tz = tz;
     }
 
     valueOf(): number {
-        return +this.lo;
+        return this.t;
     }
 
     setTime(msec: number) {
-        const time = this.lo.setTime(+msec);
         this.dt.setTime(+msec + this.tz.ms(msec));
-        return time;
+        return this.t = msec;
     }
 
     getTimezoneOffset() {
-        return -this.tz.minutes(+this.lo);
+        return -this.tz.minutes(this.t);
     }
 }
 
