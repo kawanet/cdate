@@ -13,19 +13,35 @@ dayjs.extend(timezone)
 
 const samsonjs = {strftime: samsonjs_strftime};
 
-// UTC offset as of April 5th, 2023
-
-const timezoneMap = {
-    "Asia/Tokyo": "+0900",
+/**
+ * Standard Time (STD)
+ */
+const STD = {
+    "Asia/Tokyo": "+0900", // Japan Standard Time (JST)
     "Asia/Shanghai": "+0800",
     "Asia/Kathmandu": "+0545",
-    "Europe/London": "+0100", // BST - British Summer Time
-    "America/St_Johns": "-0230", // NDT - Newfoundland Time Zone DST
+    "Europe/London": "+0000", // Greenwich Mean Time (GMT)
+    "America/St_Johns": "-0330", // Newfoundland Standard Time (NST)
     "America/Sao_Paulo": "-0300",
-    "America/Los_Angeles": "-0700", // PDT - Pacific Time Zone DST
+    "America/Los_Angeles": "-0800", // Pacific Standard Time (PST)
     "Pacific/Niue": "-1100",
     "Pacific/Kiritimati": "+1400",
-};
+} as const;
+
+/**
+ * Daylight Saving Time (DST)
+ */
+const DST = {
+    "Asia/Tokyo": "+0900", // Japan Standard Time (JST)
+    "Asia/Shanghai": "+0800",
+    "Asia/Kathmandu": "+0545",
+    "Europe/London": "+0100", // British Summer Time (BST)
+    "America/St_Johns": "-0230", // Newfoundland Daylight Time (NDT)
+    "America/Sao_Paulo": "-0300",
+    "America/Los_Angeles": "-0700", // Pacific Daylight Time (PDT)
+    "Pacific/Niue": "-1100",
+    "Pacific/Kiritimati": "+1400",
+} as const;
 
 const TITLE = __filename.split("/").pop()!;
 
@@ -35,11 +51,11 @@ describe(TITLE, () => {
     });
 
     describe(`samsonjs/strftime.timezone(offset)`, () => {
-        runTests((dt, tz) => samsonjs.strftime.timezone(timezoneMap[tz])("%Y/%m/%d %H:%M:%S.%L %:z", dt));
+        runTests((dt, tz, map) => samsonjs.strftime.timezone(map[tz])("%Y/%m/%d %H:%M:%S.%L %:z", dt));
     });
 
     describe(`cdate().timezone(offset)`, () => {
-        runTests((dt, tz) => cdate(dt).tz(timezoneMap[tz]).text("%Y/%m/%d %H:%M:%S.%L %:z"));
+        runTests((dt, tz, map) => cdate(dt).tz(map[tz]).text("%Y/%m/%d %H:%M:%S.%L %:z"));
     });
 
     describe(`cdate().timezone(name)`, () => {
@@ -47,42 +63,52 @@ describe(TITLE, () => {
     });
 });
 
-function runTests(fn: (dt: Date, tz: keyof typeof timezoneMap) => string) {
-    const dt = new Date("2023/04/05 06:07:08.090Z");
+function runTests(fn: (dt: Date, tz: keyof typeof STD, map?: typeof STD | typeof DST) => string) {
+    const winter = new Date("2022/01/02 00:00:00.000Z");
+    const summer = new Date("2022/08/02 00:00:00.000Z");
 
-    it("+09:00 Asia/Tokyo", () => {
-        assert.equal(fn(dt, "Asia/Tokyo"), "2023/04/05 15:07:08.090 +09:00");
+    it("Asia/Tokyo", () => {
+        assert.equal(fn(winter, "Asia/Tokyo", STD), "2022/01/02 09:00:00.000 +09:00");
+        assert.equal(fn(summer, "Asia/Tokyo", DST), "2022/08/02 09:00:00.000 +09:00");
     });
 
-    it("+08:00 Asia/Shanghai", () => {
-        assert.equal(fn(dt, "Asia/Shanghai"), "2023/04/05 14:07:08.090 +08:00");
+    it("Asia/Shanghai", () => {
+        assert.equal(fn(winter, "Asia/Shanghai", STD), "2022/01/02 08:00:00.000 +08:00");
+        assert.equal(fn(summer, "Asia/Shanghai", DST), "2022/08/02 08:00:00.000 +08:00");
     });
 
-    it("+05:45 Asia/Kathmandu", () => {
-        assert.equal(fn(dt, "Asia/Kathmandu"), "2023/04/05 11:52:08.090 +05:45");
+    it("Asia/Kathmandu", () => {
+        assert.equal(fn(winter, "Asia/Kathmandu", STD), "2022/01/02 05:45:00.000 +05:45");
+        assert.equal(fn(summer, "Asia/Kathmandu", DST), "2022/08/02 05:45:00.000 +05:45");
     });
 
-    it("+01:00 Europe/London", () => {
-        assert.equal(fn(dt, "Europe/London"), "2023/04/05 07:07:08.090 +01:00");
+    it("Europe/London", () => {
+        assert.equal(fn(winter, "Europe/London", STD), "2022/01/02 00:00:00.000 +00:00");
+        assert.equal(fn(summer, "Europe/London", DST), "2022/08/02 01:00:00.000 +01:00");
     });
 
-    it("-02:30 America/St_Johns", () => {
-        assert.equal(fn(dt, "America/St_Johns"), "2023/04/05 03:37:08.090 -02:30");
+    it("America/St_Johns", () => {
+        assert.equal(fn(winter, "America/St_Johns", STD), "2022/01/01 20:30:00.000 -03:30");
+        assert.equal(fn(summer, "America/St_Johns", DST), "2022/08/01 21:30:00.000 -02:30");
     });
 
-    it("-03:00 America/Sao_Paulo", () => {
-        assert.equal(fn(dt, "America/Sao_Paulo"), "2023/04/05 03:07:08.090 -03:00");
+    it("America/Sao_Paulo", () => {
+        assert.equal(fn(winter, "America/Sao_Paulo", STD), "2022/01/01 21:00:00.000 -03:00");
+        assert.equal(fn(summer, "America/Sao_Paulo", DST), "2022/08/01 21:00:00.000 -03:00");
     });
 
-    it("-07:00 America/Los_Angeles (PST)", () => {
-        assert.equal(fn(dt, "America/Los_Angeles"), "2023/04/04 23:07:08.090 -07:00");
+    it("America/Los_Angeles (PST)", () => {
+        assert.equal(fn(winter, "America/Los_Angeles", STD), "2022/01/01 16:00:00.000 -08:00");
+        assert.equal(fn(summer, "America/Los_Angeles", DST), "2022/08/01 17:00:00.000 -07:00");
     });
 
-    it("-11:00 Pacific/Niue", () => {
-        assert.equal(fn(dt, "Pacific/Niue"), "2023/04/04 19:07:08.090 -11:00");
-    })
+    it("Pacific/Niue", () => {
+        assert.equal(fn(winter, "Pacific/Niue", STD), "2022/01/01 13:00:00.000 -11:00");
+        assert.equal(fn(summer, "Pacific/Niue", DST), "2022/08/01 13:00:00.000 -11:00");
+    });
 
-    it("+14:00 Pacific/Kiritimati", () => {
-        assert.equal(fn(dt, "Pacific/Kiritimati"), "2023/04/05 20:07:08.090 +14:00");
+    it("Pacific/Kiritimati", () => {
+        assert.equal(fn(winter, "Pacific/Kiritimati", STD), "2022/01/02 14:00:00.000 +14:00");
+        assert.equal(fn(summer, "Pacific/Kiritimati", DST), "2022/08/02 14:00:00.000 +14:00");
     });
 }
