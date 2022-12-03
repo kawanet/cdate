@@ -1,6 +1,6 @@
 import type {cdateNS} from "../types/cdate";
 import {add} from "./add";
-import {getUnit, Unit} from "./unit";
+import {getUnitShort, Unit, unitMS} from "./unit";
 
 const enum d {
     SECOND = 1000,
@@ -31,7 +31,11 @@ const truncate = (dt: cdateNS.DateRW, unit: number): void => {
 };
 
 export const startOf = (dt: cdateNS.DateRW, unit: cdateNS.UnitForAdd): void => {
-    switch (getUnit(unit)) {
+    const u = getUnitShort(unit);
+    const msec = unitMS[u];
+    if (msec) return truncate(dt, msec);
+
+    switch (getUnitShort(unit)) {
         case Unit.year:
             startOfMonth(dt);
             return add(dt, -dt.getMonth(), Unit.month);
@@ -45,17 +49,5 @@ export const startOf = (dt: cdateNS.DateRW, unit: cdateNS.UnitForAdd): void => {
 
         case Unit.day:
             return startOfDay(dt);
-
-        case Unit.hour:
-            truncate(dt, d.HOUR);
-            break;
-
-        case Unit.minute:
-            truncate(dt, d.MINUTE);
-            break;
-
-        case Unit.second:
-            truncate(dt, d.SECOND);
-            break;
     }
 };

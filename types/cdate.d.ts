@@ -18,7 +18,7 @@ declare namespace cdateNS {
 
         toJSON(): string;
 
-        add(diff: number, unit: UnitForAdd): CDate;
+        add(diff: number, unit?: UnitForAdd): CDate;
 
         startOf(unit: Unit): CDate;
 

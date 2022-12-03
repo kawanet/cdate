@@ -28,6 +28,23 @@ Object.keys(unitMap).forEach((key: cdateNS.Unit) => {
     unitMap[s] = unitMap[v] = unitMap[key];
 });
 
-export const getUnit = (key: string): Unit => {
-    return unitMap[key as cdateNS.UnitForAdd] || unitMap[String(key).toLowerCase() as cdateNS.UnitForAdd];
+export const getUnitShort = (unit: string): Unit => {
+    const u = unitMap[(unit || Unit.millisecond) as cdateNS.UnitForAdd] ||
+        unitMap[String(unit).toLowerCase() as cdateNS.UnitForAdd];
+    if (!u) throw new RangeError("Invalid unit: " + unit);
+    return u;
+};
+
+const enum d {
+    SECOND = 1000,
+    MINUTE = 60 * SECOND,
+    HOUR = 60 * MINUTE,
+    DAY = 24 * HOUR,
+}
+
+export const unitMS: { [unit in Unit]?: number } = {
+    h: d.HOUR,
+    m: d.MINUTE,
+    s: d.SECOND,
+    ms: 1,
 };
