@@ -83,9 +83,8 @@ abstract class CDate implements cdateNS.CDate {
      */
     tz(timezone: number | string): cdateNS.CDate {
         const x = copyOptions(this.x);
-        const tz = x.tz = getTZ(timezone);
-        const ms = +this;
-        return new CDateTZ(ms + tz.ms(ms), x);
+        x.tz = getTZ(timezone);
+        return new CDateTZ(+this, x);
     }
 
     /**
@@ -212,6 +211,10 @@ class CDateTZ extends CDateUTC {
      * returns DateRO for displaying
      */
     protected ro(): cdateNS.DateRO {
+        return this.t = dateTZ(+this.t, this.x.tz);
+    }
+
+    protected rw(): cdateNS.DateRW {
         return dateTZ(+this.t, this.x.tz);
     }
 }

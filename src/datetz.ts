@@ -71,22 +71,29 @@ class DateUTC extends DateUTCBase implements cdateNS.DateRW {
     }
 }
 
-class DateTZ extends DateUTCBase implements cdateNS.DateRO {
+class DateTZ extends DateUTCBase implements cdateNS.DateRW {
+    // dt: Date; // UTC
+    local: Date; // local time
     tz: TZ;
-    offset: number;
 
     constructor(dt: Date, tz: TZ) {
-        super(dt);
+        super(new Date(+dt + tz.ms(dt)));
+        this.local = dt;
         this.tz = tz;
     }
 
+    valueOf(): number {
+        return +this.local;
+    }
+
+    setTime(msec: number) {
+        const time = this.local.setTime(+msec);
+        this.dt.setTime(+msec + this.tz.ms(msec));
+        return time;
+    }
+
     getTimezoneOffset() {
-        let {offset} = this;
-        if (offset == null) {
-            const {dt, tz} = this;
-            offset = this.offset = tz.minutes(+dt - tz.ms(dt));
-        }
-        return -offset;
+        return -this.tz.minutes(+this.local);
     }
 }
 
@@ -94,6 +101,6 @@ export function dateUTC(dt: number): cdateNS.DateRW {
     return new DateUTC(new Date(+dt));
 }
 
-export function dateTZ(dt: number, tz: TZ): cdateNS.DateRO {
+export function dateTZ(dt: number, tz: TZ): cdateNS.DateRW {
     return new DateTZ(new Date(+dt), tz);
 }

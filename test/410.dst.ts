@@ -84,8 +84,7 @@ describe(TITLE, () => {
         assert.equal(cdate(dst).tz(TZ).add(-2, "seconds").tz(TZ).format(format), "2022/03/13 01:59:59 -08:00", "-2 seconds");
         assert.equal(cdate(dst).tz(TZ).add(-1, "minute").tz(TZ).format(format), "2022/03/13 01:59:01 -08:00", "-1 minute");
         assert.equal(cdate(dst).tz(TZ).add(-1, "hour").tz(TZ).format(format), "2022/03/13 01:00:01 -08:00", "-1 hour");
-        // TODO
-        // assert.equal(cdate(dst).tz(TZ).add(-24, "hours").tz(TZ).format(format), "2022/03/12 02:00:01 -08:00", "-24 hours"); // -24 hours
+        assert.equal(cdate(dst).tz(TZ).add(-24, "hours").tz(TZ).format(format), "2022/03/12 02:00:01 -08:00", "-24 hours"); // -24 hours
         assert.equal(cdate(dst).tz(TZ).add(-1, "day").tz(TZ).format(format), "2022/03/12 03:00:01 -08:00", "-1 day"); // -23 hours
         assert.equal(cdate(dst).tz(TZ).add(-28, "days").tz(TZ).format(format), "2022/02/13 03:00:01 -08:00", "-28 days");
         assert.equal(cdate(dst).tz(TZ).add(-1, "month").tz(TZ).format(format), "2022/02/13 03:00:01 -08:00", "-1 month");
