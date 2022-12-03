@@ -30,7 +30,7 @@ function runTests(fn: (dt: Date, format: string) => string) {
         "[Year:]YYYY [Month:]MMMM [Date:]D": "Year:2023 Month:April Date:5",
         "[YYYY/MM/DD]": "YYYY/MM/DD",
         "[%y/%m/%d]": "%y/%m/%d",
-        // YY: "23",
+        YY: "23",
         YYYY: "2023",
         M: "4",
         MM: "04",
@@ -52,7 +52,7 @@ function runTests(fn: (dt: Date, format: string) => string) {
         ss: "08",
         SSS: "090",
         A: "AM",
-        // a: "am",
+        a: "am",
     };
 
     Object.keys(tests).forEach((format: keyof typeof tests) => {

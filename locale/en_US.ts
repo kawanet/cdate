@@ -19,7 +19,7 @@ export const en_US: cdateNS.Locale = {
     /**
      * %b     The abbreviated month name according to the current locale. (en-only)
      */
-    "%b": dt => monthsShort [dt.getMonth()],
+    "%b": dt => monthsShort[dt.getMonth()],
 
     /**
      * %B     The full month name according to the current locale. (en-only)
@@ -30,6 +30,7 @@ export const en_US: cdateNS.Locale = {
      * %p     Either "AM" or "PM"
      */
     "%p": dt => (dt.getHours() < 12 ? "AM" : "PM"),
+    "%P": dt => (dt.getHours() < 12 ? "am" : "pm"),
 
     /**
      * formats

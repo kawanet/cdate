@@ -1,5 +1,5 @@
 const formatMap: { [fmt: string]: string } = {
-    YY: "%g", // 18 = Two-digit year
+    YY: "%y", // 18 = Two-digit year
     YYYY: "%Y", // 2018 = Four-digit year
     M: "%-m", // 1-12 = The month, beginning at 1
     MM: "%m", // 01-12 = The month, 2-digits
@@ -23,7 +23,7 @@ const formatMap: { [fmt: string]: string } = {
     Z: "%:z", // +05:00 = The offset from UTC, ±HH:mm
     ZZ: "%z", // +0500 = The offset from UTC, ±HHmm
     A: "%p", // AM PM
-    a: "%p", // am pm
+    a: "%P", // am pm
 };
 
 let formatCache: { [fmt: string]: string };
