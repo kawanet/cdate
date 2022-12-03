@@ -1,4 +1,5 @@
 import type {cdateNS} from "../types/cdate";
+import {getUnit, Unit} from "./unit";
 
 const enum d {
     SECOND = 1000,
@@ -48,32 +49,32 @@ const addDay = (dt: cdateNS.DateRW, days: number): void => {
 export const add = (dt: cdateNS.DateRW, diff: number, unit: string): void => {
     if (!diff) return;
 
-    switch (unit) {
-        case "year":
+    switch (getUnit(unit)) {
+        case Unit.year:
             return addMonth(dt, diff * 12);
 
-        case "month":
+        case Unit.month:
             return addMonth(dt, diff);
 
-        case "week":
+        case Unit.week:
             return addDay(dt, diff * 7);
 
-        case "day":
+        case Unit.day:
             return addDay(dt, diff);
 
-        case "hour":
+        case Unit.hour:
             diff *= d.HOUR;
             break;
 
-        case "minute":
+        case Unit.minute:
             diff *= d.MINUTE;
             break;
 
-        case "second":
+        case Unit.second:
             diff *= d.SECOND;
             break;
 
-        case "millisecond":
+        case Unit.millisecond:
             break;
 
         default:

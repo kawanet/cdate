@@ -1,5 +1,6 @@
 import type {cdateNS} from "../types/cdate";
 import {add} from "./add";
+import {getUnit, Unit} from "./unit";
 
 const enum d {
     SECOND = 1000,
@@ -29,32 +30,31 @@ const truncate = (dt: cdateNS.DateRW, unit: number): void => {
     dt.setTime(Math.trunc((+dt - tz) / unit) * unit + tz);
 };
 
-export const startOf = (dt: cdateNS.DateRW, unit: string): void => {
-    switch (unit) {
-        case "year":
+export const startOf = (dt: cdateNS.DateRW, unit: cdateNS.UnitForAdd): void => {
+    switch (getUnit(unit)) {
+        case Unit.year:
             startOfMonth(dt);
-            return add(dt, -dt.getMonth(), "month");
+            return add(dt, -dt.getMonth(), Unit.month);
 
-        case "month":
+        case Unit.month:
             return startOfMonth(dt);
 
-        case "week":
+        case Unit.week:
             startOfDay(dt);
-            return add(dt, -dt.getDay(), "day");
+            return add(dt, -dt.getDay(), Unit.day);
 
-        case "date":
-        case "day":
+        case Unit.day:
             return startOfDay(dt);
 
-        case "hour":
+        case Unit.hour:
             truncate(dt, d.HOUR);
             break;
 
-        case "minute":
+        case Unit.minute:
             truncate(dt, d.MINUTE);
             break;
 
-        case "second":
+        case Unit.second:
             truncate(dt, d.SECOND);
             break;
     }
