@@ -9,25 +9,23 @@ const enum d {
 }
 
 const addMonth = (dt: cdateNS.DateRW, months: number): void => {
-    // move to the first day of the month
+    const year = dt.getFullYear();
+    const month = dt.getMonth();
     const date = dt.getDate();
-    addDay(dt, 1 - date);
 
     // calculate days between the months
-    const before = +dt;
-    const tmp = new Date(before);
-    const year = tmp.getFullYear();
-    const month = tmp.getMonth();
-    let newMonth = year * 12 + month + months;
-    tmp.setFullYear(Math.trunc(newMonth / 12));
-    newMonth %= 12;
+    const tmp = new Date(year, month, 1);
+    const before = +tmp;
+    const diff = year * 12 + month + months;
+    tmp.setFullYear(Math.floor(diff / 12));
+    const newMonth = diff % 12;
     tmp.setMonth(newMonth);
-    const days = Math.trunc((+tmp - before) / d.DAY);
+    const days = Math.round((+tmp - before) / d.DAY);
 
     // move days
-    addDay(dt, days + date - 1);
+    addDay(dt, days);
 
-    // check the month carried
+    // check an overflow
     const newDate = dt.getDate();
     if (newMonth !== dt.getMonth() && date > newDate) {
         // the very last day of the previous month
@@ -42,7 +40,7 @@ const addDay = (dt: cdateNS.DateRW, days: number): void => {
 
     // adjustment for Daylight Saving Time (DST)
     if (tz1 !== tz2) {
-        dt.setTime(+dt + (tz1 - tz2) * d.MINUTE);
+        dt.setTime(+dt + (tz2 - tz1) * d.MINUTE);
     }
 }
 
