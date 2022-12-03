@@ -31,19 +31,19 @@ const timezoneMap = {
 const TITLE = __filename.split("/").pop()!;
 
 describe(TITLE, () => {
-    describe(`dayjs`, () => {
+    describe(`dayjs().tz(name)`, () => {
         runTests((dt, tz) => dayjs(dt).tz(tz).format("YYYY/MM/DD HH:mm:ss.SSS Z"));
     });
 
-    describe(`samsonjs/strftime`, () => {
+    describe(`samsonjs/strftime.timezone(offset)`, () => {
         runTests((dt, tz) => samsonjs.strftime.timezone(timezoneMap[tz])("%Y/%m/%d %H:%M:%S.%L %:z", dt));
     });
 
-    describe(`cdate "+0900"`, () => {
+    describe(`cdate().timezone(offset)`, () => {
         runTests((dt, tz) => cdate(dt).tz(timezoneMap[tz]).text("%Y/%m/%d %H:%M:%S.%L %:z"));
     });
 
-    describe(`cdate "Asia/Tokyo"`, () => {
+    describe(`cdate().timezone(name)`, () => {
         runTests((dt, tz) => cdate(dt).tz(tz).text("%Y/%m/%d %H:%M:%S.%L %:z"));
     });
 });
