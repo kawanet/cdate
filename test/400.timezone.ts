@@ -5,6 +5,8 @@ import * as dayjs from "dayjs";
 import * as samsonjs_strftime from "strftime";
 import * as utc from "dayjs/plugin/utc";
 import * as timezone from "dayjs/plugin/timezone";
+import * as moment from "moment";
+import "moment-timezone"; // side effects only
 
 import {cdate} from "../";
 
@@ -46,6 +48,10 @@ const DST = {
 const TITLE = __filename.split("/").pop()!;
 
 describe(TITLE, () => {
+    describe(`moment().tz(name)`, () => {
+        runTests((dt, tz) => moment(dt).tz(tz).format("YYYY/MM/DD HH:mm:ss.SSS Z"));
+    });
+
     describe(`dayjs().tz(name)`, () => {
         runTests((dt, tz) => dayjs(dt).tz(tz).format("YYYY/MM/DD HH:mm:ss.SSS Z"));
     });
@@ -64,8 +70,8 @@ describe(TITLE, () => {
 });
 
 function runTests(fn: (dt: Date, tz: keyof typeof STD, map?: typeof STD | typeof DST) => string) {
-    const winter = new Date("2022/01/02 00:00:00.000Z");
-    const summer = new Date("2022/08/02 00:00:00.000Z");
+    const winter = new Date("2022-01-02T00:00:00.000Z");
+    const summer = new Date("2022-08-02T00:00:00.000Z");
 
     it("Asia/Tokyo", () => {
         assert.equal(fn(winter, "Asia/Tokyo", STD), "2022/01/02 09:00:00.000 +09:00");

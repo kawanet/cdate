@@ -84,7 +84,7 @@ class DateTZ extends DateUTCBase implements cdateNS.DateRO {
         let {offset} = this;
         if (offset == null) {
             const {dt, tz} = this;
-            offset = this.offset = tz.minutes(+dt + tz.ms(dt));
+            offset = this.offset = tz.minutes(+dt - tz.ms(dt));
         }
         return -offset;
     }

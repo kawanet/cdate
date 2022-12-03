@@ -12,6 +12,8 @@
     "@types/strftime": "^0.9.4",
     "dayjs": "^1.11.6",
     "mocha": "^10.1.0",
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.39",
     "strftime": "^0.10.1",
     "typescript": "^4.9.3"
   },
