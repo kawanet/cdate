@@ -27,7 +27,7 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * millisecond since the UNIX epoch
      */
-    protected t: number | cdateNS.DateRO;
+    protected t: number | cdateNS.DateLike;
 
     /**
      * options container
@@ -45,7 +45,7 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * creates another CDate object
      */
-    cdate(ms: number | cdateNS.DateRO): this {
+    cdate(ms: number | cdateNS.DateLike): this {
         return new (this.constructor as any)(ms, this.x);
     }
 
@@ -60,14 +60,14 @@ abstract class CDate implements cdateNS.CDate {
     }
 
     /**
-     * returns DateRW for duplication
+     * returns DateLike for duplication
      */
-    protected abstract rw(): cdateNS.DateRW;
+    protected abstract rw(): cdateNS.DateLike;
 
     /**
-     * returns DateRO for displaying
+     * returns DateLike for displaying
      */
-    protected abstract ro(): cdateNS.DateRO;
+    protected abstract ro(): cdateNS.DateLike;
 
     /**
      * returns UTC version of CDate
@@ -175,46 +175,46 @@ abstract class CDate implements cdateNS.CDate {
 
 class CDateLocal extends CDate {
     /**
-     * returns DateRO for displaying
+     * returns DateLike for displaying
      */
-    protected ro(): cdateNS.DateRO {
+    protected ro(): cdateNS.DateLike {
         if (this.t instanceof Date) return this.t;
         return this.t = new Date(+this.t);
     }
 
     /**
-     * returns DateRW for duplication
+     * returns DateLike for duplication
      */
-    protected rw(): cdateNS.DateRW {
+    protected rw(): cdateNS.DateLike {
         return new Date(+this.t);
     }
 }
 
 class CDateUTC extends CDate {
     /**
-     * returns DateRO for displaying
+     * returns DateLike for displaying
      */
-    protected ro(): cdateNS.DateRO {
+    protected ro(): cdateNS.DateLike {
         return this.t = dateUTC(+this.t);
     }
 
     /**
-     * returns DateRW for duplication
+     * returns DateLike for duplication
      */
-    protected rw(): cdateNS.DateRW {
+    protected rw(): cdateNS.DateLike {
         return dateUTC(+this.t);
     }
 }
 
 class CDateTZ extends CDateUTC {
     /**
-     * returns DateRO for displaying
+     * returns DateLike for displaying
      */
-    protected ro(): cdateNS.DateRO {
+    protected ro(): cdateNS.DateLike {
         return this.t = dateTZ(+this.t, this.x.tz);
     }
 
-    protected rw(): cdateNS.DateRW {
+    protected rw(): cdateNS.DateLike {
         return dateTZ(+this.t, this.x.tz);
     }
 }

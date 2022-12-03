@@ -9,12 +9,12 @@ const enum d {
     DAY = 24 * HOUR,
 }
 
-const startOfMonth = (dt: cdateNS.DateRW): void => {
+const startOfMonth = (dt: cdateNS.DateLike): void => {
     startOfDay(dt);
     add(dt, 1 - dt.getDate(), "day");
 };
 
-const startOfDay = (dt: cdateNS.DateRW): void => {
+const startOfDay = (dt: cdateNS.DateLike): void => {
     const tz1 = dt.getTimezoneOffset();
     truncate(dt, d.DAY);
     const tz2 = dt.getTimezoneOffset();
@@ -25,12 +25,12 @@ const startOfDay = (dt: cdateNS.DateRW): void => {
     }
 };
 
-const truncate = (dt: cdateNS.DateRW, unit: number): void => {
+const truncate = (dt: cdateNS.DateLike, unit: number): void => {
     const tz = dt.getTimezoneOffset() * d.MINUTE;
     dt.setTime(Math.trunc((+dt - tz) / unit) * unit + tz);
 };
 
-export const startOf = (dt: cdateNS.DateRW, unit: cdateNS.UnitForStart): void => {
+export const startOf = (dt: cdateNS.DateLike, unit: cdateNS.UnitForStart): void => {
     const u = getUnitShort(unit);
     const msec = unitMS[u];
     if (msec) return truncate(dt, msec);

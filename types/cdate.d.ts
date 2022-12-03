@@ -41,14 +41,14 @@ declare namespace cdateNS {
     interface strftime {
         (fmt: string, dt?: Date): string;
 
-        (fmt: string, dt?: DateRO): string;
+        (fmt: string, dt?: DateLike): string;
 
         locale: (locale: cdateNS.Locale) => strftime;
     }
 
     type Locale = { [specifier: string]: string | ((dt: Date) => string | number) };
 
-    interface DateRO {
+    interface DateLike {
         getMilliseconds: typeof Date.prototype.getMilliseconds,
         getSeconds: typeof Date.prototype.getSeconds,
         getMinutes: typeof Date.prototype.getMinutes,
@@ -59,9 +59,6 @@ declare namespace cdateNS {
         getFullYear: typeof Date.prototype.getFullYear,
         getTimezoneOffset: typeof Date.prototype.getTimezoneOffset,
         getTime: typeof Date.prototype.getTime,
-    }
-
-    interface DateRW extends DateRO {
         setTime: typeof Date.prototype.setTime,
     }
 }

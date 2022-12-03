@@ -8,7 +8,7 @@ const enum d {
     DAY = 24 * HOUR,
 }
 
-const addMonth = (dt: cdateNS.DateRW, months: number): void => {
+const addMonth = (dt: cdateNS.DateLike, months: number): void => {
     const year = dt.getFullYear();
     const month = dt.getMonth();
     const date = dt.getDate();
@@ -33,7 +33,7 @@ const addMonth = (dt: cdateNS.DateRW, months: number): void => {
     }
 };
 
-const addDay = (dt: cdateNS.DateRW, days: number): void => {
+const addDay = (dt: cdateNS.DateLike, days: number): void => {
     const tz1 = dt.getTimezoneOffset();
     dt.setTime(+dt + days * d.DAY);
     const tz2 = dt.getTimezoneOffset();
@@ -44,7 +44,7 @@ const addDay = (dt: cdateNS.DateRW, days: number): void => {
     }
 }
 
-export const add = (dt: cdateNS.DateRW, diff: number, unit: string): void => {
+export const add = (dt: cdateNS.DateLike, diff: number, unit: string): void => {
     if (!diff) return;
 
     const u = getUnitShort(unit);

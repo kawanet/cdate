@@ -4,21 +4,16 @@ import {toISO} from "./iso";
 
 type TZ = ReturnType<typeof getTZ>;
 
-const enum d {
-    SECOND = 1000,
-    MINUTE = 60 * SECOND,
-}
-
-abstract class DateUTCBase {
+abstract class DateLikeBase implements cdateNS.DateLike {
     constructor(protected dt: Date) {
         //
     }
 
-    abstract getTimezoneOffset(): number;
+    abstract valueOf(): number;
 
-    valueOf(): number {
-        return +this.dt + this.getTimezoneOffset() * d.MINUTE;
-    }
+    abstract setTime(msec: number): number;
+
+    abstract getTimezoneOffset(): number;
 
     toString(): string {
         return toISO(this);
@@ -61,7 +56,11 @@ abstract class DateUTCBase {
     }
 }
 
-class DateUTC extends DateUTCBase implements cdateNS.DateRW {
+class DateUTC extends DateLikeBase {
+    valueOf(): number {
+        return +this.dt;
+    }
+
     setTime(msec: number) {
         return this.dt.setTime(msec);
     }
@@ -71,36 +70,36 @@ class DateUTC extends DateUTCBase implements cdateNS.DateRW {
     }
 }
 
-class DateTZ extends DateUTCBase implements cdateNS.DateRW {
+class DateTZ extends DateLikeBase {
     // dt: Date; // UTC
-    local: Date; // local time
+    lo: Date; // local time
     tz: TZ;
 
     constructor(dt: Date, tz: TZ) {
         super(new Date(+dt + tz.ms(dt)));
-        this.local = dt;
+        this.lo = dt;
         this.tz = tz;
     }
 
     valueOf(): number {
-        return +this.local;
+        return +this.lo;
     }
 
     setTime(msec: number) {
-        const time = this.local.setTime(+msec);
+        const time = this.lo.setTime(+msec);
         this.dt.setTime(+msec + this.tz.ms(msec));
         return time;
     }
 
     getTimezoneOffset() {
-        return -this.tz.minutes(+this.local);
+        return -this.tz.minutes(+this.lo);
     }
 }
 
-export function dateUTC(dt: number): cdateNS.DateRW {
+export function dateUTC(dt: number): cdateNS.DateLike {
     return new DateUTC(new Date(+dt));
 }
 
-export function dateTZ(dt: number, tz: TZ): cdateNS.DateRW {
+export function dateTZ(dt: number, tz: TZ): cdateNS.DateLike {
     return new DateTZ(new Date(+dt), tz);
 }
