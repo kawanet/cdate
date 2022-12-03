@@ -1,27 +1,27 @@
 #!/usr/bin/env mocha -R spec
 
 import {strict as assert} from "assert";
-
-import {cdate} from "../";
 import * as dayjs from "dayjs";
+
+import {cdate, cdateNS} from "../";
 
 const TITLE = __filename.split("/").pop()!;
 
 describe(TITLE, () => {
     describe(`dayjs`, () => {
-        runTests((dt, diff: number, unit: any) => dayjs(dt).add(diff, unit).format("YYYY/MM/DD HH:mm:ss.SSS"));
+        runTests((dt, diff, unit) => dayjs(dt).add(diff, unit).format("YYYY/MM/DD HH:mm:ss.SSS"));
     });
 
     describe(`cdate`, () => {
-        runTests((dt, diff: number, unit: any) => cdate(dt).add(diff, unit).text("%Y/%m/%d %H:%M:%S.%L"));
+        runTests((dt, diff, unit) => cdate(dt).add(diff, unit).text("%Y/%m/%d %H:%M:%S.%L"));
     });
 });
 
-function runTests(fn: (dt: Date, diff: number, unit: string) => string) {
+function runTests(fn: (dt: Date, diff: number, unit: cdateNS.UnitForAdd) => string) {
     const dt = new Date("2023/12/31 23:59:59.999");
 
     it(`add(number, "year")`, () => {
-        ["year"].forEach(unit => {
+        (["year", "years", "y"] as const).forEach(unit => {
             assert.equal(fn(dt, -10, unit), "2013/12/31 23:59:59.999");
             assert.equal(fn(dt, -9, unit), "2014/12/31 23:59:59.999");
             assert.equal(fn(dt, -8, unit), "2015/12/31 23:59:59.999");
@@ -46,7 +46,7 @@ function runTests(fn: (dt: Date, diff: number, unit: string) => string) {
         });
     });
     it(`add(number, "year") // leap year`, () => {
-        ["year"].forEach(unit => {
+        (["year"] as const).forEach(unit => {
             const dt = new Date("2024/02/29 12:34:56.789");
             assert.equal(fn(dt, -8, unit), "2016/02/29 12:34:56.789");
             assert.equal(fn(dt, -7, unit), "2017/02/28 12:34:56.789");
@@ -69,7 +69,7 @@ function runTests(fn: (dt: Date, diff: number, unit: string) => string) {
     });
 
     it(`add(number, "month")`, () => {
-        ["month"].forEach(unit => {
+        (["month", "months", "M"] as const).forEach(unit => {
             assert.equal(fn(dt, -12, unit), "2022/12/31 23:59:59.999");
             assert.equal(fn(dt, -11, unit), "2023/01/31 23:59:59.999");
             assert.equal(fn(dt, -10, unit), "2023/02/28 23:59:59.999");
@@ -100,7 +100,7 @@ function runTests(fn: (dt: Date, diff: number, unit: string) => string) {
     });
 
     it(`add(number, "week")`, () => {
-        ["week"].forEach(unit => {
+        (["week", "weeks", "w"] as const).forEach(unit => {
             assert.equal(fn(dt, -5, unit), "2023/11/26 23:59:59.999");
             assert.equal(fn(dt, -4, unit), "2023/12/03 23:59:59.999");
             assert.equal(fn(dt, -3, unit), "2023/12/10 23:59:59.999");
@@ -121,7 +121,7 @@ function runTests(fn: (dt: Date, diff: number, unit: string) => string) {
     });
 
     it(`add(number, "day")`, () => {
-        ["day"].forEach(unit => {
+        (["day", "days", "d"] as const).forEach(unit => {
             assert.equal(fn(dt, -5, unit), "2023/12/26 23:59:59.999");
             assert.equal(fn(dt, -4, unit), "2023/12/27 23:59:59.999");
             assert.equal(fn(dt, -3, unit), "2023/12/28 23:59:59.999");
@@ -137,7 +137,7 @@ function runTests(fn: (dt: Date, diff: number, unit: string) => string) {
     });
 
     it(`add(number, "hour")`, () => {
-        ["hour"].forEach(unit => {
+        (["hour", "hours", "h"] as const).forEach(unit => {
             assert.equal(fn(dt, -5, unit), "2023/12/31 18:59:59.999");
             assert.equal(fn(dt, -4, unit), "2023/12/31 19:59:59.999");
             assert.equal(fn(dt, -3, unit), "2023/12/31 20:59:59.999");
@@ -153,7 +153,7 @@ function runTests(fn: (dt: Date, diff: number, unit: string) => string) {
     });
 
     it(`add(number, "minute")`, () => {
-        ["minute"].forEach(unit => {
+        (["minute", "minutes", "m"] as const).forEach(unit => {
             assert.equal(fn(dt, -5, unit), "2023/12/31 23:54:59.999");
             assert.equal(fn(dt, -4, unit), "2023/12/31 23:55:59.999");
             assert.equal(fn(dt, -3, unit), "2023/12/31 23:56:59.999");
@@ -169,7 +169,7 @@ function runTests(fn: (dt: Date, diff: number, unit: string) => string) {
     });
 
     it(`add(number, "second")`, () => {
-        ["second"].forEach(unit => {
+        (["second", "seconds", "s"] as const).forEach(unit => {
             assert.equal(fn(dt, -5, unit), "2023/12/31 23:59:54.999");
             assert.equal(fn(dt, -4, unit), "2023/12/31 23:59:55.999");
             assert.equal(fn(dt, -3, unit), "2023/12/31 23:59:56.999");

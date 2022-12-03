@@ -1,5 +1,7 @@
 import type {cdateNS} from "../types/cdate";
 
+type UnitFlex = cdateNS.UnitForNext | cdateNS.UnitForAdd | cdateNS.UnitForStart;
+
 export const enum Unit {
     year = "y",
     month = "M",
@@ -15,15 +17,16 @@ const unitMap = {
     year: Unit.year,
     month: Unit.month,
     week: Unit.week,
+    date: Unit.day,
     day: Unit.day,
     hour: Unit.hour,
     minute: Unit.minute,
     second: Unit.second,
     millisecond: Unit.millisecond,
-} as { [key in cdateNS.UnitForAdd]: Unit };
+} as { [key in UnitFlex]?: Unit };
 
-Object.keys(unitMap).forEach((key: cdateNS.Unit) => {
-    const s = (key + "s") as cdateNS.UnitWithS;
+Object.keys(unitMap).forEach((key: cdateNS.UnitForNext) => {
+    const s = (key + "s") as cdateNS.UnitLongS;
     const v = unitMap[key] as Unit;
     unitMap[s] = unitMap[v] = unitMap[key];
 });

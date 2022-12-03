@@ -125,7 +125,7 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * returns a new CDate object manipulated
      */
-    startOf(unit: cdateNS.UnitForAdd): this {
+    startOf(unit: cdateNS.UnitForStart): this {
         const dt = this.rw();
         startOf(dt, unit);
         return this.cdate(dt);
@@ -134,7 +134,7 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * returns a new CDate object manipulated
      */
-    endOf(unit: cdateNS.Unit): this {
+    endOf(unit: cdateNS.UnitForStart): this {
         const dt = this.rw();
         startOf(dt, unit);
         add(dt, 1, unit);
@@ -145,7 +145,7 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * returns a new CDate object manipulated
      */
-    add(diff: number, unit: cdateNS.Unit): this {
+    add(diff: number, unit: cdateNS.UnitForAdd): this {
         const dt = this.rw();
         add(dt, diff, unit);
         return this.cdate(dt);
@@ -154,14 +154,14 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * returns a new CDate object manipulated
      */
-    next(unit: cdateNS.Unit): this {
+    next(unit: cdateNS.UnitForNext): this {
         return this.add(1, unit);
     }
 
     /**
      * returns a new CDate object manipulated
      */
-    prev(unit: cdateNS.Unit): this {
+    prev(unit: cdateNS.UnitForNext): this {
         return this.add(-1, unit);
     }
 }

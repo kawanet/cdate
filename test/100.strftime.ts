@@ -2,6 +2,7 @@
 
 import {strict as assert} from "assert";
 import * as samsonjs_strftime from "strftime";
+
 import {strftime as cdate_strftime} from "../src/strftime";
 
 const TITLE = __filename.split("/").pop()!;

@@ -3,11 +3,12 @@
  */
 
 declare namespace cdateNS {
-    type Unit = "second" | "minute" | "hour" | "date" | "day" | "week" | "month" | "year";
-    type UnitWithS = "seconds" | "minutes" | "hours" | "days" | "weeks" | "months" | "years";
+    type UnitLong = "second" | "minute" | "hour" | "day" | "week" | "month" | "year";
+    type UnitLongS = "seconds" | "minutes" | "hours" | "days" | "weeks" | "months" | "years";
     type UnitShort = "s" | "m" | "h" | "d" | "w" | "M" | "y";
-    type UnitMS = "millisecond" | "milliseconds" | "ms";
-    type UnitForAdd = Unit | UnitWithS | UnitShort | UnitMS;
+    type UnitForNext = UnitLong | UnitShort | "millisecond" | "ms";
+    type UnitForAdd = UnitForNext | UnitLongS | "milliseconds";
+    type UnitForStart = UnitLong | UnitShort | "date";
 
     interface CDate {
         cdate(dt: Date): CDate;
@@ -20,13 +21,13 @@ declare namespace cdateNS {
 
         add(diff: number, unit?: UnitForAdd): CDate;
 
-        startOf(unit: Unit): CDate;
+        startOf(unit: UnitForStart): CDate;
 
-        endOf(unit: Unit): CDate;
+        endOf(unit: UnitForStart): CDate;
 
-        next(unit: Unit): CDate;
+        next(unit: UnitForNext): CDate;
 
-        prev(unit: Unit): CDate;
+        prev(unit: UnitForNext): CDate;
 
         utc(): CDate;
 

@@ -30,7 +30,7 @@ const truncate = (dt: cdateNS.DateRW, unit: number): void => {
     dt.setTime(Math.trunc((+dt - tz) / unit) * unit + tz);
 };
 
-export const startOf = (dt: cdateNS.DateRW, unit: cdateNS.UnitForAdd): void => {
+export const startOf = (dt: cdateNS.DateRW, unit: cdateNS.UnitForStart): void => {
     const u = getUnitShort(unit);
     const msec = unitMS[u];
     if (msec) return truncate(dt, msec);

@@ -2,6 +2,7 @@
 
 import {strict as assert} from "assert";
 import * as samsonjs_strftime from "strftime";
+
 import {strftime as cdate_strftime} from "../src/strftime";
 import {en_US} from "../locale/en_US";
 import {fr_FR} from "../locale/fr_FR";

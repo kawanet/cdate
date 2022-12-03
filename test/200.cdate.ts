@@ -12,7 +12,6 @@ describe(TITLE, () => {
     it(`cdate(number)`, () => {
         const dt = cdate(+date);
         assert.equal(+dt, +date);
-        assert.equal(dt.valueOf(), date.valueOf(), ".valueOf()");
         assert.ok(dt.toDate() instanceof Date, ".date()");
         assert.equal(+dt.toDate(), +date, ".date()");
     });

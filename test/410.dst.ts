@@ -1,12 +1,11 @@
 #!/usr/bin/env mocha -R spec
 
 import {strict as assert} from "assert";
-
-import {cdate} from "../";
 import * as dayjs from "dayjs";
-
 import * as utc from "dayjs/plugin/utc";
 import * as timezone from "dayjs/plugin/timezone";
+
+import {cdate} from "../";
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
