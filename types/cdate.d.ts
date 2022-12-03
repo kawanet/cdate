@@ -13,6 +13,8 @@ declare namespace cdateNS {
     interface CDate {
         cdate(dt: Date): CDate;
 
+        format(format: string): string;
+
         text(format: string): string;
 
         toDate(): Date;
