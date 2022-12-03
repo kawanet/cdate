@@ -1,4 +1,4 @@
-import type {cDateNS} from "../types/cdate";
+import type {cdateNS} from "../types/cdate";
 
 const enum d {
     SECOND = 1000,
@@ -7,7 +7,7 @@ const enum d {
     DAY = 24 * HOUR,
 }
 
-const addMonth = (dt: cDateNS.DateRW, months: number): void => {
+const addMonth = (dt: cdateNS.DateRW, months: number): void => {
     // move to the first day of the month
     const date = dt.getDate();
     addDay(dt, 1 - date);
@@ -34,7 +34,7 @@ const addMonth = (dt: cDateNS.DateRW, months: number): void => {
     }
 };
 
-const addDay = (dt: cDateNS.DateRW, days: number): void => {
+const addDay = (dt: cdateNS.DateRW, days: number): void => {
     const tz1 = dt.getTimezoneOffset();
     dt.setTime(+dt + days * d.DAY);
     const tz2 = dt.getTimezoneOffset();
@@ -45,7 +45,7 @@ const addDay = (dt: cDateNS.DateRW, days: number): void => {
     }
 }
 
-export const add = (dt: cDateNS.DateRW, diff: number, unit: string): void => {
+export const add = (dt: cdateNS.DateRW, diff: number, unit: string): void => {
     if (!diff) return;
 
     switch (unit) {

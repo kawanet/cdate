@@ -2,7 +2,7 @@
  * cdate.d.ts
  */
 
-declare namespace cDateNS {
+declare namespace cdateNS {
     type Unit = "second" | "minute" | "hour" | "date" | "day" | "week" | "month" | "year";
     type UnitWithS = "seconds" | "minutes" | "hours" | "days" | "weeks" | "months" | "years";
     type UnitShort = "s" | "m" | "h" | "d" | "w" | "M" | "y";
@@ -34,7 +34,7 @@ declare namespace cDateNS {
 
         timezone(offset: number | string): CDate;
 
-        locale(locale: cDateNS.Locale): CDate;
+        locale(locale: cdateNS.Locale): CDate;
     }
 
     interface strftime {
@@ -42,7 +42,7 @@ declare namespace cDateNS {
 
         (fmt: string, dt?: DateRO): string;
 
-        locale: (locale: cDateNS.Locale) => strftime;
+        locale: (locale: cdateNS.Locale) => strftime;
     }
 
     type Locale = { [specifier: string]: string | ((dt: Date) => string | number) };
@@ -65,4 +65,4 @@ declare namespace cDateNS {
     }
 }
 
-export const cDate: (dt?: string | number | Date) => cDateNS.CDate;
+export const cdate: (dt?: string | number | Date) => cdateNS.CDate;

@@ -1,4 +1,4 @@
-import type {cDate as cDateFn, cDateNS} from "../types/cdate";
+import type {cdate as cdateFn, cdateNS} from "../types/cdate";
 import {strftime} from "./strftime";
 import {add} from "./add";
 import {startOf} from "./startof";
@@ -15,7 +15,7 @@ interface Options {
     strftime?: typeof strftime;
 }
 
-export const cDate: typeof cDateFn = (dt) => {
+export const cdate: typeof cdateFn = (dt) => {
     if (dt == null) {
         dt = new Date();
     } else if ("string" === typeof dt) {
@@ -24,11 +24,11 @@ export const cDate: typeof cDateFn = (dt) => {
     return new CDateLocal(dt, null);
 };
 
-abstract class Base {
+abstract class CDate implements cdateNS.CDate {
     /**
      * millisecond since the UNIX epoch
      */
-    protected t: number | cDateNS.DateRO;
+    protected t: number | cdateNS.DateRO;
 
     /**
      * options container
@@ -46,36 +46,34 @@ abstract class Base {
     /**
      * creates another CDate object
      */
-    cdate(ms: number | cDateNS.DateRO): this {
+    cdate(ms: number | cdateNS.DateRO): this {
         return new (this.constructor as any)(ms, this.x);
     }
 
     /**
      * updates strftime option with the give locale
      */
-    locale(locale: cDateNS.Locale): this {
+    locale(locale: cdateNS.Locale): this {
         const out = this.cdate(+this);
         const x = out.x = copyOptions(out.x);
         x.strftime = getStrftime(x).locale(locale);
         return out;
     }
-}
 
-abstract class CDate extends Base implements cDateNS.CDate {
     /**
      * returns DateRW for duplication
      */
-    protected abstract rw(): cDateNS.DateRW;
+    protected abstract rw(): cdateNS.DateRW;
 
     /**
      * returns DateRO for displaying
      */
-    protected abstract ro(): cDateNS.DateRO;
+    protected abstract ro(): cdateNS.DateRO;
 
     /**
      * returns UTC version of CDate
      */
-    utc(): cDateNS.CDate {
+    utc(): cdateNS.CDate {
         const x = copyOptions(this.x);
         x.offset = 0;
         return new CDateUTC(+this, x);
@@ -84,7 +82,7 @@ abstract class CDate extends Base implements cDateNS.CDate {
     /**
      * returns timezone version of CDate
      */
-    timezone(offset: number | string): cDateNS.CDate {
+    timezone(offset: number | string): cdateNS.CDate {
         const x = copyOptions(this.x);
         offset = x.offset = tzMinutes(offset);
         const dt = +this + offset * d.MINUTE;
@@ -129,7 +127,7 @@ abstract class CDate extends Base implements cDateNS.CDate {
     /**
      * returns a new CDate object manipulated
      */
-    startOf(unit: cDateNS.UnitForAdd): this {
+    startOf(unit: cdateNS.UnitForAdd): this {
         const dt = this.rw();
         startOf(dt, unit);
         return this.cdate(dt);
@@ -138,7 +136,7 @@ abstract class CDate extends Base implements cDateNS.CDate {
     /**
      * returns a new CDate object manipulated
      */
-    endOf(unit: cDateNS.Unit): this {
+    endOf(unit: cdateNS.Unit): this {
         const dt = this.rw();
         startOf(dt, unit);
         add(dt, 1, unit);
@@ -149,7 +147,7 @@ abstract class CDate extends Base implements cDateNS.CDate {
     /**
      * returns a new CDate object manipulated
      */
-    add(diff: number, unit: cDateNS.Unit): this {
+    add(diff: number, unit: cdateNS.Unit): this {
         const dt = this.rw();
         add(dt, diff, unit);
         return this.cdate(dt);
@@ -158,14 +156,14 @@ abstract class CDate extends Base implements cDateNS.CDate {
     /**
      * returns a new CDate object manipulated
      */
-    next(unit: cDateNS.Unit): this {
+    next(unit: cdateNS.Unit): this {
         return this.add(1, unit);
     }
 
     /**
      * returns a new CDate object manipulated
      */
-    prev(unit: cDateNS.Unit): this {
+    prev(unit: cdateNS.Unit): this {
         return this.add(-1, unit);
     }
 }
@@ -174,7 +172,7 @@ class CDateLocal extends CDate {
     /**
      * returns DateRO for displaying
      */
-    protected ro(): cDateNS.DateRO {
+    protected ro(): cdateNS.DateRO {
         if (this.t instanceof Date) return this.t;
         return new Date(+this.t);
     }
@@ -182,7 +180,7 @@ class CDateLocal extends CDate {
     /**
      * returns DateRW for duplication
      */
-    protected rw(): cDateNS.DateRW {
+    protected rw(): cdateNS.DateRW {
         return new Date(+this.t);
     }
 }
@@ -191,14 +189,14 @@ class CDateUTC extends CDate {
     /**
      * returns DateRO for displaying
      */
-    protected ro(): cDateNS.DateRO {
+    protected ro(): cdateNS.DateRO {
         return dateUTC(+this.t);
     }
 
     /**
      * returns DateRW for duplication
      */
-    protected rw(): cDateNS.DateRW {
+    protected rw(): cdateNS.DateRW {
         return dateUTC(+this.t);
     }
 }
@@ -207,7 +205,7 @@ class CDateTZ extends CDateUTC {
     /**
      * returns DateRO for displaying
      */
-    protected ro(): cDateNS.DateRO {
+    protected ro(): cdateNS.DateRO {
         return dateTZ(+this.t, this.x.offset);
     }
 }

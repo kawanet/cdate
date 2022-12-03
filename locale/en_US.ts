@@ -1,11 +1,11 @@
-import type {cDateNS} from "../types/cdate";
+import type {cdateNS} from "../types/cdate";
 
 const weekdaysShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const monthsShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-export const en_US: cDateNS.Locale = {
+export const en_US: cdateNS.Locale = {
     /**
      * %a     The abbreviated weekday name according to the current locale. (en-only)
      */

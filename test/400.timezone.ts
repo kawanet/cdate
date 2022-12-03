@@ -2,7 +2,7 @@
 
 import {strict as assert} from "assert";
 
-import {cDate} from "../";
+import {cdate} from "../";
 import * as dayjs from "dayjs";
 import * as samsonjs_strftime from "strftime";
 
@@ -40,7 +40,7 @@ describe(TITLE, () => {
     });
 
     describe(`cdate`, () => {
-        runTests((dt, tz) => cDate(dt).timezone(timezoneMap[tz]).text("%Y/%m/%d %H:%M:%S.%L %:z"));
+        runTests((dt, tz) => cdate(dt).timezone(timezoneMap[tz]).text("%Y/%m/%d %H:%M:%S.%L %:z"));
     });
 });
 

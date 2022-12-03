@@ -1,4 +1,4 @@
-import type {cDateNS} from "../types/cdate";
+import type {cdateNS} from "../types/cdate";
 import {toISO} from "./u";
 
 const enum d {
@@ -58,7 +58,7 @@ abstract class DateUTCBase {
     }
 }
 
-class DateUTC extends DateUTCBase implements cDateNS.DateRW {
+class DateUTC extends DateUTCBase implements cdateNS.DateRW {
     setTime(msec: number) {
         return this.dt.setTime(msec);
     }
@@ -68,7 +68,7 @@ class DateUTC extends DateUTCBase implements cDateNS.DateRW {
     }
 }
 
-class DateTZ extends DateUTCBase implements cDateNS.DateRO {
+class DateTZ extends DateUTCBase implements cdateNS.DateRO {
     tz: number;
 
     constructor(dt: Date, tz: number) {
@@ -81,10 +81,10 @@ class DateTZ extends DateUTCBase implements cDateNS.DateRO {
     }
 }
 
-export function dateUTC(dt: number): cDateNS.DateRW {
+export function dateUTC(dt: number): cdateNS.DateRW {
     return new DateUTC(new Date(+dt));
 }
 
-export function dateTZ(dt: number, tz: number): cDateNS.DateRO {
+export function dateTZ(dt: number, tz: number): cdateNS.DateRO {
     return new DateTZ(new Date(+dt), tz);
 }

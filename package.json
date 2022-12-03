@@ -19,8 +19,8 @@
   "keywords": [
     "calendar",
     "date",
-    "strftime",
     "moment",
+    "strftime",
     "time"
   ],
   "license": "MIT",
@@ -30,10 +30,11 @@
     "url": "git+https://github.com/kawanet/cdate.git"
   },
   "scripts": {
-    "fixup": "fixup",
     "build": "tsc -p .",
+    "fixpack": "fixpack",
     "prepack": "npm run build && npm test && npm run test-timezone",
     "test": "mocha test",
     "test-timezone": "for tz in Asia/Tokyo Asia/Kathmandu Europe/London America/St_Johns America/Los_Angeles; do echo TZ=$tz mocha test; TZ=$tz mocha test || break; done"
-  }
+  },
+  "types": "types/cdate.d.ts"
 }

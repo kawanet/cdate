@@ -1,4 +1,4 @@
-import type {cDateNS} from "../types/cdate";
+import type {cdateNS} from "../types/cdate";
 import {strftime} from "./strftime";
 
 export const tzMinutes = (offset: number | string): number => {
@@ -10,4 +10,4 @@ export const tzMinutes = (offset: number | string): number => {
     if (!isNaN(offset)) return offset;
 }
 
-export const toISO = (dt: cDateNS.DateRO) => strftime("%Y-%m-%dT%H:%M:%S.%L%:z", dt);
+export const toISO = (dt: cdateNS.DateRO) => strftime("%Y-%m-%dT%H:%M:%S.%L%:z", dt);

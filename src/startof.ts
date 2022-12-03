@@ -1,4 +1,4 @@
-import type {cDateNS} from "../types/cdate";
+import type {cdateNS} from "../types/cdate";
 import {add as _add} from "./add";
 
 const add = _add;
@@ -10,12 +10,12 @@ const enum d {
     DAY = 24 * HOUR,
 }
 
-const startOfMonth = (dt: cDateNS.DateRW): void => {
+const startOfMonth = (dt: cdateNS.DateRW): void => {
     startOfDay(dt);
     add(dt, 1 - dt.getDate(), "day");
 };
 
-const startOfDay = (dt: cDateNS.DateRW): void => {
+const startOfDay = (dt: cdateNS.DateRW): void => {
     const tz1 = dt.getTimezoneOffset();
     truncate(dt, d.DAY);
     const tz2 = dt.getTimezoneOffset();
@@ -26,12 +26,12 @@ const startOfDay = (dt: cDateNS.DateRW): void => {
     }
 };
 
-const truncate = (dt: cDateNS.DateRW, unit: number): void => {
+const truncate = (dt: cdateNS.DateRW, unit: number): void => {
     const tz = dt.getTimezoneOffset() * d.MINUTE;
     dt.setTime(Math.trunc((+dt - tz) / unit) * unit + tz);
 };
 
-export const startOf = (dt: cDateNS.DateRW, unit: string): void => {
+export const startOf = (dt: cdateNS.DateRW, unit: string): void => {
     switch (unit) {
         case "year":
             startOfMonth(dt);

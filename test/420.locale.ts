@@ -2,7 +2,7 @@
 
 import {strict as assert} from "assert";
 import * as samsonjs_strftime from "strftime";
-import {cDate} from "../";
+import {cdate} from "../";
 import {en_US} from "../locale/en_US";
 import {fr_FR} from "../locale/fr_FR";
 
@@ -22,7 +22,7 @@ describe(TITLE, () => {
     });
 
     describe("kawanet/cdate", () => {
-        runTests(locale => (fmt, dt) => cDate(dt).locale(locales[locale]).text(fmt));
+        runTests(locale => (fmt, dt) => cdate(dt).locale(locales[locale]).text(fmt));
     });
 });
 

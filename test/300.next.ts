@@ -2,7 +2,7 @@
 
 import {strict as assert} from "assert";
 
-import {cDate} from "../";
+import {cdate} from "../";
 import * as dayjs from "dayjs";
 
 const TITLE = __filename.split("/").pop()!;
@@ -13,7 +13,7 @@ describe(TITLE, () => {
     });
 
     describe(`cdate`, () => {
-        runTests((dt, unit: any) => cDate(dt).next(unit).text("%Y/%m/%d %H:%M:%S.%L"));
+        runTests((dt, unit: any) => cdate(dt).next(unit).text("%Y/%m/%d %H:%M:%S.%L"));
     });
 });
 

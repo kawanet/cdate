@@ -2,7 +2,7 @@
 
 import {strict as assert} from "assert";
 
-import {cDate} from "../";
+import {cdate} from "../";
 import * as dayjs from "dayjs";
 
 import * as utc from "dayjs/plugin/utc";
@@ -80,8 +80,8 @@ describe(TITLE, () => {
         assert.equal(date.endOf("year").tz(TZ).format(format), "2022/12/31 23:59:59 -08:00");
     });
 
-    it(`cDate`, () => {
-        const date = cDate(dt).timezone(DST[TZ]);
+    it(`cdate`, () => {
+        const date = cdate(dt).timezone(DST[TZ]);
         assert.equal(date.text(text), "2022/03/13 03:00:01 -07:00");
 
         assert.equal(date.add(-2, "second").text(text), "2022/03/13 02:59:59 -07:00");
