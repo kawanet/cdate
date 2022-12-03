@@ -97,7 +97,7 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * returns a raw Date object
      */
-    date(): Date {
+    toDate(): Date {
         return new Date(+this);
     }
 
@@ -105,7 +105,7 @@ abstract class CDate implements cdateNS.CDate {
      * returns a JSON string
      */
     toJSON(): string {
-        return this.date().toJSON();
+        return this.toDate().toJSON();
     }
 
     /**

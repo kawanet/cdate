@@ -10,13 +10,11 @@ declare namespace cdateNS {
     type UnitForAdd = Unit | UnitWithS | UnitShort | UnitMS;
 
     interface CDate {
-        date(): Date;
-
         cdate(dt: Date): CDate;
 
         text(format: string): string;
 
-        valueOf(): number;
+        toDate(): Date;
 
         toJSON(): string;
 
@@ -32,7 +30,7 @@ declare namespace cdateNS {
 
         utc(): CDate;
 
-        tz(offset: number | string): CDate;
+        tz(timezone: number | string): CDate;
 
         locale(locale: cdateNS.Locale): CDate;
     }

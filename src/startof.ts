@@ -1,7 +1,5 @@
 import type {cdateNS} from "../types/cdate";
-import {add as _add} from "./add";
-
-const add = _add;
+import {add} from "./add";
 
 const enum d {
     SECOND = 1000,
