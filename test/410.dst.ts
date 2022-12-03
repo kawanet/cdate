@@ -38,7 +38,13 @@ describe(TITLE, () => {
     const text = "%Y/%m/%d %H:%M:%S %:z";
     const TZ = "America/Los_Angeles";
 
-    it(`dayjs().tz(name)`, () => {
+    /**
+     * we need to skip the test below because the dayjs has a bug.
+     * @see https://github.com/iamkun/dayjs/issues/2152
+     */
+    const IT = (process.env.TZ === "Asia/Tokyo") ? it : it.skip;
+
+    IT(`dayjs().tz(name)`, () => {
         const date = dayjs(dt).tz(TZ);
         assert.equal(date.format(format), "2022/03/13 03:00:01 -07:00");
 
