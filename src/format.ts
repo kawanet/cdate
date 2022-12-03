@@ -1,4 +1,4 @@
-const formatMap: { [fmt: string]: string } = {
+export const formatMap: { [fmt: string]: string } = {
     YY: "%y", // 18 = Two-digit year
     YYYY: "%Y", // 2018 = Four-digit year
     M: "%-m", // 1-12 = The month, beginning at 1
@@ -24,17 +24,4 @@ const formatMap: { [fmt: string]: string } = {
     ZZ: "%z", // +0500 = The offset from UTC, ±HHmm
     A: "%p", // AM PM
     a: "%P", // am pm
-};
-
-let formatCache: { [fmt: string]: string };
-
-const formatRE = new RegExp(["\\[(.*?)\\]"].concat(Object.keys(formatMap).sort().reverse()).join("|"), "g");
-
-export const format = (fmt: string) => {
-    const prev = formatCache && formatCache[fmt];
-    if (prev) return prev;
-    const text = fmt.replace(formatRE, ($$, $1) => (formatMap[$$] || $1.replace(/%/g, "%%")));
-    formatCache = {};
-    formatCache[fmt] = text;
-    return text;
 };

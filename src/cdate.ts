@@ -5,7 +5,6 @@ import {startOf} from "./startof";
 import {toISO} from "./iso";
 import {getTZ} from "./tz";
 import {dateTZ, dateUTC} from "./datetz";
-import {format} from "./format";
 
 type TZ = ReturnType<typeof getTZ>;
 
@@ -129,7 +128,7 @@ abstract class CDate implements cdateNS.CDate {
      * returns a text with "YYYY-MM-DD" formatting style
      */
     format(fmt: string): string {
-        return this.text(format(fmt));
+        return getStrftime(this.x).format(fmt, this.ro());
     }
 
     /**
