@@ -5,11 +5,6 @@ const parseTZ = (tz: string) => {
     return Math.trunc(m / 100) * 60 + (m % 100);
 };
 
-const enum d {
-    SECOND = 1000,
-    MINUTE = 60 * SECOND,
-}
-
 class TZ {
     // fixed
     private m: number;
@@ -34,7 +29,7 @@ class TZ {
     /**
      * returns time zone offset in minutes
      */
-    minutes(dt: number | Date): number {
+    tzo(dt: number | Date): number {
         const m = this.m;
         if (m != null) return m;
 
@@ -47,13 +42,6 @@ class TZ {
             value = -new Date(ms).getTimezoneOffset();
         }
         return value;
-    }
-
-    /**
-     * returns time zone offset in milliseconds
-     */
-    ms(dt: number | Date): number {
-        return this.minutes(dt) * d.MINUTE;
     }
 }
 

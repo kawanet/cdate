@@ -4,6 +4,11 @@ import {toISO} from "./iso";
 
 type TZ = ReturnType<typeof getTZ>;
 
+const enum d {
+    SECOND = 1000,
+    MINUTE = 60 * SECOND,
+}
+
 abstract class DateLikeBase implements cdateNS.DateLike {
     constructor(protected dt: Date) {
         //
@@ -74,11 +79,14 @@ class DateTZ extends DateLikeBase {
     // dt: Date; // UTC
     private t: number; // local time
     protected tz: TZ;
+    private tzo: number;
 
     constructor(dt: Date, tz: TZ) {
-        super(new Date(+dt + tz.ms(dt)));
+        const tzo = tz.tzo(dt);
+        super(new Date(+dt + tzo * d.MINUTE));
         this.t = +dt;
         this.tz = tz;
+        this.tzo = tzo;
     }
 
     valueOf(): number {
@@ -86,12 +94,13 @@ class DateTZ extends DateLikeBase {
     }
 
     setTime(msec: number) {
-        this.dt.setTime(+msec + this.tz.ms(msec));
+        const tzo = this.tzo = this.tz.tzo(msec);
+        this.dt.setTime(+msec + tzo * d.MINUTE);
         return this.t = msec;
     }
 
     getTimezoneOffset() {
-        return -this.tz.minutes(this.t);
+        return -this.tzo;
     }
 }
 
