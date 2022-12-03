@@ -2,17 +2,22 @@
 
 import {strict as assert} from "assert";
 import * as dayjs from "dayjs";
+import * as moment from "moment";
 
 import {cdate, cdateNS} from "../";
 
 const TITLE = __filename.split("/").pop()!;
 
 describe(TITLE, () => {
-    describe(`dayjs`, () => {
+    describe(`moment().subtract()`, () => {
+        runTests((dt, unit) => moment(dt).subtract(1, unit).format("YYYY/MM/DD HH:mm:ss.SSS"));
+    });
+
+    describe(`dayjs().subtract()`, () => {
         runTests((dt, unit) => dayjs(dt).subtract(1, unit).format("YYYY/MM/DD HH:mm:ss.SSS"));
     });
 
-    describe(`cdate`, () => {
+    describe(`cdate().prev()`, () => {
         runTests((dt, unit) => cdate(dt).prev(unit).text("%Y/%m/%d %H:%M:%S.%L"));
     });
 });

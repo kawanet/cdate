@@ -2,12 +2,17 @@
 
 import {strict as assert} from "assert";
 import * as dayjs from "dayjs";
+import * as moment from "moment";
 
 import {cdate} from "../";
 
 const TITLE = __filename.split("/").pop()!;
 
 describe(TITLE, () => {
+    it(`moment().format()`, () => {
+        runTests((dt, format) => moment(dt).format(format));
+    });
+
     it(`dayjs().format()`, () => {
         runTests((dt, format) => dayjs(dt).format(format));
     });
