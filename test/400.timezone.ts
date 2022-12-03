@@ -40,11 +40,11 @@ describe(TITLE, () => {
     });
 
     describe(`cdate "+0900"`, () => {
-        runTests((dt, tz) => cdate(dt).timezone(timezoneMap[tz]).text("%Y/%m/%d %H:%M:%S.%L %:z"));
+        runTests((dt, tz) => cdate(dt).tz(timezoneMap[tz]).text("%Y/%m/%d %H:%M:%S.%L %:z"));
     });
 
     describe(`cdate "Asia/Tokyo"`, () => {
-        runTests((dt, tz) => cdate(dt).timezone(tz).text("%Y/%m/%d %H:%M:%S.%L %:z"));
+        runTests((dt, tz) => cdate(dt).tz(tz).text("%Y/%m/%d %H:%M:%S.%L %:z"));
     });
 });
 
