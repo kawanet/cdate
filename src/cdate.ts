@@ -2,16 +2,14 @@ import type {cdate as cdateFn, cdateNS} from "../types/cdate";
 import {strftime} from "./strftime";
 import {add} from "./add";
 import {startOf} from "./startof";
-import {toISO, tzMinutes} from "./u";
+import {toISO} from "./iso";
+import {getTZ} from "./tz";
 import {dateTZ, dateUTC} from "./datetz";
 
-const enum d {
-    SECOND = 1000,
-    MINUTE = 60 * SECOND,
-}
+type TZ = ReturnType<typeof getTZ>;
 
 interface Options {
-    offset?: number;
+    tz?: TZ;
     strftime?: typeof strftime;
 }
 
@@ -75,18 +73,18 @@ abstract class CDate implements cdateNS.CDate {
      */
     utc(): cdateNS.CDate {
         const x = copyOptions(this.x);
-        x.offset = 0;
+        x.tz = null;
         return new CDateUTC(+this, x);
     }
 
     /**
      * returns timezone version of CDate
      */
-    timezone(offset: number | string): cdateNS.CDate {
+    timezone(timezone: number | string): cdateNS.CDate {
         const x = copyOptions(this.x);
-        offset = x.offset = tzMinutes(offset);
-        const dt = +this + offset * d.MINUTE;
-        return new CDateTZ(dt, x);
+        const tz = x.tz = getTZ(timezone);
+        const ms = +this;
+        return new CDateTZ(ms + tz.ms(ms), x);
     }
 
     /**
@@ -174,7 +172,7 @@ class CDateLocal extends CDate {
      */
     protected ro(): cdateNS.DateRO {
         if (this.t instanceof Date) return this.t;
-        return new Date(+this.t);
+        return this.t = new Date(+this.t);
     }
 
     /**
@@ -190,7 +188,7 @@ class CDateUTC extends CDate {
      * returns DateRO for displaying
      */
     protected ro(): cdateNS.DateRO {
-        return dateUTC(+this.t);
+        return this.t = dateUTC(+this.t);
     }
 
     /**
@@ -206,7 +204,7 @@ class CDateTZ extends CDateUTC {
      * returns DateRO for displaying
      */
     protected ro(): cdateNS.DateRO {
-        return dateTZ(+this.t, this.x.offset);
+        return dateTZ(+this.t, this.x.tz);
     }
 }
 

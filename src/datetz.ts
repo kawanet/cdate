@@ -1,5 +1,8 @@
 import type {cdateNS} from "../types/cdate";
-import {toISO} from "./u";
+import type {getTZ} from "./tz";
+import {toISO} from "./iso";
+
+type TZ = ReturnType<typeof getTZ>;
 
 const enum d {
     SECOND = 1000,
@@ -14,7 +17,7 @@ abstract class DateUTCBase {
     abstract getTimezoneOffset(): number;
 
     valueOf(): number {
-        return +this.dt - this.getTimezoneOffset() * d.MINUTE;
+        return +this.dt + this.getTimezoneOffset() * d.MINUTE;
     }
 
     toString(): string {
@@ -69,15 +72,21 @@ class DateUTC extends DateUTCBase implements cdateNS.DateRW {
 }
 
 class DateTZ extends DateUTCBase implements cdateNS.DateRO {
-    tz: number;
+    tz: TZ;
+    offset: number;
 
-    constructor(dt: Date, tz: number) {
+    constructor(dt: Date, tz: TZ) {
         super(dt);
-        this.tz = tz | 0;
+        this.tz = tz;
     }
 
     getTimezoneOffset() {
-        return this.tz;
+        let {offset} = this;
+        if (offset == null) {
+            const {dt, tz} = this;
+            offset = this.offset = tz.minutes(+dt + tz.ms(dt));
+        }
+        return -offset;
     }
 }
 
@@ -85,6 +94,6 @@ export function dateUTC(dt: number): cdateNS.DateRW {
     return new DateUTC(new Date(+dt));
 }
 
-export function dateTZ(dt: number, tz: number): cdateNS.DateRO {
+export function dateTZ(dt: number, tz: TZ): cdateNS.DateRO {
     return new DateTZ(new Date(+dt), tz);
 }

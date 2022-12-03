@@ -39,8 +39,12 @@ describe(TITLE, () => {
         runTests((dt, tz) => samsonjs.strftime.timezone(timezoneMap[tz])("%Y/%m/%d %H:%M:%S.%L %:z", dt));
     });
 
-    describe(`cdate`, () => {
+    describe(`cdate "+0900"`, () => {
         runTests((dt, tz) => cdate(dt).timezone(timezoneMap[tz]).text("%Y/%m/%d %H:%M:%S.%L %:z"));
+    });
+
+    describe(`cdate "Asia/Tokyo"`, () => {
+        runTests((dt, tz) => cdate(dt).timezone(tz).text("%Y/%m/%d %H:%M:%S.%L %:z"));
     });
 });
 

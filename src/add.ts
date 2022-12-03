@@ -41,7 +41,7 @@ const addDay = (dt: cdateNS.DateRW, days: number): void => {
 
     // adjustment for Daylight Saving Time (DST)
     if (tz1 !== tz2) {
-        dt.setTime(+dt + (tz2 - tz1) * d.MINUTE);
+        dt.setTime(+dt + (tz1 - tz2) * d.MINUTE);
     }
 }
 

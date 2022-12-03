@@ -65,7 +65,7 @@ const Y: ToNumber = dt => dt.getFullYear();
  */
 const makeZ = (delim: string): ToString => {
     return dt => {
-        let offset = dt.getTimezoneOffset();
+        let offset = -dt.getTimezoneOffset();
         const isMinus = (offset < 0);
         if (isMinus) offset = -offset;
         const hour = Math.floor(offset / 60);
