@@ -11,6 +11,7 @@
     "@types/node": "^18.11.9",
     "@types/strftime": "^0.9.4",
     "browserify": "^17.0.0",
+    "browserify-sed": "^0.8.0",
     "dayjs": "^1.11.6",
     "mocha": "^10.1.0",
     "moment": "^2.29.4",
@@ -34,10 +35,10 @@
     "url": "git+https://github.com/kawanet/cdate.git"
   },
   "scripts": {
-    "build": "tsc -p .",
+    "build": "tsc -p . && make -C browser dist",
     "fixpack": "fixpack",
-    "prepack": "npm run build && npm test && npm run test-timezone",
-    "test": "mocha test",
+    "prepack": "make -C browser clean && npm run build && npm test && npm run test-timezone",
+    "test": "mocha test && make -C browser mocha",
     "test-timezone": "for tz in Asia/Tokyo Asia/Kathmandu Europe/London America/St_Johns America/Los_Angeles; do echo TZ=$tz mocha test; TZ=$tz mocha test || break; done"
   },
   "types": "types/cdate.d.ts"

@@ -9,9 +9,10 @@ dist: ../dist/cdate.min.js
 	../node_modules/.bin/terser -c -m --ecma 6 -o $@ $<
 	ls -l $@
 
-../build/bundle.js: ../build/src/cdate.js wrap.js
+../build/bundle.js: ../src/cdate.js wrap.js
+	mkdir -p ../build/
 	grep PRE < wrap.js > $@
-	cat ../build/locale/en_US.js ../build/src/*.js >> $@
+	cat ../locale/en_US.js ../src/*.js >> $@
 	perl -i -pe 's#^("use strict"|Object.defineProperty|exports.*= void 0)#// $$&#' $@
 	perl -i -pe 's#^(const .*_1 = require.)#// $$&#' $@
 	perl -i -pe 's#(\W)(\w+_1\.)(\w)#$$1 /* $$2 */ $$3#g' $@
@@ -28,13 +29,15 @@ mocha: ../build/test-local.js
 ../build/test-local.js: ../dist/cdate.min.js ../build/test.js
 	cat $^ > $@
 
-../build/test.js: ../build/src/cdate.js ../browser/import.js
-	perl -i -pe 's#require\("../"\)#require("../../browser/import")#' ../build/test/*.js
-	../node_modules/.bin/browserify --list ../build/test/*.js | sort
-	../node_modules/.bin/browserify -o ../build/test.js ../build/test/*.js
+../build/test.js: ../src/cdate.js ../browser/import.js
+	mkdir -p ../build/
+	../node_modules/.bin/browserify --list ../test/*.js \
+	-t [ browserify-sed 's#(require\("(?:../)+)("\))#$$1browser/import$$2#' ] | sort
+	../node_modules/.bin/browserify -o $@ ../test/*.js \
+	-t [ browserify-sed 's#(require\("(?:../)+)("\))#$$1browser/import$$2#' ]
 
-../build/src/cdate.js: ../src/*.ts ../test/*.ts
-	../node_modules/.bin/tsc -p ../browser
+../src/cdate.js: ../src/*.ts ../test/*.ts
+	../node_modules/.bin/tsc -p ..
 
 clean:
 	/bin/rm -fr ../build ../dist/*.js ../src/*.js ../test/*.js

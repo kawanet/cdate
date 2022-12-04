@@ -21,6 +21,6 @@
     "removeComments": false,
     "skipLibCheck": false,
     "strictNullChecks": false,
-    "target": "ES2018"
+    "target": "ES6"
   }
 }
