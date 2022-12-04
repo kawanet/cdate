@@ -94,6 +94,7 @@ export const strftimeMap = {
     "%-d": d,
     "%d": pad2(d),
     "%e": pad2S(d),
+    "%F": "%Y-%m-%d", // ISO
     "%-H": H,
     "%H": pad2(H),
     "%-I": I,
@@ -106,12 +107,15 @@ export const strftimeMap = {
     "%m": pad2(m),
     "%-M": M,
     "%M": pad2(M),
+    "%R": "%H:%M",
     "%-S": S,
     "%S": pad2(S),
+    "%T": "%H:%M:%S",
     "%-y": y,
     "%y": pad2(y),
     "%-Y": Y,
     "%Y": padY(Y),
+    "%v": "%e-%b-%Y", // VMS
     "%w": dt => dt.getDay(),
     "%:z": makeZ(":"),
     "%z": makeZ(""),

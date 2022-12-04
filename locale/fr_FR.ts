@@ -11,16 +11,9 @@ export const fr_FR: cdateNS.Specifiers = {
     "%b": dt => monthsShort [dt.getMonth()],
     "%B": dt => months[dt.getMonth()],
 
-    /**
-     * formats
-     */
     "%c": "%a %d %b %Y %X %Z",
     "%D": "%d/%m/%Y",
-    "%F": "%Y-%m-%d",
-    "%R": "%H:%M",
     "%r": "%I:%M:%S %p",
-    "%T": "%H:%M:%S",
-    "%v": "%e-%b-%Y",
     "%X": "%T",
     "%x": "%D",
 };
