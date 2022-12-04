@@ -5,7 +5,7 @@ const weekdays = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi",
 const monthsShort = ["janv.", "févr.", "mars", "avril", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
 const months = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
-export const fr_FR: cdateNS.Locale = {
+export const fr_FR: cdateNS.Specifiers = {
     "%a": dt => weekdaysShort[dt.getDay()],
     "%A": dt => weekdays[dt.getDay()],
     "%b": dt => monthsShort [dt.getMonth()],

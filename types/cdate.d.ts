@@ -35,14 +35,14 @@ declare namespace cdateNS {
 
         tz(timezone: string): CDate;
 
-        locale(locale: cdateNS.Locale): CDate;
+        extend(specifiers: Specifiers): CDate;
     }
 
     interface strftime {
         (fmt: string, dt?: Date): string;
     }
 
-    type Locale = { [specifier: string]: string | ((dt: Date) => string | number) };
+    type Specifiers = { [specifier: string]: (string | ((dt: Date) => string | number)) };
 }
 
 export const cdate: (dt?: string | number | Date) => cdateNS.CDate;

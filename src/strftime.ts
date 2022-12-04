@@ -118,4 +118,4 @@ export const strftimeMap = {
     "%%": () => "%",  // %%     A literal '%' character.
     "%n": () => "\n", // %n     A newline character. (SU)
     "%t": () => "\t", // %t     A tab character. (SU)
-} as cdateNS.Locale;
+} as cdateNS.Specifiers;

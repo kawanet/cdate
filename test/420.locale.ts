@@ -23,7 +23,7 @@ describe(TITLE, () => {
     });
 
     describe("kawanet/cdate", () => {
-        runTests(locale => (fmt, dt) => cdate(dt).locale(locales[locale]).text(fmt));
+        runTests(locale => (fmt, dt) => cdate(dt).extend(locales[locale]).text(fmt));
     });
 });
 

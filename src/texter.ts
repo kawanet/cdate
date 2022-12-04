@@ -7,7 +7,7 @@ type Picker = (specifier: string) => (string | ((dt: DateLike) => (string | numb
 
 const merge = (a: Picker, b?: Picker): Picker => (b ? (specifier => (a(specifier) || b(specifier))) : a);
 
-const mapPicker = (map: cdateNS.Locale): Picker => specifier => map[specifier];
+const mapPicker = (map: cdateNS.Specifiers): Picker => specifier => map[specifier];
 
 const strftimeRE = /%(?:-?[a-zA-Z%]|:z)/g;
 
@@ -18,7 +18,7 @@ interface Texter {
 
     format(fmt: string, dt: DateLike): string;
 
-    locale(locale: cdateNS.Locale): Texter;
+    extend(specifiers: cdateNS.Specifiers): Texter;
 }
 
 const factory = (picker: Picker): Texter => {
@@ -48,12 +48,12 @@ const factory = (picker: Picker): Texter => {
         return fmt.replace(formatRE, (specifier, raw) => (raw || one(specifier, dt)));
     };
 
-    out.locale = locale => factory(merge(mapPicker(locale), picker));
+    out.extend = specifiers => factory(merge(mapPicker(specifiers), picker));
 
     return out;
 };
 
 let _texter: Texter;
-export const texter = _texter = factory(merge(mapPicker(strftimeMap), mapPicker(formatMap))).locale(en_US);
+export const texter = _texter = factory(merge(mapPicker(strftimeMap), mapPicker(formatMap))).extend(en_US);
 const _strftime = _texter.strftime;
 export const strftime: typeof strftimeFn = (fmt, dt) => _strftime(fmt, dt || new Date());
