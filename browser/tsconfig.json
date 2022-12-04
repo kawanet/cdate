@@ -14,7 +14,7 @@
     "outDir": "../build",
     "skipLibCheck": true,
     "strictNullChecks": false,
-    "target": "ES5",
+    "target": "ES6",
     "types": [
       "mocha",
       "node"
