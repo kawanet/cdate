@@ -1,5 +1,4 @@
 const DateTimeFormat = Intl && Intl.DateTimeFormat;
-const defaultLang = "en-US";
 
 const parseTZ = (tz: string) => {
     const m = +tz.replace(/:/g, "");
@@ -9,28 +8,28 @@ const parseTZ = (tz: string) => {
 let longOffset: "longOffset";
 let partsToOffset: (parts: Intl.DateTimeFormatPart[], dt?: Date) => number;
 
+/**
+ * Node v16 and below does NOT support {timeZoneName: "longOffset"} option
+ * Node v18 however supports it.
+ */
 const checkLongOffset = () => {
     try {
         const tzn = "longOffset";
-        new DateTimeFormat(defaultLang, {timeZone: "Asia/Tokyo", timeZoneName: tzn});
+        getDateTimeFormat("Asia/Tokyo", tzn);
         longOffset = tzn;
-        partsToOffset = parseTimeZoneName;
+        partsToOffset = parseTimeZoneName; // node v18
     } catch (e) {
         // RangeError: Value longOffset out of range for Intl.DateTimeFormat options property timeZoneName
-        partsToOffset = calcTimeZoneOffset;
+        partsToOffset = calcTimeZoneOffset; // node v16
     }
-    return 1;
 };
 
-const getDateTimeFormat = (timeZone: string) => {
-    if (!partsToOffset) {
-        checkLongOffset();
-    }
-    if (longOffset) {
-        return new DateTimeFormat(defaultLang, {timeZone, timeZoneName: longOffset});
-    } else {
-        return new DateTimeFormat(defaultLang, {timeZone, hour12: false, weekday: "short", day: "numeric", hour: "numeric", minute: "numeric"});
-    }
+const getDateTimeFormat = (timeZone: string, timeZoneName: typeof longOffset): Intl.DateTimeFormat => {
+    return new DateTimeFormat("en-US", timeZoneName ?
+        // node v18
+        {timeZone, timeZoneName} :
+        // node v16
+        {timeZone, hour12: false, weekday: "short", day: "numeric", hour: "numeric", minute: "numeric"});
 };
 
 class TZ {
@@ -38,15 +37,15 @@ class TZ {
     private m: number;
 
     // Asia/Tokyo - IANA time zone name
-    private f: Intl.DateTimeFormat;
+    private tz: string;
 
     // last offset cache
     private c: { [ms: string]: number };
 
     constructor(tz: string) {
         if (/\//.test(tz)) {
-            this.f = DateTimeFormat && getDateTimeFormat(tz);
-        } else if ("string" === typeof tz) {
+            this.tz = tz;
+        } else {
             this.m = parseTZ(tz);
         }
     }
@@ -62,7 +61,10 @@ class TZ {
         if (offset != null) return offset;
 
         const dt = new Date(ms);
-        const {f} = self;
+        const {tz} = self;
+
+        if (!partsToOffset) checkLongOffset();
+        const f = DateTimeFormat && getDateTimeFormat(tz, longOffset);
         const parts = partsToOffset && f && f.formatToParts(ms);
         if (parts) {
             offset = partsToOffset(parts, dt);
