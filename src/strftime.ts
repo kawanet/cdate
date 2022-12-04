@@ -2,11 +2,25 @@ import type {cdateNS} from "../types/cdate";
 
 type ToNumber = (dt: Date) => number;
 type ToString = (dt: Date) => string;
+type Pad = (fn: ToNumber) => ToString;
 
-const pad2 = (fn: ToNumber): ToString => dt => ("0" + fn(dt)).substr(-2, 2);
-const pad2S = (fn: ToNumber): ToString => dt => (" " + fn(dt)).substr(-2, 2);
-const pad3 = (fn: ToNumber): ToString => dt => ("00" + fn(dt)).substr(-3, 3);
-const pad4 = (fn: ToNumber): ToString => dt => ("000" + fn(dt)).substr(-4, 4);
+const pad2: Pad = fn => (dt) => ("0" + fn(dt)).substr(-2);
+const pad2S: Pad = fn => (dt) => (" " + fn(dt)).substr(-2);
+const pad3: Pad = fn => (dt) => ("00" + fn(dt)).substr(-3);
+
+const padY: Pad = fn => (dt) => {
+    let year = fn(dt);
+    if (0 <= year && year <= 9999) {
+        return ("000" + year).substr(-4);
+    }
+
+    let prefix = "+";
+    if (year < 0) {
+        prefix = "-";
+        year = -year;
+    }
+    return prefix + (("00000" + year).substr(-6));
+};
 
 /**
  * %C     The century number (year/100) as a 2-digit integer. (SU)
@@ -97,7 +111,7 @@ export const strftimeMap = {
     "%-y": y,
     "%y": pad2(y),
     "%-Y": Y,
-    "%Y": pad4(Y),
+    "%Y": padY(Y),
     "%w": dt => dt.getDay(),
     "%:z": makeZ(":"),
     "%z": makeZ(""),
