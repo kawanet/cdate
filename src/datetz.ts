@@ -82,9 +82,10 @@ class DateTZ extends DateLikeBase {
     private tzo: number;
 
     constructor(dt: Date, tz: TZ) {
-        const tzo = tz.tzo(dt);
-        super(new Date(+dt + tzo * d.MINUTE));
-        this.t = +dt;
+        const t = +dt;
+        const tzo = tz.tzo(t);
+        super(new Date(t + tzo * d.MINUTE));
+        this.t = t;
         this.tz = tz;
         this.tzo = tzo;
     }
