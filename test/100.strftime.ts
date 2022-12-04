@@ -63,6 +63,10 @@ function runTests(importer: () => strftime) {
         "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Monday", "Tuesday"
     ]);
 
+    testIt("%w", dt, d.DAY, [
+        "3", "4", "5", "6", "0", "1", "2"
+    ]);
+
     /**
      * %b     The abbreviated month name according to the current locale. (en-only)
      */

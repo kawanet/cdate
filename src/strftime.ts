@@ -98,6 +98,7 @@ export const strftimeMap = {
     "%y": pad2(y),
     "%-Y": Y,
     "%Y": pad4(Y),
+    "%w": dt => dt.getDay(),
     "%:z": makeZ(":"),
     "%z": makeZ(""),
     "%%": () => "%",  // %%     A literal '%' character.

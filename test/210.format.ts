@@ -38,7 +38,7 @@ function runTests(fn: (dt: Date, format: string) => string) {
         MMMM: "April",
         D: "5",
         DD: "05",
-        // d: "3",
+        d: "3",
         // dd: "We",
         ddd: "Wed",
         dddd: "Wednesday",
