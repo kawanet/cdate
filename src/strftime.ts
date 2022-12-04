@@ -7,36 +7,44 @@ import {en_US} from "../locale/en_US";
 import {common} from "./common";
 import {formatMap} from "./format";
 
-type PickSpec = (spec: string) => (string | ((dt: cdateNS.DateLike) => (string | number)));
+type Picker = (specifier: string) => (string | ((dt: cdateNS.DateLike) => (string | number)));
 
-const merge = (a: PickSpec, b?: PickSpec): PickSpec => b ? (spec => (a(spec) || b(spec))) : a;
+const merge = (a: Picker, b?: Picker): Picker => (b ? (specifier => (a(specifier) || b(specifier))) : a);
 
-const picker = (locale: cdateNS.Locale): PickSpec => spec => locale[spec];
+const mapPicker = (map: cdateNS.Locale): Picker => specifier => map[specifier];
+
+const strftimeRE = /%(?:-?[a-zA-Z%]|:z)/g;
 
 const formatRE = new RegExp(["\\[(.*?)\\]"].concat(Object.keys(formatMap).sort().reverse()).join("|"), "g");
 
-const factory = (pick: PickSpec) => {
-    const strftime: cdateNS.strftime = (fmt, dt) => {
-        return fmt.replace(/%(?:-?[a-zA-Z%]|:z)/g, spec => {
-            const fn = pick(spec);
+const factory = (picker: Picker) => {
+    const one = (specifier: string, dt: cdateNS.DateLike): string => {
+        let fn = picker(specifier);
 
-            if ("function" === typeof fn) {
-                return fn(dt) as string;
-            } else if (fn == null) {
-                return spec; // Unsupported specifiers
-            } else {
-                return strftime(String(fn), dt) as string; // recursive call
-            }
-        });
+        if ("string" === typeof fn) {
+            fn = picker(fn) || fn;
+        }
+
+        if ("function" === typeof fn) {
+            return fn(dt) as string;
+        } else if (fn == null) {
+            return specifier; // Unsupported specifiers
+        } else {
+            return strftime(fn, dt) as string; // recursive call
+        }
+    };
+
+    const strftime: cdateNS.strftime = (fmt, dt) => {
+        return fmt.replace(strftimeRE, (specifier) => one(specifier, dt));
     };
 
     strftime.format = (fmt, dt) => {
-        return fmt.replace(formatRE, ($$, $1) => strftime(formatMap[$$] || $1.replace(/%/g, "%%"), dt));
+        return fmt.replace(formatRE, (specifier, raw) => (raw || one(specifier, dt)));
     };
 
-    strftime.locale = locale => factory(merge(picker(locale), pick));
+    strftime.locale = locale => factory(merge(mapPicker(locale), picker));
 
     return strftime;
 };
 
-export const strftime = factory(picker(common)).locale(en_US);
+export const strftime = factory(merge(mapPicker(common), mapPicker(formatMap))).locale(en_US);
