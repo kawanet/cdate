@@ -1,6 +1,6 @@
 import type {cdateNS} from "../types/cdate";
 import {en_US} from "../locale/en_US";
-import {common} from "./common";
+import {strftimeMap} from "./strftime";
 import {formatMap} from "./format";
 
 type Picker = (specifier: string) => (string | ((dt: cdateNS.DateLike) => (string | number)));
@@ -53,4 +53,4 @@ const factory = (picker: Picker): Texter => {
     return out;
 };
 
-export const texter = factory(merge(mapPicker(common), mapPicker(formatMap))).locale(en_US);
+export const texter = factory(merge(mapPicker(strftimeMap), mapPicker(formatMap))).locale(en_US);

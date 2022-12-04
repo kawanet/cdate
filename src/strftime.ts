@@ -74,7 +74,7 @@ const makeZ = (delim: string): ToString => {
     }
 };
 
-export const common = {
+export const strftimeMap = {
     "%-C": C,
     "%C": pad2(C),
     "%-d": d,
