@@ -40,14 +40,6 @@ declare namespace cdateNS {
 
     interface strftime {
         (fmt: string, dt?: Date): string;
-
-        (fmt: string, dt: DateLike): string;
-
-        format(fmt: string, dt?: Date): string;
-
-        format(fmt: string, dt: DateLike): string;
-
-        locale(locale: cdateNS.Locale): strftime;
     }
 
     type Locale = { [specifier: string]: string | ((dt: Date) => string | number) };

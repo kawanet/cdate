@@ -3,9 +3,11 @@
 import {strict as assert} from "assert";
 import * as samsonjs_strftime from "strftime";
 
-import {strftime as cdate_strftime} from "../src/strftime";
+import {texter} from "../src/texter";
 
 const TITLE = __filename.split("/").pop()!;
+
+const samsonjs = {strftime: samsonjs_strftime};
 
 const enum d {
     SECOND = 1000,
@@ -16,11 +18,11 @@ const enum d {
 
 describe(TITLE, () => {
     describe("samsonjs/strftime", () => {
-        runTests(() => samsonjs_strftime);
+        runTests(() => samsonjs.strftime);
     });
 
     describe("kawanet/cdate", () => {
-        runTests(() => cdate_strftime);
+        runTests(() => texter.strftime);
     });
 });
 

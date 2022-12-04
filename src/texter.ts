@@ -1,7 +1,3 @@
-/**
- * strftime
- */
-
 import type {cdateNS} from "../types/cdate";
 import {en_US} from "../locale/en_US";
 import {common} from "./common";
@@ -17,7 +13,15 @@ const strftimeRE = /%(?:-?[a-zA-Z%]|:z)/g;
 
 const formatRE = new RegExp(["\\[(.*?)\\]"].concat(Object.keys(formatMap).sort().reverse()).join("|"), "g");
 
-const factory = (picker: Picker) => {
+interface Texter {
+    strftime(fmt: string, dt: cdateNS.DateLike): string;
+
+    format(fmt: string, dt: cdateNS.DateLike): string;
+
+    locale(locale: cdateNS.Locale): Texter;
+}
+
+const factory = (picker: Picker): Texter => {
     const one = (specifier: string, dt: cdateNS.DateLike): string => {
         let fn = picker(specifier);
 
@@ -30,21 +34,23 @@ const factory = (picker: Picker) => {
         } else if (fn == null) {
             return specifier; // Unsupported specifiers
         } else {
-            return strftime(fn, dt) as string; // recursive call
+            return out.strftime(fn, dt) as string; // recursive call
         }
     };
 
-    const strftime: cdateNS.strftime = (fmt, dt) => {
+    const out = {} as Texter;
+
+    out.strftime = (fmt, dt) => {
         return fmt.replace(strftimeRE, (specifier) => one(specifier, dt));
     };
 
-    strftime.format = (fmt, dt) => {
+    out.format = (fmt, dt) => {
         return fmt.replace(formatRE, (specifier, raw) => (raw || one(specifier, dt)));
     };
 
-    strftime.locale = locale => factory(merge(mapPicker(locale), picker));
+    out.locale = locale => factory(merge(mapPicker(locale), picker));
 
-    return strftime;
+    return out;
 };
 
-export const strftime = factory(merge(mapPicker(common), mapPicker(formatMap))).locale(en_US);
+export const texter = factory(merge(mapPicker(common), mapPicker(formatMap))).locale(en_US);
