@@ -1,4 +1,4 @@
-import type {cdateNS} from "../types/cdate";
+import type {cdateNS, strftime as strftimeFn} from "../types/cdate";
 import {en_US} from "../locale/en_US";
 import {strftimeMap} from "./strftime";
 import {formatMap} from "./format";
@@ -53,4 +53,7 @@ const factory = (picker: Picker): Texter => {
     return out;
 };
 
-export const texter = factory(merge(mapPicker(strftimeMap), mapPicker(formatMap))).locale(en_US);
+let _texter: Texter;
+export const texter = _texter = factory(merge(mapPicker(strftimeMap), mapPicker(formatMap))).locale(en_US);
+const _strftime = _texter.strftime;
+export const strftime: typeof strftimeFn = (fmt, dt) => _strftime(fmt, dt || new Date());

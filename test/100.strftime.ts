@@ -26,19 +26,23 @@ describe(TITLE, () => {
     });
 
     describe("samsonjs/strftime", () => {
-        runTests(() => samsonjs.strftime);
+        runTests(samsonjs.strftime);
     });
 
     describe("kawanet/cdate", () => {
-        runTests(() => cdatejs.strftime);
+        runTests(cdatejs.strftime);
     });
 });
 
-type strftime = (fmt: string, dt: Date) => string;
+type strftime = (fmt: string, dt?: Date) => string;
 
-function runTests(importer: () => strftime) {
+function runTests(strftime: strftime) {
     const dt = new Date("2023/04/05 06:07:08.090");
-    const strftime = importer();
+
+    it(`strftime("%Y")`, () => {
+        const year = String(new Date().getFullYear());
+        assert.equal(strftime("%Y"), year);
+    });
 
     const testOne = (fmt: string, dt: Date, expected: string | RegExp) => {
         if (expected instanceof RegExp) {

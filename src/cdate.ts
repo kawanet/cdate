@@ -10,7 +10,7 @@ type TZ = ReturnType<typeof getTZ>;
 
 interface Options {
     tz?: TZ;
-    str?: typeof texter;
+    texter?: typeof texter;
 }
 
 export const cdate: typeof cdateFn = (dt) => {
@@ -62,7 +62,7 @@ abstract class CDate implements cdateNS.CDate {
     locale(locale: cdateNS.Locale): this {
         const out = this.cdate(+this);
         const x = out.x = copyOptions(out.x);
-        x.str = getStrftime(x).locale(locale);
+        x.texter = getTexter(x).locale(locale);
         return out;
     }
 
@@ -128,14 +128,14 @@ abstract class CDate implements cdateNS.CDate {
      * returns a text with "YYYY-MM-DD" formatting style
      */
     format(fmt: string): string {
-        return getStrftime(this.x).format(fmt, this.ro());
+        return getTexter(this.x).format(fmt, this.ro());
     }
 
     /**
      * returns a text with "%y/%m/%d formatting style
      */
     text(fmt: string): string {
-        return getStrftime(this.x).strftime(fmt, this.ro());
+        return getTexter(this.x).strftime(fmt, this.ro());
     }
 
     /**
@@ -202,4 +202,4 @@ class CDateTZ extends CDateUTC {
 
 const copyOptions = (x: Options): Options => x ? Object.create(x) : {};
 
-const getStrftime = (x: Options): typeof texter => (x && x.str || texter);
+const getTexter = (x: Options): typeof texter => (x && x.texter || texter);
