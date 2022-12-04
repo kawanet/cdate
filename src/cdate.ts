@@ -5,6 +5,7 @@ import {startOf} from "./startof";
 import {toISO} from "./iso";
 import {getTZ} from "./tz";
 import {dateTZ, dateUTC} from "./datetz";
+import {getLocale} from "./locale";
 
 type TZ = ReturnType<typeof getTZ>;
 
@@ -94,6 +95,13 @@ abstract class CDate implements cdateNS.CDate {
         const x = copyOptions(this.x);
         x.tz = getTZ(timezone);
         return new CDateTZ(+this, x);
+    }
+
+    /**
+     * locale
+     */
+    locale(lang: string): this {
+        return this.extend(getLocale(lang));
     }
 
     /**

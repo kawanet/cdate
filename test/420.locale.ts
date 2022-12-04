@@ -39,7 +39,7 @@ function runTests(fn: (locale: keyof typeof locales) => (fmt: string, dt: Date) 
         assert.equal(strftime(`"%a"`, dt), `"Wed"`, `"%a"`);
         assert.equal(strftime(`"%B"`, dt), `"April"`, `"%B"`);
         assert.equal(strftime(`"%b"`, dt), `"Apr"`, `"%b"`);
-        assert.equal(strftime(`"%D"`, dt), `"04/05/23"`, `"%D"`);
+        assert.match(strftime(`"%x"`, dt), /^"0?4\/0?5\/23"/, `"%D"`);
     });
 
     it("fr_FR", () => {
@@ -49,7 +49,7 @@ function runTests(fn: (locale: keyof typeof locales) => (fmt: string, dt: Date) 
         assert.equal(strftime(`"%A"`, dt), `"mercredi"`, `"%A"`);
         assert.equal(strftime(`"%a"`, dt), `"mer."`, `"%a"`);
         assert.equal(strftime(`"%B"`, dt), `"avril"`, `"%B"`);
-        assert.equal(strftime(`"%b"`, dt), `"avril"`, `"%b"`);
-        assert.equal(strftime(`"%D"`, dt), `"05/04/2023"`, `"%D"`);
+        assert.match(strftime(`"%b"`, dt), /"(avril|avr.)"/, `"%b"`);
+        assert.equal(strftime(`"%x"`, dt), `"05/04/2023"`, `"%D"`);
     });
 }

@@ -36,6 +36,8 @@ declare namespace cdateNS {
         tz(timezone: string): CDate;
 
         extend(specifiers: Specifiers): CDate;
+
+        locale(lang: string): CDate;
     }
 
     interface strftime {

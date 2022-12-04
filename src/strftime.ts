@@ -28,7 +28,6 @@ const padY: Pad = fn => (dt) => {
 const C: ToNumber = dt => Math.floor(dt.getFullYear() / 100);
 
 /**
- * %c     The preferred date and time representation for the current locale. [NOT IMPLEMENTED]
  * %d     The day of the month as a decimal number (range 01 to 31).
  */
 const d: ToNumber = dt => dt.getDate();
@@ -57,6 +56,8 @@ const m: ToNumber = dt => (dt.getMonth() + 1);
  * %M     The minute as a decimal number (range 00 to 59).
  */
 const M: ToNumber = dt => dt.getMinutes();
+
+const makeP = (am: string, pm: string): ToString => (dt) => (dt.getHours() < 12 ? am : pm);
 
 /**
  * %S     The second as a decimal number (range 00 to 60)
@@ -89,10 +90,12 @@ const makeZ = (delim: string): ToString => {
 };
 
 export const strftimeMap = {
+    "%c": "%a %b %e %T %Y",
     "%-C": C,
     "%C": pad2(C),
     "%-d": d,
     "%d": pad2(d),
+    "%D": "%m/%d/%y",
     "%e": pad2S(d),
     "%F": "%Y-%m-%d", // ISO
     "%-H": H,
@@ -107,6 +110,9 @@ export const strftimeMap = {
     "%m": pad2(m),
     "%-M": M,
     "%M": pad2(M),
+    "%p": makeP("AM", "PM"),
+    "%P": makeP("am", "pm"),
+    "%r": "%I:%M:%S %p",
     "%R": "%H:%M",
     "%-S": S,
     "%S": pad2(S),

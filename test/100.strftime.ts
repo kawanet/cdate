@@ -242,15 +242,15 @@ function runTests(strftime: strftime) {
      * Formats
      */
     it("Formats", () => {
-        testOne(`%c`, dt, /^Wed 05 Apr 2023 06:07:08/);
+        testOne(`%c`, dt, /^Wed.*Apr.*2023/);
         testOne(`%D`, dt, `04/05/23`);
         testOne(`%F`, dt, `2023-04-05`);
         testOne(`%R`, dt, `06:07`);
         testOne(`%r`, dt, `06:07:08 AM`);
         testOne(`%T`, dt, `06:07:08`);
         testOne(`%v`, dt, ` 5-Apr-2023`);
-        testOne(`%X`, dt, `06:07:08 AM`);
-        testOne(`%x`, dt, `04/05/23`);
+        testOne(`%X`, dt, /^0?6:07:08/);
+        testOne(`%x`, dt, /^0?4\/0?5\/23/);
     });
 
     /**
