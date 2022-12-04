@@ -33,7 +33,7 @@ declare namespace cdateNS {
 
         utc(): CDate;
 
-        tz(timezone: number | string): CDate;
+        tz(timezone: string): CDate;
 
         locale(locale: cdateNS.Locale): CDate;
     }

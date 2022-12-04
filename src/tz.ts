@@ -12,10 +12,8 @@ class TZ {
     // Asia/Tokyo - IANA time zone name
     private f: Intl.DateTimeFormat;
 
-    constructor(tz: number | string) {
-        if ("number" === typeof tz) {
-            this.m = tz;
-        } else if (/\//.test(tz)) {
+    constructor(tz: string) {
+        if (/\//.test(tz)) {
             if (DateTimeFormat) {
                 this.f = new DateTimeFormat("en-US", {timeZoneName: "longOffset", timeZone: tz});
             } else {
@@ -47,4 +45,4 @@ class TZ {
 
 const tzCache: { [tz: string]: TZ } = {};
 
-export const getTZ = (tz: number | string) => (tzCache[tz] || (tzCache[tz] = new TZ(tz)));
+export const getTZ = (tz: string) => (tzCache[tz] || (tzCache[tz] = new TZ(tz)));

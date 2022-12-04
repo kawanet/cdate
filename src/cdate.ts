@@ -90,7 +90,7 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * returns timezone version of CDate
      */
-    tz(timezone: number | string): cdateNS.CDate {
+    tz(timezone: string): cdateNS.CDate {
         const x = copyOptions(this.x);
         x.tz = getTZ(timezone);
         return new CDateTZ(+this, x);
