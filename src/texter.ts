@@ -3,7 +3,7 @@ import {en_US} from "../locale/en_US";
 import {strftimeMap} from "./strftime";
 import {formatMap} from "./format";
 
-type Picker = (specifier: string) => (string | ((dt: cdateNS.DateLike) => (string | number)));
+type Picker = (specifier: string) => (string | ((dt: DateLike) => (string | number)));
 
 const merge = (a: Picker, b?: Picker): Picker => (b ? (specifier => (a(specifier) || b(specifier))) : a);
 
@@ -14,15 +14,15 @@ const strftimeRE = /%(?:-?[a-zA-Z%]|:z)/g;
 const formatRE = new RegExp(["\\[(.*?)\\]"].concat(Object.keys(formatMap).sort().reverse()).join("|"), "g");
 
 interface Texter {
-    strftime(fmt: string, dt: cdateNS.DateLike): string;
+    strftime(fmt: string, dt: DateLike): string;
 
-    format(fmt: string, dt: cdateNS.DateLike): string;
+    format(fmt: string, dt: DateLike): string;
 
     locale(locale: cdateNS.Locale): Texter;
 }
 
 const factory = (picker: Picker): Texter => {
-    const one = (specifier: string, dt: cdateNS.DateLike): string => {
+    const one = (specifier: string, dt: DateLike): string => {
         let fn = picker(specifier);
 
         if ("string" === typeof fn) {

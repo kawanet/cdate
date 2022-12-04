@@ -1,4 +1,3 @@
-import type {cdateNS} from "../types/cdate";
 import type {getTZ} from "./tz";
 import {toISO} from "./iso";
 
@@ -9,7 +8,7 @@ const enum d {
     MINUTE = 60 * SECOND,
 }
 
-abstract class DateLikeBase implements cdateNS.DateLike {
+abstract class DateLikeBase implements DateLike {
     constructor(protected dt: Date) {
         //
     }
@@ -105,10 +104,10 @@ class DateTZ extends DateLikeBase {
     }
 }
 
-export function dateUTC(dt: number): cdateNS.DateLike {
+export function dateUTC(dt: number): DateLike {
     return new DateUTC(new Date(+dt));
 }
 
-export function dateTZ(dt: number, tz: TZ): cdateNS.DateLike {
+export function dateTZ(dt: number, tz: TZ): DateLike {
     return new DateTZ(new Date(+dt), tz);
 }

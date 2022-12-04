@@ -26,12 +26,12 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * millisecond since the UNIX epoch
      */
-    protected readonly t: number | cdateNS.DateLike;
+    protected readonly t: number | DateLike;
 
     /**
      * read-only version of DateLike
      */
-    protected d: cdateNS.DateLike;
+    protected d: DateLike;
 
     /**
      * options container
@@ -41,7 +41,7 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * the constructor
      */
-    constructor(t: number | cdateNS.DateLike, x: Options) {
+    constructor(t: number | DateLike, x: Options) {
         this.t = t;
         if ("number" !== typeof t) {
             this.d = t;
@@ -52,7 +52,7 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * creates another CDate object
      */
-    cdate(ms: number | cdateNS.DateLike): this {
+    cdate(ms: number | DateLike): this {
         return new (this.constructor as any)(ms, this.x);
     }
 
@@ -69,12 +69,12 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * returns a read-write version of DateLike for manipulation
      */
-    protected abstract rw(): cdateNS.DateLike;
+    protected abstract rw(): DateLike;
 
     /**
      * returns a read-only version of DateLike for displaying
      */
-    protected ro(): cdateNS.DateLike {
+    protected ro(): DateLike {
         return this.d || (this.d = this.rw());
     }
 
@@ -183,19 +183,19 @@ abstract class CDate implements cdateNS.CDate {
 }
 
 class CDateLocal extends CDate {
-    protected rw(): cdateNS.DateLike {
+    protected rw(): DateLike {
         return new Date(+this.t);
     }
 }
 
 class CDateUTC extends CDate {
-    protected rw(): cdateNS.DateLike {
+    protected rw(): DateLike {
         return dateUTC(+this.t);
     }
 }
 
 class CDateTZ extends CDateUTC {
-    protected rw(): cdateNS.DateLike {
+    protected rw(): DateLike {
         return dateTZ(+this.t, this.x.tz);
     }
 }
