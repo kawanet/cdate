@@ -60,3 +60,5 @@ declare namespace cdateNS {
 }
 
 export const cdate: (dt?: string | number | Date) => cdateNS.CDate;
+
+export const strftime: (fmt: string, dt?: Date) => string;

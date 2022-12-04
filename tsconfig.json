@@ -1,5 +1,11 @@
 {
+  "exclude": [
+    "build/",
+    "node_modules",
+    "tmp/"
+  ],
   "include": [
+    "index.ts",
     "locale/",
     "src/",
     "test/",

@@ -28,7 +28,7 @@
     "time"
   ],
   "license": "MIT",
-  "main": "src/cdate.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kawanet/cdate.git"

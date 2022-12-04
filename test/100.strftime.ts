@@ -2,8 +2,7 @@
 
 import {strict as assert} from "assert";
 import * as samsonjs_strftime from "strftime";
-
-import {texter} from "../src/texter";
+import * as cdatejs from "../";
 
 const TITLE = __filename.split("/").pop()!;
 
@@ -31,7 +30,7 @@ describe(TITLE, () => {
     });
 
     describe("kawanet/cdate", () => {
-        runTests(() => texter.strftime);
+        runTests(() => cdatejs.strftime);
     });
 });
 
