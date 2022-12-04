@@ -22,6 +22,12 @@ dist: ../dist/cdate.min.js
 
 test: dist ../build/test.js
 
+mocha: ../build/test-local.js
+	../node_modules/.bin/mocha $<
+
+../build/test-local.js: ../dist/cdate.min.js ../build/test.js
+	cat $^ > $@
+
 ../build/test.js: ../build/src/cdate.js ../browser/import.js
 	perl -i -pe 's#require\("../"\)#require("../../browser/import")#' ../build/test/*.js
 	../node_modules/.bin/browserify --list ../build/test/*.js | sort
