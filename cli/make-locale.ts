@@ -3,12 +3,22 @@
 import {cdate, cdateNS} from "../";
 import {formatOptions} from "../src/locale";
 
+const enum d {
+    SECOND = 1000,
+    MINUTE = 60 * SECOND,
+    HOUR = 60 * MINUTE,
+    DAY = 24 * HOUR,
+}
+
+const getDateArray = (dt: Date, size: number, days: number): Date[] => {
+    return new Array(size).fill(0).map((_, idx) => new Date(+dt + idx * days * d.DAY));
+};
+
 const main = async (lang: string) => {
-    // Sun Jan 02 2022
-    const start = new Date(2022, 0, 2, 3, 4, 5);
-    const months = new Array(12).fill(0).map((_, i) => i);
-    const days = new Array(7).fill(0).map((_, i) => i);
-    const hours = [0, 12];
+    const initDate = new Date("2022-01-02T03:04:05Z");
+    const months = getDateArray(initDate, 12, 31);
+    const days = getDateArray(initDate, 7, 1);
+    const hours = getDateArray(initDate, 2, .5);
 
     let weekdayShort: string[];
     let weekdayLong: string[];
@@ -25,76 +35,76 @@ const main = async (lang: string) => {
         "%p": dt => (dt.getHours() < 12 ? ampm[0] : ampm[1]),
     };
 
-    const dt = cdate(start).extend(locale);
+    const dt = cdate(initDate).utc().extend(locale);
 
     {
         const format = Intl.DateTimeFormat(lang, formatOptions.a);
-        weekdayShort = days.map(month => format.format(+dt.add(month, "day")));
+        weekdayShort = days.map(dt => format.format(dt));
         console.warn("weekdayShort:", weekdayShort.join(" "));
     }
 
     {
         const format = Intl.DateTimeFormat(lang, formatOptions.A);
-        weekdayLong = days.map(month => format.format(+dt.add(month, "day")));
+        weekdayLong = days.map(dt => format.format(dt));
         console.warn("weekdayLong: ", weekdayLong.join(" "));
     }
 
     {
         const format = Intl.DateTimeFormat(lang, formatOptions.b);
-        monthShort = months.map(month => format.format(+dt.add(month, "month")));
+        monthShort = months.map(dt => format.format(dt));
         console.warn("monthShort:  ", monthShort.join(" "));
     }
 
     {
         const format = Intl.DateTimeFormat(lang, formatOptions.B);
-        monthLong = months.map(month => format.format(+dt.add(month, "month")));
+        monthLong = months.map(dt => format.format(dt));
         console.warn("monthLong:   ", monthLong.join(" "));
     }
 
     {
-        const format = Intl.DateTimeFormat(lang, {timeStyle: "long", hour12: true});
-        ampm = hours.map(hour => format.formatToParts(+dt.add(hour, "hour")).find(v => v.type === "dayPeriod").value);
+        const format = Intl.DateTimeFormat(lang, formatOptions.r);
+        ampm = hours.map(dt => format.formatToParts(dt).find(v => v.type === "dayPeriod").value);
         console.warn("ampm:  ", ampm.join(" "));
     }
 
     {
         const format = Intl.DateTimeFormat(lang, formatOptions.x);
-        const parts = format.formatToParts(+dt);
+        const parts = format.formatToParts(initDate);
         style.x = parts.map(parsePart).join("");
         sample.x = dt.extend({"%x": style.x}).text("%x");
-        console.warn("Intl:  ", format.format(+dt));
-        console.warn("cdate: ", sample.x);
+        console.warn("Intl:  ", format.format(initDate));
         console.warn(`locale: "${style.x}"`);
+        console.warn("cdate: ", sample.x);
     }
 
     {
         const format = Intl.DateTimeFormat(lang, formatOptions.X);
-        const parts = format.formatToParts(+dt);
+        const parts = format.formatToParts(initDate);
         style.X = parts.map(parsePart).join("");
         sample.X = dt.extend({"%X": style.X}).text("%X");
         if (/%p/i.test(style.X)) style.X = style.X.replace("%-H", "%-I");
-        console.warn("Intl:  ", format.format(+dt));
+        console.warn("Intl:  ", format.format(initDate));
         console.warn("cdate: ", sample.X);
         console.warn(`locale: "${style.X}"`);
     }
 
     {
         const format = Intl.DateTimeFormat(lang, formatOptions.r);
-        const parts = format.formatToParts(+dt);
+        const parts = format.formatToParts(initDate);
         style.r = parts.map(parsePart).join("");
         if (/%p/i.test(style.r)) style.r = style.r.replace("%-H", "%-I");
         sample.r = dt.extend({"%r": style.r}).text("%r");
-        console.warn("Intl:  ", format.format(+dt));
+        console.warn("Intl:  ", format.format(initDate));
         console.warn("cdate: ", sample.r);
         console.warn(`locale: "${style.r}"`);
     }
 
     {
         const format = Intl.DateTimeFormat(lang, formatOptions.c);
-        const parts = format.formatToParts(+dt);
+        const parts = format.formatToParts(initDate);
         style.c = parts.map(parsePart).join("");
         sample.c = dt.extend({"%c": style.c}).text("%c");
-        console.warn("Intl:  ", format.format(+dt));
+        console.warn("Intl:  ", format.format(initDate));
         console.warn("cdate: ", sample.c);
         console.warn(`locale: "${style.c}"`);
     }

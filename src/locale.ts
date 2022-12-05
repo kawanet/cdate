@@ -16,8 +16,8 @@ const getDateArray = (dt: Date, size: number, days: number): Date[] => {
     return new Array(size).fill(0).map((_, idx) => new Date(+dt + idx * days * d.DAY));
 }
 
-// Sun Jan 02 2022 (1641081600000)
-const initDate = new Date(2022, 0, 2);
+// "2022-01-02T00:00:00Z" (1641081600000)
+const initDate = new Date(1641081600000);
 const getMonthArray = lazy(() => getDateArray(initDate, 12, 31));
 const getWeekdayArray = lazy(() => getDateArray(initDate, 7, 1));
 
@@ -55,16 +55,17 @@ const makeLocale = (lang: string): cdateNS.Specifiers => {
 };
 
 type localeFormatSpecifiers = "a" | "A" | "b" | "B" | "c" | "r" | "x" | "X";
+const UTC = "UTC";
 
 const styleOptions: { [specifier in localeFormatSpecifiers]: Intl.DateTimeFormatOptions } = {
-    a: {weekday: "short"},
-    A: {weekday: "long"},
-    b: {month: "short"},
-    B: {month: "long"},
-    c: {dateStyle: "full", timeStyle: "long", timeZoneName: "short"},
-    r: {timeStyle: "medium", timeZone: "UTC", hour12: true},
-    x: {dateStyle: "short", timeZone: "UTC"},
-    X: {timeStyle: "medium", timeZone: "UTC", hour12: false},
+    a: {timeZone: UTC, weekday: "short"},
+    A: {timeZone: UTC, weekday: "long"},
+    b: {timeZone: UTC, month: "short"},
+    B: {timeZone: UTC, month: "long"},
+    c: {timeZone: UTC, dateStyle: "full", timeStyle: "long"},
+    r: {timeZone: UTC, timeStyle: "medium", hour12: true},
+    x: {timeZone: UTC, dateStyle: "short"},
+    X: {timeZone: UTC, timeStyle: "medium"}, // hour12: default
 };
 
 const toUTCDate = (dt: Date): Date => {

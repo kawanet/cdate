@@ -14,7 +14,7 @@ export const nl_NL: cdateNS.Specifiers = {
     "%B": dt => monthLong[dt.getMonth()],
     "%p": dt => (dt.getHours() < 12 ? "a.m." : "p.m."),
     
-    // zondag 2 januari 2022 om 03:04:05 +09:00
+    // zondag 2 januari 2022 om 03:04:05 +00:00
     "%c": "%A %-d %B %Y om %H:%M:%S %:z",
 
     // 03:04:05 a.m.
