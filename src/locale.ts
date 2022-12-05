@@ -21,42 +21,42 @@ const initDate = new Date(2022, 0, 2);
 const getMonthArray = lazy(() => getDateArray(initDate, 12, 31));
 const getWeekdayArray = lazy(() => getDateArray(initDate, 7, 1));
 
-class Locale {
-    constructor(protected lang: string) {
-        //
-    }
+const makeLocale = (lang: string): cdateNS.Specifiers => {
+    const DateTimeFormat = Intl && Intl.DateTimeFormat;
 
-    protected format(options: Intl.DateTimeFormatOptions) {
-        return new Intl.DateTimeFormat(this.lang, options);
-    }
+    // make a filter function from Date to string
+    const makeFn = (options: Intl.DateTimeFormatOptions): ((dt: Date) => string) => {
+        const format = new DateTimeFormat(lang, options);
+        return dt => format.format(dt);
+    };
 
-    protected array(options: Intl.DateTimeFormatOptions, getArray: () => Date[]) {
-        const format = this.format(options);
-        return getArray().map(dt => format.format(dt));
-    }
+    // stringify a single Date to string
+    const stringify = (dt: Date, options: Intl.DateTimeFormatOptions): string => {
+        const format = new DateTimeFormat(lang, options);
+        return format.format(toUTCDate(dt));
+    };
 
-    private _a = lazy(() => this.array(formatOptions.a, getWeekdayArray));
-    private _A = lazy(() => this.array(formatOptions.A, getWeekdayArray));
-    private _b = lazy(() => this.array(formatOptions.b, getMonthArray));
-    private _B = lazy(() => this.array(formatOptions.B, getMonthArray));
+    // lazy build the array on demand
+    const array_a = lazy(() => getWeekdayArray().map(makeFn(styleOptions.a)));
+    const array_A = lazy(() => getWeekdayArray().map(makeFn(styleOptions.A)));
+    const array_b = lazy(() => getMonthArray().map(makeFn(styleOptions.b)));
+    const array_B = lazy(() => getMonthArray().map(makeFn(styleOptions.B)));
 
-    locale(): cdateNS.Specifiers {
-        return {
-            "%a": (dt) => this._a()[dt.getDay()],
-            "%A": (dt) => this._A()[dt.getDay()],
-            "%b": (dt) => this._b()[dt.getMonth()],
-            "%B": (dt) => this._B()[dt.getMonth()],
-            "%c": (dt) => this.format(formatOptions.c).format(toUTCDate(dt)),
-            "%r": (dt) => this.format(formatOptions.r).format(toUTCDate(dt)),
-            "%x": (dt) => this.format(formatOptions.x).format(toUTCDate(dt)),
-            "%X": (dt) => this.format(formatOptions.X).format(toUTCDate(dt)),
-        }
-    }
-}
+    return {
+        "%a": (dt) => array_a()[dt.getDay()],
+        "%A": (dt) => array_A()[dt.getDay()],
+        "%b": (dt) => array_b()[dt.getMonth()],
+        "%B": (dt) => array_B()[dt.getMonth()],
+        "%c": (dt) => stringify(dt, styleOptions.c),
+        "%r": (dt) => stringify(dt, styleOptions.r),
+        "%x": (dt) => stringify(dt, styleOptions.x),
+        "%X": (dt) => stringify(dt, styleOptions.X),
+    };
+};
 
 type localeFormatSpecifiers = "a" | "A" | "b" | "B" | "c" | "r" | "x" | "X";
 
-export const formatOptions: { [specifier in localeFormatSpecifiers]: Intl.DateTimeFormatOptions } = {
+const styleOptions: { [specifier in localeFormatSpecifiers]: Intl.DateTimeFormatOptions } = {
     a: {weekday: "short"},
     A: {weekday: "long"},
     b: {month: "short"},
@@ -74,4 +74,6 @@ const toUTCDate = (dt: Date): Date => {
 
 const localeCache: { [lang: string]: cdateNS.Specifiers } = {};
 
-export const getLocale = (lang: string) => (localeCache[lang] || (localeCache[lang] = new Locale(lang).locale()));
+export const formatOptions = styleOptions;
+
+export const getLocale = (lang: string) => (localeCache[lang] || (localeCache[lang] = makeLocale(lang)));
