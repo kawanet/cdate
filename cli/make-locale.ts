@@ -104,6 +104,7 @@ const main = async (lang: string) => {
             "%A": dt => weekdayLong[dt.getDay()],
             "%b": dt => monthShort[dt.getMonth()],
             "%B": dt => monthLong[dt.getMonth()],
+            "%p": dt => (dt.getHours() < 12 ? "${ampm[0]}" : "${ampm[1]}"),
             
             // ${sample.c}
             "%c": "${style.c}",
@@ -117,13 +118,6 @@ const main = async (lang: string) => {
 
     if (lang === "en-US") {
         fmt = fmt.replace(/("%c")/, "// $1");
-    }
-
-    {
-        fmt = fmt.replace(/^(\s+)"%B".*?(\n)/m, ($$, $1, $2) => {
-            const code = `"%p": dt => (dt.getHours() < 12 ? "${ampm[0]}" : "${ampm[1]}"),`;
-            return $$ + $1 + code + $2;
-        });
     }
 
     // NBSP
