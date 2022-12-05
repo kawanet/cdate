@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import {cdate, cdateNS} from "../";
-import {formatOptions} from "../src/locale";
+import {getLocaleOptions} from "../src/locale";
 
 const enum d {
     SECOND = 1000,
@@ -36,6 +36,7 @@ const main = async (lang: string) => {
     };
 
     const dt = cdate(initDate).utc().extend(locale);
+    const formatOptions = getLocaleOptions();
 
     {
         const format = Intl.DateTimeFormat(lang, formatOptions.a);

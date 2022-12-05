@@ -55,18 +55,31 @@ const makeLocale = (lang: string): cdateNS.Specifiers => {
 };
 
 type localeFormatSpecifiers = "a" | "A" | "b" | "B" | "c" | "r" | "x" | "X";
-const UTC = "UTC";
 
-const styleOptions: { [specifier in localeFormatSpecifiers]: Intl.DateTimeFormatOptions } = {
-    a: {timeZone: UTC, weekday: "short"},
-    A: {timeZone: UTC, weekday: "long"},
-    b: {timeZone: UTC, month: "short"},
-    B: {timeZone: UTC, month: "long"},
-    c: {timeZone: UTC, weekday: "short", year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit"},
-    r: {timeZone: UTC, timeStyle: "medium", hour12: true},
-    x: {timeZone: UTC, dateStyle: "short"},
-    X: {timeZone: UTC, timeStyle: "medium"}, // hour12: default
-};
+export const getLocaleOptions = () => {
+    const digits = "2-digit";
+    const medium = "medium";
+    const numeric = "numeric";
+    const short = "short";
+    const long = "long";
+
+    // Note: "timeZoneName" parameter is not allowed here!
+    const options: { [specifier in localeFormatSpecifiers]: Intl.DateTimeFormatOptions } = {
+        a: {weekday: short},
+        A: {weekday: long},
+        b: {month: short},
+        B: {month: long},
+        c: {weekday: short, year: numeric, month: short, day: numeric, hour: digits, minute: digits, second: digits},
+        r: {timeStyle: medium, hour12: true},
+        x: {dateStyle: short},
+        X: {timeStyle: medium}, // hour12: default
+    };
+
+    // appending timeZone: "UTC" each
+    Object.keys(options).forEach((key: keyof typeof options) => options[key].timeZone = "UTC");
+
+    return options;
+}
 
 const toUTCDate = (dt: Date): Date => {
     const offset = dt.getTimezoneOffset();
@@ -75,6 +88,6 @@ const toUTCDate = (dt: Date): Date => {
 
 const localeCache: { [lang: string]: cdateNS.Specifiers } = {};
 
-export const formatOptions = styleOptions;
+const styleOptions = getLocaleOptions();
 
 export const getLocale = (lang: string) => (localeCache[lang] || (localeCache[lang] = makeLocale(lang)));

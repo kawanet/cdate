@@ -9,13 +9,14 @@ dist: ../dist/cdate.min.js
 	../node_modules/.bin/terser -c -m --ecma 6 -o $@ $<
 	ls -l $@
 
+# the below does NOT use browserify to keep bundle.js much smaller enough
 ../build/bundle.js: ../src/cdate.js wrap.js
 	mkdir -p ../build/
 	grep PRE < wrap.js > $@
 	cat ../locale/en_US.js ../src/*.js >> $@
 	perl -i -pe 's#^("use strict"|Object.defineProperty|exports.*= void 0)#// $$&#' $@
 	perl -i -pe 's#^(const .*_1 = require.)#// $$&#' $@
-	perl -i -pe 's#(\W)(\w+_1\.)(\w)#$$1 /* $$2 */ $$3#g' $@
+	perl -i -pe 's#(\W)((?:\w+_1|exports)\.)(\w)#$$1 /* $$2 */ $$3#g' $@
 	perl -i -pe 's#^(exports\.\w+ = \w+;)#// $$&#' $@
 	perl -i -pe 's#^(exports\.)(\w+)#const /* $$1 */ $$2#' $@
 	grep -v PRE < wrap.js >> $@
