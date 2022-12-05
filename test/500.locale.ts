@@ -10,6 +10,10 @@ const TITLE = __filename.split("/").pop()!;
 describe(TITLE, () => {
     const date = new Date("2023-04-05T06:07:08.090Z");
 
+    // Node v12 does not support DateTimeFormat
+    const weekday = Intl.DateTimeFormat("ja", {weekday: "short"}).format(new Date());
+    const IT = /[日月火水木金土]/.test(weekday) ? it : it.skip;
+
     it(`cdate()`, () => {
         const dt = cdate(date).utc();
         assert.equal(dt.text("%A = %a"), "Wednesday = Wed");
@@ -19,7 +23,7 @@ describe(TITLE, () => {
         assert.equal(dt.text("%X"), "06:07:08");
     });
 
-    it(`cdate().locale("en-US")`, () => {
+    IT(`cdate().locale("en-US")`, () => {
         const dt = cdate(date).utc().locale("en-US");
         assert.equal(dt.text("%A = %a"), "Wednesday = Wed");
         assert.equal(dt.text("%B = %b"), "April = Apr");
@@ -37,7 +41,7 @@ describe(TITLE, () => {
         assert.equal(dt.text("%X"), "06:07:08");
     });
 
-    it(`cdate().locale("fr-FR")`, () => {
+    IT(`cdate().locale("fr-FR")`, () => {
         const dt = cdate(date).utc().locale("fr-FR");
         assert.equal(dt.text("%A = %a"), "mercredi = mer.");
         assert.equal(dt.text("%B = %b"), "avril = avr.");
@@ -46,7 +50,7 @@ describe(TITLE, () => {
         assert.equal(dt.text("%X"), "06:07:08");
     });
 
-    it(`cdate().locale("ja-JP")`, () => {
+    IT(`cdate().locale("ja-JP")`, () => {
         const dt = cdate(date).utc().locale("ja-JP");
         assert.equal(dt.text("%A = %a"), "水曜日 = 水");
         assert.equal(dt.text("%B = %b"), "4月 = 4月");
