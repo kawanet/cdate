@@ -9,7 +9,8 @@ const merge = (a: Picker, b?: Picker): Picker => ((a && b) ? (specifier => (a(sp
 
 const mapPicker = (map: cdateNS.Specifiers): Picker => (map && (specifier => map[specifier]));
 
-const strftimeRE = /%(?:-?[a-zA-Z%]|:z)/g;
+// @see https://docs.ruby-lang.org/en/3.1/DateTime.html#method-i-strftime
+const strftimeRE = /%(?:[EO]\w|[0_#^-]?[1-9]?\w|::?z|[%+])/g;
 
 const formatRE = new RegExp(["\\[(.*?)\\]"].concat(Object.keys(formatMap).sort().reverse()).join("|"), "g");
 

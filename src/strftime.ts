@@ -126,6 +126,7 @@ export const strftimeMap = (): cdateNS.Specifiers => {
         "%w": dt => dt.getDay(),
         "%:z": makeZ(":"),
         "%z": makeZ(""),
+        "%Z": "%:z",
         "%%": () => "%",  // %%     A literal '%' character.
         "%n": () => "\n", // %n     A newline character. (SU)
         "%t": () => "\t", // %t     A tab character. (SU)
