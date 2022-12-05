@@ -70,7 +70,7 @@ const main = async (lang: string) => {
     {
         const format = Intl.DateTimeFormat(lang, formatOptions.x);
         const parts = format.formatToParts(initDate);
-        style.x = parts.map(parsePart).join("");
+        style.x = fixHours(parts.map(parsePart).join(""));
         sample.x = dt.extend({"%x": style.x}).text("%x");
         console.warn("Intl:  ", format.format(initDate));
         console.warn(`locale: "${style.x}"`);
@@ -80,9 +80,8 @@ const main = async (lang: string) => {
     {
         const format = Intl.DateTimeFormat(lang, formatOptions.X);
         const parts = format.formatToParts(initDate);
-        style.X = parts.map(parsePart).join("");
+        style.X = fixHours(parts.map(parsePart).join(""));
         sample.X = dt.extend({"%X": style.X}).text("%X");
-        if (/%p/i.test(style.X)) style.X = style.X.replace("%-H", "%-I");
         console.warn("Intl:  ", format.format(initDate));
         console.warn("cdate: ", sample.X);
         console.warn(`locale: "${style.X}"`);
@@ -91,8 +90,7 @@ const main = async (lang: string) => {
     {
         const format = Intl.DateTimeFormat(lang, formatOptions.r);
         const parts = format.formatToParts(initDate);
-        style.r = parts.map(parsePart).join("");
-        if (/%p/i.test(style.r)) style.r = style.r.replace("%-H", "%-I");
+        style.r = fixHours(parts.map(parsePart).join(""));
         sample.r = dt.extend({"%r": style.r}).text("%r");
         console.warn("Intl:  ", format.format(initDate));
         console.warn("cdate: ", sample.r);
@@ -102,7 +100,7 @@ const main = async (lang: string) => {
     {
         const format = Intl.DateTimeFormat(lang, formatOptions.c);
         const parts = format.formatToParts(initDate);
-        style.c = parts.map(parsePart).join("");
+        style.c = fixHours(parts.map(parsePart).join(""), /%-?H/);
         sample.c = dt.extend({"%c": style.c}).text("%c");
         console.warn("Intl:  ", format.format(initDate));
         console.warn("cdate: ", sample.c);
@@ -162,11 +160,13 @@ const main = async (lang: string) => {
             }
             if (v.value === monthLong[0]) return "%B";
             if (v.value === monthShort[0]) return "%b";
+            if (v.value === monthShort[0] + ".") return "%b.";
             throw new Error(`not found: ${v.type} = ${v.value}`);
         }
         if (v.type === "weekday") {
             if (v.value === weekdayLong[0]) return "%A";
             if (v.value === weekdayShort[0]) return "%a";
+            if (v.value === weekdayShort[0] + ".") return "%a.";
             throw new Error(`not found: ${v.type} = ${v.value}`);
         }
         if (v.type === "day") return (v.value.length === 2) ? "%d" : "%-d";
@@ -176,6 +176,10 @@ const main = async (lang: string) => {
         if (v.type === "dayPeriod") return /^(am|pm)$/.test(v.value) ? "%P" : "%p";
         if (v.type === "timeZoneName") return "%:z";
         if (v.type === "literal") return v.value;
+    }
+
+    function fixHours(style: string, match?: RegExp): string {
+        return (/%p/i.test(style)) ? style.replace(match || /%-H/, "%-I") : style;
     }
 };
 

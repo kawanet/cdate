@@ -62,7 +62,7 @@ const styleOptions: { [specifier in localeFormatSpecifiers]: Intl.DateTimeFormat
     A: {timeZone: UTC, weekday: "long"},
     b: {timeZone: UTC, month: "short"},
     B: {timeZone: UTC, month: "long"},
-    c: {timeZone: UTC, dateStyle: "full", timeStyle: "long"},
+    c: {timeZone: UTC, weekday: "short", year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit"},
     r: {timeZone: UTC, timeStyle: "medium", hour12: true},
     x: {timeZone: UTC, dateStyle: "short"},
     X: {timeZone: UTC, timeStyle: "medium"}, // hour12: default

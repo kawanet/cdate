@@ -14,8 +14,8 @@ export const ja_JP: cdateNS.Specifiers = {
     "%B": dt => monthLong[dt.getMonth()],
     "%p": dt => (dt.getHours() < 12 ? "午前" : "午後"),
     
-    // 2022年1月2日日曜日 3:04:05 +00:00
-    "%c": "%Y年%-m月%-d日%A %-H:%M:%S %:z",
+    // 2022年1月2日(日) 03:04:05
+    "%c": "%Y年%-m月%-d日(%a) %H:%M:%S",
 
     // 午前3:04:05
     "%r": "%p%-I:%M:%S",
