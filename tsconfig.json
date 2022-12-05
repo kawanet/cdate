@@ -6,6 +6,7 @@
   ],
   "include": [
     "index.ts",
+    "cli/",
     "locale/",
     "src/",
     "test/",
