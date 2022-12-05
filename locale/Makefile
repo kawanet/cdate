@@ -11,7 +11,14 @@ ALL=\
 	nl_NL.ts \
 	pt_PT.ts \
 
-all: $(ALL)
+all: index.ts
+
+index.ts: $(ALL)
+	echo "// cdate/locale" > $@
+	echo "" >> $@
+	for f in $(ALL:.ts=); do echo "import {$$f} from \"./$$f\";" >> $@; done
+	echo "" >> $@
+	echo "export const locales = {$(ALL:.ts=,)};" >> $@
 
 %.ts:
 	node ../cli/make-locale $(subst _,-,$(basename $@)) > $@
