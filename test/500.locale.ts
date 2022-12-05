@@ -37,7 +37,7 @@ describe(TITLE, () => {
         assert.equal(dt.text("%A = %a"), "mercredi = mer.");
         assert.equal(dt.text("%B = %b"), "avril = avr.");
         assert.equal(dt.text("%x"), "05/04/2023");
-        assert.equal(dt.text("%r"), "06:07:08 AM");
+        assert.match(dt.text("%r"), /0?6:07:08 AM/);
         assert.equal(dt.text("%X"), "06:07:08");
     });
 
@@ -46,7 +46,7 @@ describe(TITLE, () => {
         assert.equal(dt.text("%A = %a"), "mercredi = mer.");
         assert.equal(dt.text("%B = %b"), "avril = avr.");
         assert.equal(dt.text("%x"), "05/04/2023");
-        assert.equal(dt.text("%r"), "06:07:08 AM");
+        assert.match(dt.text("%r"), /0?6:07:08 AM/);
         assert.equal(dt.text("%X"), "06:07:08");
     });
 

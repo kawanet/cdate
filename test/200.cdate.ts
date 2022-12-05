@@ -7,7 +7,7 @@ import {cdate} from "../";
 const TITLE = __filename.split("/").pop()!;
 
 describe(TITLE, () => {
-    const date = new Date("2023/04/05 06:07:08.090");
+    const date = new Date("2023-04-05 06:07:08.090");
 
     it(`cdate(number)`, () => {
         const dt = cdate(+date);
