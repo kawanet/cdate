@@ -16,15 +16,6 @@ const enum d {
 }
 
 describe(TITLE, () => {
-    before(() => {
-        // assert polyfill doesn't have assert.match method.
-        if (!assert.match) {
-            assert.match = (value, regExp, message) => {
-                assert.ok(regExp.test(value), message || String(regExp));
-            }
-        }
-    });
-
     describe("samsonjs/strftime", () => {
         runTests(samsonjs.strftime);
     });
