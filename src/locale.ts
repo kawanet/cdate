@@ -13,13 +13,7 @@ const lazy = <T>(fn: (() => T)): (() => T) => {
 };
 
 const getDateArray = (dt: Date, size: number, days: number): Date[] => {
-    const list: Date[] = [];
-    let t = +dt;
-    for (let i = 0; i < size; i++) {
-        list[i] = new Date(t);
-        t += d.DAY * days;
-    }
-    return list;
+    return new Array(size).fill(0).map((_, idx) => new Date(+dt + idx * days * d.DAY));
 }
 
 // Sun Jan 02 2022 (1641081600000)
@@ -41,10 +35,10 @@ class Locale {
         return getArray().map(dt => format.format(dt));
     }
 
-    private _a = lazy(() => this.array({weekday: "short"}, getWeekdayArray));
-    private _A = lazy(() => this.array({weekday: "long"}, getWeekdayArray));
-    private _b = lazy(() => this.array({month: "short"}, getMonthArray));
-    private _B = lazy(() => this.array({month: "long"}, getMonthArray));
+    private _a = lazy(() => this.array(formatOptions.a, getWeekdayArray));
+    private _A = lazy(() => this.array(formatOptions.A, getWeekdayArray));
+    private _b = lazy(() => this.array(formatOptions.b, getMonthArray));
+    private _B = lazy(() => this.array(formatOptions.B, getMonthArray));
 
     locale(): cdateNS.Specifiers {
         return {
@@ -60,9 +54,13 @@ class Locale {
     }
 }
 
-type localeFormatSpecifiers = "c" | "r" | "x" | "X";
+type localeFormatSpecifiers = "a" | "A" | "b" | "B" | "c" | "r" | "x" | "X";
 
 export const formatOptions: { [specifier in localeFormatSpecifiers]: Intl.DateTimeFormatOptions } = {
+    a: {weekday: "short"},
+    A: {weekday: "long"},
+    b: {month: "short"},
+    B: {month: "long"},
     c: {dateStyle: "full", timeStyle: "long", timeZoneName: "short"},
     r: {timeStyle: "medium", timeZone: "UTC", hour12: true},
     x: {dateStyle: "short", timeZone: "UTC"},

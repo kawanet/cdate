@@ -28,25 +28,25 @@ const main = async (lang: string) => {
     const dt = cdate(start).extend(locale);
 
     {
-        const format = Intl.DateTimeFormat(lang, {weekday: "short"});
+        const format = Intl.DateTimeFormat(lang, formatOptions.a);
         weekdayShort = days.map(month => format.format(+dt.add(month, "day")));
         console.warn("weekdayShort:", weekdayShort.join(" "));
     }
 
     {
-        const format = Intl.DateTimeFormat(lang, {weekday: "long"});
+        const format = Intl.DateTimeFormat(lang, formatOptions.A);
         weekdayLong = days.map(month => format.format(+dt.add(month, "day")));
         console.warn("weekdayLong: ", weekdayLong.join(" "));
     }
 
     {
-        const format = Intl.DateTimeFormat(lang, {month: "short"});
+        const format = Intl.DateTimeFormat(lang, formatOptions.b);
         monthShort = months.map(month => format.format(+dt.add(month, "month")));
         console.warn("monthShort:  ", monthShort.join(" "));
     }
 
     {
-        const format = Intl.DateTimeFormat(lang, {month: "long"});
+        const format = Intl.DateTimeFormat(lang, formatOptions.B);
         monthLong = months.map(month => format.format(+dt.add(month, "month")));
         console.warn("monthLong:   ", monthLong.join(" "));
     }
