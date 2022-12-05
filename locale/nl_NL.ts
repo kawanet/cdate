@@ -17,8 +17,11 @@ export const nl_NL: cdateNS.Specifiers = {
     // zondag 2 januari 2022 om 03:04:05 +09:00
     "%c": "%A %-d %B %Y om %H:%M:%S %:z",
 
-    // 2 jan. 2022
-    "%x": "%-d %b %Y",
+    // 03:04:05 a.m.
+    "%r": "%H:%M:%S %p",
+
+    // 02-01-2022
+    "%x": "%d-%m-%Y",
 
     // 03:04:05
     "%X": "%H:%M:%S",

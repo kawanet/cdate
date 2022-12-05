@@ -87,6 +87,10 @@ const makeZ = (delim: string): ToString => {
     }
 };
 
+/**
+ * %c %r %x and %X are defined at locale files
+ */
+
 export const strftimeMap = {
     "%c": "%a %b %e %T %Y",
     "%-C": C,
@@ -109,7 +113,6 @@ export const strftimeMap = {
     "%-M": M,
     "%M": pad2(M),
     "%P": dt => (dt.getHours() < 12 ? "am" : "pm"),
-    "%r": "%I:%M:%S %p",
     "%R": "%H:%M",
     "%-S": S,
     "%S": pad2(S),

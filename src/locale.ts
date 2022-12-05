@@ -52,11 +52,22 @@ class Locale {
             "%A": (dt) => this._A()[dt.getDay()],
             "%b": (dt) => this._b()[dt.getMonth()],
             "%B": (dt) => this._B()[dt.getMonth()],
-            "%x": (dt) => this.format({dateStyle: "short", timeZone: "UTC"}).format(toUTCDate(dt)),
-            "%X": (dt) => this.format({timeStyle: "medium", timeZone: "UTC"}).format(toUTCDate(dt)),
+            "%c": (dt) => this.format(formatOptions.c).format(toUTCDate(dt)),
+            "%r": (dt) => this.format(formatOptions.r).format(toUTCDate(dt)),
+            "%x": (dt) => this.format(formatOptions.x).format(toUTCDate(dt)),
+            "%X": (dt) => this.format(formatOptions.X).format(toUTCDate(dt)),
         }
     }
 }
+
+type localeFormatSpecifiers = "c" | "r" | "x" | "X";
+
+export const formatOptions: { [specifier in localeFormatSpecifiers]: Intl.DateTimeFormatOptions } = {
+    c: {dateStyle: "full", timeStyle: "long", timeZoneName: "short"},
+    r: {timeStyle: "medium", timeZone: "UTC", hour12: true},
+    x: {dateStyle: "short", timeZone: "UTC"},
+    X: {timeStyle: "medium", timeZone: "UTC", hour12: false},
+};
 
 const toUTCDate = (dt: Date): Date => {
     const offset = dt.getTimezoneOffset();

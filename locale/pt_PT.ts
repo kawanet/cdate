@@ -17,8 +17,11 @@ export const pt_PT: cdateNS.Specifiers = {
     // domingo, 2 de janeiro de 2022 às 03:04:05 +09:00
     "%c": "%A, %-d de %B de %Y às %H:%M:%S %:z",
 
-    // 02/01/2022
-    "%x": "%d/%m/%Y",
+    // 03:04:05 da manhã
+    "%r": "%H:%M:%S %p",
+
+    // 02/01/22
+    "%x": "%d/%m/%y",
 
     // 03:04:05
     "%X": "%H:%M:%S",

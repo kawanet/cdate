@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import {cdate, cdateNS} from "../";
+import {formatOptions} from "../src/locale";
 
 const main = async (lang: string) => {
     // Sun Jan 02 2022
@@ -57,7 +58,7 @@ const main = async (lang: string) => {
     }
 
     {
-        const format = Intl.DateTimeFormat(lang, {dateStyle: "medium"});
+        const format = Intl.DateTimeFormat(lang, formatOptions.x);
         const parts = format.formatToParts(+dt);
         style.x = parts.map(parsePart).join("");
         sample.x = dt.extend({"%x": style.x}).text("%x");
@@ -67,17 +68,29 @@ const main = async (lang: string) => {
     }
 
     {
-        const format = Intl.DateTimeFormat(lang, {timeStyle: "medium"});
+        const format = Intl.DateTimeFormat(lang, formatOptions.X);
         const parts = format.formatToParts(+dt);
         style.X = parts.map(parsePart).join("");
         sample.X = dt.extend({"%X": style.X}).text("%X");
+        if (/%p/i.test(style.X)) style.X = style.X.replace("%-H", "%-I");
         console.warn("Intl:  ", format.format(+dt));
         console.warn("cdate: ", sample.X);
         console.warn(`locale: "${style.X}"`);
     }
 
     {
-        const format = Intl.DateTimeFormat(lang, {dateStyle: "full", timeStyle: "long", timeZoneName: "short"});
+        const format = Intl.DateTimeFormat(lang, formatOptions.r);
+        const parts = format.formatToParts(+dt);
+        style.r = parts.map(parsePart).join("");
+        if (/%p/i.test(style.r)) style.r = style.r.replace("%-H", "%-I");
+        sample.r = dt.extend({"%r": style.r}).text("%r");
+        console.warn("Intl:  ", format.format(+dt));
+        console.warn("cdate: ", sample.r);
+        console.warn(`locale: "${style.r}"`);
+    }
+
+    {
+        const format = Intl.DateTimeFormat(lang, formatOptions.c);
         const parts = format.formatToParts(+dt);
         style.c = parts.map(parsePart).join("");
         sample.c = dt.extend({"%c": style.c}).text("%c");
@@ -108,6 +121,9 @@ const main = async (lang: string) => {
             
             // ${sample.c}
             "%c": "${style.c}",
+
+            // ${sample.r}
+            "%r": "${style.r}",
 
             // ${sample.x}
             "%x": "${style.x}",
