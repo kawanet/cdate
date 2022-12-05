@@ -5,9 +5,9 @@ import {formatMap} from "./format";
 
 type Picker = (specifier: string) => (string | ((dt: DateLike) => (string | number)));
 
-const merge = (a: Picker, b?: Picker): Picker => (b ? (specifier => (a(specifier) || b(specifier))) : a);
+const merge = (a: Picker, b?: Picker): Picker => ((a && b) ? (specifier => (a(specifier) || b(specifier))) : (a || b));
 
-const mapPicker = (map: cdateNS.Specifiers): Picker => specifier => map[specifier];
+const mapPicker = (map: cdateNS.Specifiers): Picker => (map && (specifier => map[specifier]));
 
 const strftimeRE = /%(?:-?[a-zA-Z%]|:z)/g;
 
@@ -21,7 +21,7 @@ interface Texter {
     extend(specifiers: cdateNS.Specifiers): Texter;
 }
 
-const factory = (picker: Picker): Texter => {
+const factory = (picker?: Picker): Texter => {
     const one = (specifier: string, dt: DateLike): string => {
         let fn = picker(specifier);
 
@@ -54,6 +54,6 @@ const factory = (picker: Picker): Texter => {
 };
 
 let _texter: Texter;
-export const texter = _texter = factory(merge(mapPicker(strftimeMap), mapPicker(formatMap))).extend(en_US);
+export const texter = _texter = factory().extend(strftimeMap).extend(formatMap).extend(en_US);
 const _strftime = _texter.strftime;
 export const strftime: typeof strftimeFn = (fmt, dt) => _strftime(fmt, dt || new Date());
