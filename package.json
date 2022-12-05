@@ -35,9 +35,9 @@
     "url": "git+https://github.com/kawanet/cdate.git"
   },
   "scripts": {
-    "build": "tsc -p . && make -C browser dist",
+    "build": "make -C browser clean dist",
     "fixpack": "fixpack",
-    "prepack": "make -C browser clean && npm run build && npm test && npm run test-minified && npm run test-timezone",
+    "prepack": "npm run build && npm test && npm run test-minified && npm run test-timezone",
     "test": "mocha test",
     "test-minified": "make -C browser mocha",
     "test-timezone": "for tz in Asia/Tokyo Asia/Kathmandu Europe/London America/St_Johns America/Los_Angeles; do echo TZ=$tz mocha test; TZ=$tz mocha test || break; done"

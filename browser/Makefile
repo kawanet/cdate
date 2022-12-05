@@ -25,6 +25,7 @@ test: dist ../build/test.js
 
 mocha: ../build/test-local.js
 	../node_modules/.bin/mocha $<
+	@echo '# open "browser/test.html"'
 
 ../build/test-local.js: ../dist/cdate.min.js ../build/test.js
 	cat $^ > $@
