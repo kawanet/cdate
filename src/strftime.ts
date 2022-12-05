@@ -57,8 +57,6 @@ const m: ToNumber = dt => (dt.getMonth() + 1);
  */
 const M: ToNumber = dt => dt.getMinutes();
 
-const makeP = (am: string, pm: string): ToString => (dt) => (dt.getHours() < 12 ? am : pm);
-
 /**
  * %S     The second as a decimal number (range 00 to 60)
  */
@@ -110,8 +108,7 @@ export const strftimeMap = {
     "%m": pad2(m),
     "%-M": M,
     "%M": pad2(M),
-    "%p": makeP("AM", "PM"),
-    "%P": makeP("am", "pm"),
+    "%P": dt => (dt.getHours() < 12 ? "am" : "pm"),
     "%r": "%I:%M:%S %p",
     "%R": "%H:%M",
     "%-S": S,

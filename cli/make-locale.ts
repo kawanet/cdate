@@ -5,13 +5,15 @@ import {cdate, cdateNS} from "../";
 const main = async (lang: string) => {
     // Sun Jan 02 2022
     const start = new Date(2022, 0, 2, 3, 4, 5);
-    const months = getArray(12);
-    const days = getArray(7);
+    const months = new Array(12).fill(0).map((_, i) => i);
+    const days = new Array(7).fill(0).map((_, i) => i);
+    const hours = [0, 12];
 
     let weekdayShort: string[];
     let weekdayLong: string[];
     let monthShort: string[];
     let monthLong: string[];
+    let ampm: string[];
     const style: { [key: string]: string } = {};
     const sample: { [key: string]: string } = {};
     const locale: cdateNS.Specifiers = {
@@ -19,6 +21,7 @@ const main = async (lang: string) => {
         "%A": dt => weekdayLong[dt.getDay()],
         "%b": dt => monthShort[dt.getMonth()],
         "%B": dt => monthLong[dt.getMonth()],
+        "%p": dt => (dt.getHours() < 12 ? ampm[0] : ampm[1]),
     };
 
     const dt = cdate(start).extend(locale);
@@ -45,6 +48,12 @@ const main = async (lang: string) => {
         const format = Intl.DateTimeFormat(lang, {month: "long"});
         monthLong = months.map(month => format.format(+dt.add(month, "month")));
         console.warn("monthLong:   ", monthLong.join(" "));
+    }
+
+    {
+        const format = Intl.DateTimeFormat(lang, {timeStyle: "long", hour12: true});
+        ampm = hours.map(hour => format.formatToParts(+dt.add(hour, "hour")).find(v => v.type === "dayPeriod").value);
+        console.warn("ampm:  ", ampm.join(" "));
     }
 
     {
@@ -110,6 +119,16 @@ const main = async (lang: string) => {
         fmt = fmt.replace(/("%c")/, "// $1");
     }
 
+    {
+        fmt = fmt.replace(/^(\s+)"%B".*?(\n)/m, ($$, $1, $2) => {
+            const code = `"%p": dt => (dt.getHours() < 12 ? "${ampm[0]}" : "${ampm[1]}"),`;
+            return $$ + $1 + code + $2;
+        });
+    }
+
+    // NBSP
+    fmt = fmt.replace(/\xa0/g, "");
+
     // result
     process.stdout.write(fmt);
 
@@ -134,17 +153,9 @@ const main = async (lang: string) => {
         if (v.type === "hour") return (v.value.length === 2) ? "%H" : "%-H";
         if (v.type === "minute") return (v.value.length === 2) ? "%M" : "%-M";
         if (v.type === "second") return (v.value.length === 2) ? "%S" : "%-S";
-        if (v.type === "dayPeriod") return /^[A-Z]/.test(v.value) ? "%p" : "%P";
+        if (v.type === "dayPeriod") return /^(am|pm)$/.test(v.value) ? "%P" : "%p";
         if (v.type === "timeZoneName") return "%:z";
         if (v.type === "literal") return v.value;
-    }
-
-    function getArray(size: number): number[] {
-        const list: number[] = [];
-        for (let i = 0; i < size; i++) {
-            list[i] = i;
-        }
-        return list;
     }
 };
 

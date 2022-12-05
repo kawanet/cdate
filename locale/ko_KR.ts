@@ -12,13 +12,14 @@ export const ko_KR: cdateNS.Specifiers = {
     "%A": dt => weekdayLong[dt.getDay()],
     "%b": dt => monthShort[dt.getMonth()],
     "%B": dt => monthLong[dt.getMonth()],
+    "%p": dt => (dt.getHours() < 12 ? "오전" : "오후"),
     
-    // 2022년 1월 2일 일요일 am 3시 4분 5초 +09:00
-    "%c": "%Y년 %-m월 %-d일 %A %P %-H시 %-M분 %-S초 %:z",
+    // 2022년 1월 2일 일요일 오전 3시 4분 5초 +09:00
+    "%c": "%Y년 %-m월 %-d일 %A %p %-H시 %-M분 %-S초 %:z",
 
     // 2022. 1. 2.
     "%x": "%Y. %-m. %-d.",
 
-    // am 3:04:05
-    "%X": "%P %-H:%M:%S",
+    // 오전 3:04:05
+    "%X": "%p %-H:%M:%S",
 };

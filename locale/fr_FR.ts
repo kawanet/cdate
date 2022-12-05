@@ -12,6 +12,7 @@ export const fr_FR: cdateNS.Specifiers = {
     "%A": dt => weekdayLong[dt.getDay()],
     "%b": dt => monthShort[dt.getMonth()],
     "%B": dt => monthLong[dt.getMonth()],
+    "%p": dt => (dt.getHours() < 12 ? "AM" : "PM"),
     
     // dimanche 2 janvier 2022 à 03:04:05 +09:00
     "%c": "%A %-d %B %Y à %H:%M:%S %:z",
