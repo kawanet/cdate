@@ -1,5 +1,3 @@
-const DateTimeFormat = Intl.DateTimeFormat;
-
 const parseTZ = (tz: string) => {
     const m = +tz.replace(/:/g, "");
     return Math.trunc(m / 100) * 60 + (m % 100);
@@ -25,7 +23,7 @@ const checkLongOffset = () => {
 };
 
 const getDateTimeFormat = (timeZone: string, timeZoneName: typeof longOffset): Intl.DateTimeFormat => {
-    return new DateTimeFormat("en-US", timeZoneName ?
+    return new Intl.DateTimeFormat("en-US", timeZoneName ?
         // node v18
         {timeZone, timeZoneName} :
         // node v16
@@ -38,6 +36,9 @@ class TZ {
 
     // Asia/Tokyo - IANA time zone name
     private tz: string;
+
+    // DateTimeFormat cached
+    private dtf: Intl.DateTimeFormat;
 
     // last offset cache
     private c: { [ms: string]: number };
@@ -64,8 +65,8 @@ class TZ {
         const {tz} = self;
 
         if (!partsToOffset) checkLongOffset();
-        const f = DateTimeFormat && getDateTimeFormat(tz, longOffset);
-        const parts = partsToOffset && f && f.formatToParts(ms);
+        const dtf = self.dtf || (self.dtf = getDateTimeFormat(tz, longOffset));
+        const parts = partsToOffset && dtf && dtf.formatToParts(ms);
         if (parts) {
             offset = partsToOffset(parts, dt);
         }
