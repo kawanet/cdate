@@ -56,6 +56,6 @@ const makeTexter = (router?: Router): Texter => {
 };
 
 let _texter: Texter;
-export const texter = _texter = makeTexter().extend(strftimeMap()).extend(formatMap).extend(en_US);
+export const texter = _texter = makeTexter().extend(en_US).extend(formatMap).extend(strftimeMap());
 const _strftime = _texter.strftime;
 export const strftime: typeof strftimeFn = (fmt, dt) => _strftime(fmt, dt || new Date());

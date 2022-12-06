@@ -15,7 +15,7 @@ export const en_US: cdateNS.Handlers = {
     "%p": dt => (dt.getHours() < 12 ? "AM" : "PM"),
     
     // Sun, Jan 2, 2022, 3:04:05 AM
-    // "%c": "%a, %b %-d, %Y, %-I:%M:%S %p",
+    "%c": "%a, %b %-d, %Y, %-I:%M:%S %p",
 
     // 3:04:05 AM
     "%r": "%-I:%M:%S %p",

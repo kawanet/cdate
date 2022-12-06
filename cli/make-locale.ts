@@ -141,10 +141,6 @@ const main = async (lang: string) => {
             "%X": "${style.X}",
         };\n`.replace(/^        /mg, "");
 
-    if (lang === "en-US") {
-        fmt = fmt.replace(/("%c")/, "// $1");
-    }
-
     // NBSP
     fmt = fmt.replace(/\xa0/g, "");
 
