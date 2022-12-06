@@ -7,7 +7,7 @@ const weekdayLong = ["일요일", "월요일", "화요일", "수요일", "목요
 const monthShort = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
 const monthLong = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
 
-export const ko_KR: cdateNS.Specifiers = {
+export const ko_KR: cdateNS.Handlers = {
     "%a": dt => weekdayShort[dt.getDay()],
     "%A": dt => weekdayLong[dt.getDay()],
     "%b": dt => monthShort[dt.getMonth()],

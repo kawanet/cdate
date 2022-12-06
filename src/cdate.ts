@@ -60,10 +60,10 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * updates strftime option with the given locale
      */
-    extend(specifiers: cdateNS.Specifiers): this {
+    extend(handlers: cdateNS.Handlers): this {
         const out = this.cdate(+this);
         const x = out.x = copyOptions(out.x);
-        x.texter = getTexter(x).extend(specifiers);
+        x.texter = getTexter(x).extend(handlers);
         return out;
     }
 

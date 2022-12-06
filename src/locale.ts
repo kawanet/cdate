@@ -21,7 +21,7 @@ const initDate = new Date(1641081600000);
 const getMonthArray = lazy(() => getDateArray(initDate, 12, 31));
 const getWeekdayArray = lazy(() => getDateArray(initDate, 7, 1));
 
-const makeLocale = (lang: string): cdateNS.Specifiers => {
+const makeLocale = (lang: string): cdateNS.Handlers => {
     const DateTimeFormat = Intl && Intl.DateTimeFormat;
 
     // make a filter function from Date to string
@@ -86,7 +86,7 @@ const toUTCDate = (dt: Date): Date => {
     return new Date(+dt - offset * d.MINUTE);
 };
 
-const localeCache: { [lang: string]: cdateNS.Specifiers } = {};
+const localeCache: { [lang: string]: cdateNS.Handlers } = {};
 
 const styleOptions = getLocaleOptions();
 

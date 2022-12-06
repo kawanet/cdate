@@ -7,7 +7,7 @@ const weekdayLong = ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "v
 const monthShort = ["jan.", "feb.", "mrt.", "apr.", "mei", "jun.", "jul.", "aug.", "sep.", "okt.", "nov.", "dec."];
 const monthLong = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"];
 
-export const nl_NL: cdateNS.Specifiers = {
+export const nl_NL: cdateNS.Handlers = {
     "%a": dt => weekdayShort[dt.getDay()],
     "%A": dt => weekdayLong[dt.getDay()],
     "%b": dt => monthShort[dt.getMonth()],

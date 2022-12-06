@@ -27,7 +27,7 @@ const main = async (lang: string) => {
     let ampm: string[];
     const style: { [key: string]: string } = {};
     const sample: { [key: string]: string } = {};
-    const locale: cdateNS.Specifiers = {
+    const locale: cdateNS.Handlers = {
         "%a": dt => weekdayShort[dt.getDay()],
         "%A": dt => weekdayLong[dt.getDay()],
         "%b": dt => monthShort[dt.getMonth()],
@@ -121,7 +121,7 @@ const main = async (lang: string) => {
         const monthShort = ${toJSON(monthShort)};
         const monthLong = ${toJSON(monthLong)};
 
-        export const ${_lang}: cdateNS.Specifiers = {
+        export const ${_lang}: cdateNS.Handlers = {
             "%a": dt => weekdayShort[dt.getDay()],
             "%A": dt => weekdayLong[dt.getDay()],
             "%b": dt => monthShort[dt.getMonth()],

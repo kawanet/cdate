@@ -5,9 +5,9 @@ import {formatMap} from "./format";
 
 type Router = (specifier: string) => (string | ((dt: DateLike) => (string | number)));
 
-const mergeRoute = (a: Router, b?: Router): Router => ((a && b) ? (specifier => (a(specifier) || b(specifier))) : (a || b));
+const mergeRouter = (a: Router, b?: Router): Router => ((a && b) ? (specifier => (a(specifier) || b(specifier))) : (a || b));
 
-const makeRoute = (map: cdateNS.Specifiers): Router => (map && (specifier => map[specifier]));
+const makeRouter = (handlers: cdateNS.Handlers): Router => (handlers && (specifier => handlers[specifier]));
 
 // @see https://docs.ruby-lang.org/en/3.1/DateTime.html#method-i-strftime
 const strftimeRE = /%(?:[EO]\w|[0_#^-]?[1-9]?\w|::?z|[%+])/g;
@@ -19,29 +19,30 @@ interface Texter {
 
     format(fmt: string, dt: DateLike): string;
 
-    extend(specifiers: cdateNS.Specifiers): Texter;
+    extend(handlers: cdateNS.Handlers): Texter;
 }
 
-const makeTexter = (picker?: Router): Texter => {
+const makeTexter = (router?: Router): Texter => {
     const one = (specifier: string, dt: DateLike): string => {
-        let fn = picker(specifier);
+        let handler = router(specifier);
 
-        if ("string" === typeof fn) {
-            fn = picker(fn) || fn;
+        if ("string" === typeof handler) {
+            const next = router(handler);
+            if (next != null) handler = next; // bypass strftime call
         }
 
-        if ("function" === typeof fn) {
-            return fn(dt) as string;
-        } else if (fn == null) {
+        if ("function" === typeof handler) {
+            return handler(dt) as string;
+        } else if (handler == null) {
             return specifier; // Unsupported specifiers
         } else {
-            return out.strftime(fn, dt) as string; // recursive call
+            return strftime(handler, dt) as string; // recursive call
         }
     };
 
     const out = {} as Texter;
 
-    out.strftime = (fmt, dt) => {
+    const strftime = out.strftime = (fmt, dt) => {
         return fmt.replace(strftimeRE, (specifier) => one(specifier, dt));
     };
 
@@ -49,7 +50,7 @@ const makeTexter = (picker?: Router): Texter => {
         return fmt.replace(formatRE, (specifier, raw) => (raw || one(specifier, dt)));
     };
 
-    out.extend = specifiers => makeTexter(mergeRoute(makeRoute(specifiers), picker));
+    out.extend = specifiers => makeTexter(mergeRouter(makeRouter(specifiers), router));
 
     return out;
 };

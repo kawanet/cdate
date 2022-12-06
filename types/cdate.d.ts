@@ -35,7 +35,7 @@ declare namespace cdateNS {
 
         tz(timezone: string): CDate;
 
-        extend(specifiers: Specifiers): CDate;
+        extend(handlers: Handlers): CDate;
 
         locale(lang: string): CDate;
     }
@@ -44,7 +44,9 @@ declare namespace cdateNS {
         (fmt: string, dt?: Date): string;
     }
 
-    type Specifiers = { [specifier: string]: (string | ((dt: Date) => string | number)) };
+    type Handler = (dt: Date) => (string | number);
+
+    type Handlers = { [specifier: string]: string | Handler };
 }
 
 export const cdate: (dt?: string | number | Date) => cdateNS.CDate;
