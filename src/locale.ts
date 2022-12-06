@@ -3,23 +3,7 @@ import type {cdateNS} from "../";
 const enum d {
     SECOND = 1000,
     MINUTE = 60 * SECOND,
-    HOUR = 60 * MINUTE,
-    DAY = 24 * HOUR,
 }
-
-const lazy = <T>(fn: (() => T)): (() => T) => {
-    let cached: T;
-    return () => (cached || (cached = fn()));
-};
-
-const getDateArray = (dt: Date, size: number, days: number): Date[] => {
-    return new Array(size).fill(0).map((_, idx) => new Date(+dt + idx * days * d.DAY));
-}
-
-// "2022-01-02T00:00:00Z" (1641081600000)
-const initDate = new Date(1641081600000);
-const getMonthArray = lazy(() => getDateArray(initDate, 12, 31));
-const getWeekdayArray = lazy(() => getDateArray(initDate, 7, 1));
 
 /**
  * build an on-demand Handlers for the language specified
@@ -46,22 +30,26 @@ const makeLocale = (lang: string): cdateNS.Handlers => {
         };
     };
 
-    const makeFn = (options: Intl.DateTimeFormatOptions): ((dt: Date) => string) => {
-        const format = new DateTimeFormat(lang, options);
-        return dt => format.format(dt);
+    // cache the results like Monday, January, etc.
+    const cacheHandler = (options: Intl.DateTimeFormatOptions, keyFn: cdateNS.Handler): cdateNS.Handler => {
+        const handler = makeHandler(options);
+        const cache: { [key: string]: ReturnType<cdateNS.Handler> } = {};
+        return dt => {
+            const key = keyFn(dt);
+            return cache[key] || (cache[key] = handler(dt));
+        };
     };
 
-    // lazy build the array on demand
-    const array_a = lazy(() => getWeekdayArray().map(makeFn(styleOptions.a)));
-    const array_A = lazy(() => getWeekdayArray().map(makeFn(styleOptions.A)));
-    const array_b = lazy(() => getMonthArray().map(makeFn(styleOptions.b)));
-    const array_B = lazy(() => getMonthArray().map(makeFn(styleOptions.B)));
+    // keyFn
+    const getDay = (dt: Date) => dt.getDay();
+    const getMonth = (dt: Date) => dt.getMonth();
 
+    // Handlers
     return {
-        "%a": (dt) => array_a()[dt.getDay()],
-        "%A": (dt) => array_A()[dt.getDay()],
-        "%b": (dt) => array_b()[dt.getMonth()],
-        "%B": (dt) => array_B()[dt.getMonth()],
+        "%a": cacheHandler(styleOptions.a, getDay),
+        "%A": cacheHandler(styleOptions.A, getDay),
+        "%b": cacheHandler(styleOptions.b, getMonth),
+        "%B": cacheHandler(styleOptions.B, getMonth),
         "%c": makeHandler(styleOptions.c),
         "%r": makeHandler(styleOptions.r),
         "%x": makeHandler(styleOptions.x),
