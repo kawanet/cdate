@@ -21,10 +21,13 @@ const initDate = new Date(1641081600000);
 const getMonthArray = lazy(() => getDateArray(initDate, 12, 31));
 const getWeekdayArray = lazy(() => getDateArray(initDate, 7, 1));
 
+/**
+ * build an on-demand Handlers for the language specified
+ */
 const makeLocale = (lang: string): cdateNS.Handlers => {
     const DateTimeFormat = Intl && Intl.DateTimeFormat;
 
-    // make a filter function from Date to string
+    // build a handler function which converts from Date to string
     const makeFn = (options: Intl.DateTimeFormatOptions): ((dt: Date) => string) => {
         const format = new DateTimeFormat(lang, options);
         return dt => format.format(dt);
@@ -32,8 +35,15 @@ const makeLocale = (lang: string): cdateNS.Handlers => {
 
     // stringify a single Date to string
     const stringify = (dt: Date, options: Intl.DateTimeFormatOptions): string => {
+        // force UTC instead of local time
+        const offset = dt.getTimezoneOffset();
+
+        // stringify
         const format = new DateTimeFormat(lang, options);
-        return format.format(toUTCDate(dt));
+        let text = format.format(+dt - offset * d.MINUTE);
+
+        // remove UTC for some cases given
+        if (text) return text.replace(/\s*UTC$/, "");
     };
 
     // lazy build the array on demand
@@ -75,16 +85,11 @@ export const getLocaleOptions = () => {
         X: {timeStyle: medium}, // hour12: default
     };
 
-    // appending timeZone: "UTC" each
+    // force UTC instead of local time
     Object.keys(options).forEach((key: keyof typeof options) => options[key].timeZone = "UTC");
 
     return options;
 }
-
-const toUTCDate = (dt: Date): Date => {
-    const offset = dt.getTimezoneOffset();
-    return new Date(+dt - offset * d.MINUTE);
-};
 
 const localeCache: { [lang: string]: cdateNS.Handlers } = {};
 
