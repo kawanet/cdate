@@ -11,7 +11,12 @@ ALL=\
 	nl_NL.ts \
 	pt_PT.ts \
 
-all: index.ts
+INDEX=index.ts
+
+all: en_US.js $(INDEX)
+
+en_US.js:
+	touch en_US.js # dummy
 
 index.ts: $(ALL)
 	echo "// cdate/locale" > $@
@@ -24,6 +29,6 @@ index.ts: $(ALL)
 	node ../cli/make-locale $(subst _,-,$(basename $@)) > $@
 
 clean:
-	/bin/rm -fr $(ALL)
+	/bin/rm -fr *.ts *.js
 
 .PHONY: all clean test

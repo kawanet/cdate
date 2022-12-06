@@ -36,6 +36,7 @@
   },
   "scripts": {
     "build": "make -C browser clean dist",
+    "build-locale": "make -C locale clean all",
     "fixpack": "fixpack",
     "prepack": "npm run build && npm test && npm run test-minified && npm run test-timezone",
     "test": "mocha test",
