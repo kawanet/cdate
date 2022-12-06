@@ -1,4 +1,4 @@
-export const formatMap: { [fmt: string]: string } = {
+export const formatHandlers: { [fmt: string]: string } = {
     YY: "%y", // 18 = Two-digit year
     YYYY: "%Y", // 2018 = Four-digit year
     M: "%-m", // 1-12 = The month, beginning at 1

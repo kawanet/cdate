@@ -1,7 +1,7 @@
 import type {cdateNS, strftime as strftimeFn} from "../types/cdate";
 import {en_US} from "../locale/en_US";
-import {strftimeMap} from "./strftime";
-import {formatMap} from "./format";
+import {strftimeHandlers} from "./strftime";
+import {formatHandlers} from "./format";
 
 type Router = (specifier: string) => (string | ((dt: DateLike) => (string | number)));
 
@@ -12,7 +12,7 @@ const makeRouter = (handlers: cdateNS.Handlers): Router => (handlers && (specifi
 // @see https://docs.ruby-lang.org/en/3.1/DateTime.html#method-i-strftime
 const strftimeRE = /%(?:[EO]\w|[0_#^-]?[1-9]?\w|::?z|[%+])/g;
 
-const formatRE = new RegExp(["\\[(.*?)\\]"].concat(Object.keys(formatMap).sort().reverse()).join("|"), "g");
+const formatRE = new RegExp(["\\[(.*?)\\]"].concat(Object.keys(formatHandlers).sort().reverse()).join("|"), "g");
 
 interface Texter {
     strftime(fmt: string, dt: DateLike): string;
@@ -56,6 +56,6 @@ const makeTexter = (router?: Router): Texter => {
 };
 
 let _texter: Texter;
-export const texter = _texter = makeTexter().extend(en_US).extend(formatMap).extend(strftimeMap());
+export const texter = _texter = makeTexter().extend(en_US).extend(formatHandlers).extend(strftimeHandlers());
 const _strftime = _texter.strftime;
 export const strftime: typeof strftimeFn = (fmt, dt) => _strftime(fmt, dt || new Date());
