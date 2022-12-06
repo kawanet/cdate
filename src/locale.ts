@@ -25,7 +25,7 @@ const getWeekdayArray = lazy(() => getDateArray(initDate, 7, 1));
  * build an on-demand Handlers for the language specified
  */
 const makeLocale = (lang: string): cdateNS.Handlers => {
-    const DateTimeFormat = Intl && Intl.DateTimeFormat;
+    const DateTimeFormat = Intl.DateTimeFormat;
 
     // build a handler function which converts from Date to string
     const makeFn = (options: Intl.DateTimeFormatOptions): ((dt: Date) => string) => {

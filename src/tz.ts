@@ -1,4 +1,4 @@
-const DateTimeFormat = Intl && Intl.DateTimeFormat;
+const DateTimeFormat = Intl.DateTimeFormat;
 
 const parseTZ = (tz: string) => {
     const m = +tz.replace(/:/g, "");
