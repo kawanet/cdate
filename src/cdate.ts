@@ -7,11 +7,12 @@ import {getTZ} from "./tz";
 import {dateTZ, dateUTC} from "./datetz";
 import {getLocale} from "./locale";
 
+type Texter = typeof texter;
 type TZ = ReturnType<typeof getTZ>;
 
 interface Options {
+    tx?: Texter;
     tz?: TZ;
-    texter?: typeof texter;
 }
 
 export const cdate: typeof cdateFn = (dt) => {
@@ -32,7 +33,7 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * read-only version of DateLike
      */
-    protected d: DateLike;
+    private d: DateLike;
 
     /**
      * options container
@@ -63,7 +64,7 @@ abstract class CDate implements cdateNS.CDate {
     extend(handlers: cdateNS.Handlers): this {
         const out = this.cdate(+this);
         const x = out.x = copyOptions(out.x);
-        x.texter = getTexter(x).extend(handlers);
+        x.tx = getTexter(x).extend(handlers);
         return out;
     }
 
@@ -210,4 +211,4 @@ class CDateTZ extends CDateUTC {
 
 const copyOptions = (x: Options): Options => x ? Object.create(x) : {};
 
-const getTexter = (x: Options): typeof texter => (x && x.texter || texter);
+const getTexter = (x: Options): typeof texter => (x && x.tx || texter);
