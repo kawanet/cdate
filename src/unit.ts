@@ -1,4 +1,4 @@
-import type {cdateNS} from "../types/cdate";
+import type {cdateNS} from "../";
 
 type UnitFlex = cdateNS.UnitForNext | cdateNS.UnitForAdd | cdateNS.UnitForStart;
 
@@ -42,7 +42,6 @@ const enum d {
     SECOND = 1000,
     MINUTE = 60 * SECOND,
     HOUR = 60 * MINUTE,
-    DAY = 24 * HOUR,
 }
 
 export const unitMS: { [unit in Unit]?: number } = {

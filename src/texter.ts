@@ -1,4 +1,4 @@
-import type {cdateNS, strftime as strftimeFn} from "../types/cdate";
+import type {cdateNS, strftime as strftimeFn} from "../";
 import {en_US} from "../locale/en_US";
 import {strftimeHandlers} from "./strftime";
 import {formatHandlers} from "./format";

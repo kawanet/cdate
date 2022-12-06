@@ -1,4 +1,4 @@
-import type {cdate as cdateFn, cdateNS} from "../types/cdate";
+import type {cdate as cdateFn, cdateNS} from "../";
 import {texter} from "./texter";
 import {add} from "./add";
 import {startOf} from "./startof";

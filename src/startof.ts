@@ -1,4 +1,4 @@
-import type {cdateNS} from "../types/cdate";
+import type {cdateNS} from "../";
 import {add} from "./add";
 import {getUnitShort, Unit, unitMS} from "./unit";
 

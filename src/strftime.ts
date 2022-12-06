@@ -1,4 +1,4 @@
-import type {cdateNS} from "../types/cdate";
+import type {cdateNS} from "../";
 
 type ToNumber = (dt: Date) => number;
 type ToString = (dt: Date) => string;
