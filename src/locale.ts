@@ -28,22 +28,27 @@ const makeLocale = (lang: string): cdateNS.Handlers => {
     const DateTimeFormat = Intl.DateTimeFormat;
 
     // build a handler function which converts from Date to string
+    const makeHandler = (options: Intl.DateTimeFormatOptions): cdateNS.Handler => {
+        let format: Intl.DateTimeFormat;
+
+        return dt => {
+            // cached DateTimeFormat instance
+            if (!format) format = new DateTimeFormat(lang, options);
+
+            // force UTC instead of local time
+            const offset = dt.getTimezoneOffset();
+
+            // stringify
+            const text = format.format(+dt - offset * d.MINUTE);
+
+            // remove "UTC" string for some cases given
+            if (text) return text.replace(/\s*UTC$/, "");
+        };
+    };
+
     const makeFn = (options: Intl.DateTimeFormatOptions): ((dt: Date) => string) => {
         const format = new DateTimeFormat(lang, options);
         return dt => format.format(dt);
-    };
-
-    // stringify a single Date to string
-    const stringify = (dt: Date, options: Intl.DateTimeFormatOptions): string => {
-        // force UTC instead of local time
-        const offset = dt.getTimezoneOffset();
-
-        // stringify
-        const format = new DateTimeFormat(lang, options);
-        let text = format.format(+dt - offset * d.MINUTE);
-
-        // remove UTC for some cases given
-        if (text) return text.replace(/\s*UTC$/, "");
     };
 
     // lazy build the array on demand
@@ -57,10 +62,10 @@ const makeLocale = (lang: string): cdateNS.Handlers => {
         "%A": (dt) => array_A()[dt.getDay()],
         "%b": (dt) => array_b()[dt.getMonth()],
         "%B": (dt) => array_B()[dt.getMonth()],
-        "%c": (dt) => stringify(dt, styleOptions.c),
-        "%r": (dt) => stringify(dt, styleOptions.r),
-        "%x": (dt) => stringify(dt, styleOptions.x),
-        "%X": (dt) => stringify(dt, styleOptions.X),
+        "%c": makeHandler(styleOptions.c),
+        "%r": makeHandler(styleOptions.r),
+        "%x": makeHandler(styleOptions.x),
+        "%X": makeHandler(styleOptions.X),
     };
 };
 
