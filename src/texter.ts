@@ -3,11 +3,11 @@ import {en_US} from "../locale/en_US";
 import {strftimeMap} from "./strftime";
 import {formatMap} from "./format";
 
-type Picker = (specifier: string) => (string | ((dt: DateLike) => (string | number)));
+type Router = (specifier: string) => (string | ((dt: DateLike) => (string | number)));
 
-const merge = (a: Picker, b?: Picker): Picker => ((a && b) ? (specifier => (a(specifier) || b(specifier))) : (a || b));
+const mergeRoute = (a: Router, b?: Router): Router => ((a && b) ? (specifier => (a(specifier) || b(specifier))) : (a || b));
 
-const mapPicker = (map: cdateNS.Specifiers): Picker => (map && (specifier => map[specifier]));
+const makeRoute = (map: cdateNS.Specifiers): Router => (map && (specifier => map[specifier]));
 
 // @see https://docs.ruby-lang.org/en/3.1/DateTime.html#method-i-strftime
 const strftimeRE = /%(?:[EO]\w|[0_#^-]?[1-9]?\w|::?z|[%+])/g;
@@ -22,7 +22,7 @@ interface Texter {
     extend(specifiers: cdateNS.Specifiers): Texter;
 }
 
-const factory = (picker?: Picker): Texter => {
+const makeTexter = (picker?: Router): Texter => {
     const one = (specifier: string, dt: DateLike): string => {
         let fn = picker(specifier);
 
@@ -49,12 +49,12 @@ const factory = (picker?: Picker): Texter => {
         return fmt.replace(formatRE, (specifier, raw) => (raw || one(specifier, dt)));
     };
 
-    out.extend = specifiers => factory(merge(mapPicker(specifiers), picker));
+    out.extend = specifiers => makeTexter(mergeRoute(makeRoute(specifiers), picker));
 
     return out;
 };
 
 let _texter: Texter;
-export const texter = _texter = factory().extend(strftimeMap()).extend(formatMap).extend(en_US);
+export const texter = _texter = makeTexter().extend(strftimeMap()).extend(formatMap).extend(en_US);
 const _strftime = _texter.strftime;
 export const strftime: typeof strftimeFn = (fmt, dt) => _strftime(fmt, dt || new Date());
