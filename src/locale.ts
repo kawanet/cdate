@@ -1,4 +1,5 @@
 import type {cdateNS} from "../types/cdate";
+import {cached} from "./u.js";
 
 const enum d {
     SECOND = 1000,
@@ -92,8 +93,6 @@ export const getLocaleOptions = () => {
     return options;
 }
 
-const localeCache: { [lang: string]: cdateNS.Handlers } = {};
-
 const styleOptions = getLocaleOptions();
 
-export const getLocale = (lang: string) => (localeCache[lang] || (localeCache[lang] = makeLocale(lang)));
+export const getLocale = cached(makeLocale);

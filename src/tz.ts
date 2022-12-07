@@ -1,9 +1,11 @@
-const parseTZ = (tz: string): number => {
+import {cached, lazy} from "./u.js";
+
+const parseTZ = cached((tz: string): number => {
     const matched = tz.match(/(?:^|GMT)?(?:([+-])([01]?\d):?(\d[05])|$)|UTC$/);
     if (!matched) return;
     const offset = ((+matched[2]) * 60 + (+matched[3])) | 0;
     return (matched[1] === "-") ? -offset : offset;
-};
+});
 
 let longOffset: "longOffset";
 let partsToOffset: (parts: Intl.DateTimeFormatPart[], dt?: Date) => number;
@@ -88,17 +90,16 @@ const parseTimeZoneName: typeof partsToOffset = (parts) => {
     if (part) return parseTZ(part.value);
 };
 
-let weekdayMap: { [key: string]: number };
+const weekdayMap = lazy(() => {
+    const map: { [key: string]: number } = {};
+    ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach((key, idx) => (map[key] = idx));
+    return map;
+});
 
 const calcTimeZoneOffset: typeof partsToOffset = (parts, dt): number => {
-    if (!weekdayMap) {
-        weekdayMap = {};
-        ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach((key, idx) => (weekdayMap[key] = idx));
-    }
-
     const index: { [key in Intl.DateTimeFormatPartTypes]?: any } = {};
     parts.forEach(v => (index[v.type] = v.value));
-    const day = (7 + dt.getUTCDay() - weekdayMap[index.weekday]) % 7;
+    const day = (7 + dt.getUTCDay() - weekdayMap()[index.weekday]) % 7;
     const hour = dt.getUTCHours() - (index.hour) % 24;
     const minutes = dt.getUTCMinutes() - index.minute;
 
