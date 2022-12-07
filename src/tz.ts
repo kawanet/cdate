@@ -13,7 +13,7 @@ let partsToOffset: (parts: Intl.DateTimeFormatPart[], dt?: Date) => number;
 const checkLongOffset = () => {
     try {
         const tzn = "longOffset";
-        getDateTimeFormat("Asia/Tokyo", tzn);
+        getDateTimeFormat("UTC", tzn);
         longOffset = tzn;
         partsToOffset = parseTimeZoneName; // node v18
     } catch (e) {

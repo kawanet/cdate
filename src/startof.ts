@@ -36,7 +36,7 @@ export const startOf = (dt: DateLike, unit: cdateNS.UnitForStart): void => {
     const msec = unitMS[u];
     if (msec) return truncate(dt, msec);
 
-    switch (getUnitShort(unit)) {
+    switch (u) {
         case Unit.year:
             startOfMonth(dt);
             return add(dt, -dt.getMonth(), Unit.month);

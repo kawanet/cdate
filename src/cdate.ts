@@ -164,7 +164,7 @@ abstract class CDate implements cdateNS.CDate {
         const dt = this.rw();
         startOf(dt, unit);
         add(dt, 1, unit);
-        add(dt, -1, "millisecond");
+        add(dt, -1);
         return this.cdate(dt);
     }
 

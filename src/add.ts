@@ -44,7 +44,7 @@ const addDay = (dt: DateLike, days: number): void => {
     }
 }
 
-export const add = (dt: DateLike, diff: number, unit: string): void => {
+export const add = (dt: DateLike, diff: number, unit?: string): void => {
     if (!diff) return;
 
     const u = getUnitShort(unit);
