@@ -106,6 +106,4 @@ const calcTimeZoneOffset: typeof partsToOffset = (parts, dt): number => {
     return -((day * 24 + hour) * 60 + minutes);
 };
 
-const tzCache: { [tz: string]: TZ } = {};
-
-export const getTZ = (tz: string) => (tzCache[tz] || (tzCache[tz] = new TZ(tz)));
+export const getTZ = cached(tz => new TZ(tz));

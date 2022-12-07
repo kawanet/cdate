@@ -1,5 +1,6 @@
+import type * as types from "./types/cdate";
 import {cdate as cdateFn} from "./src/cdate.js";
 import {strftime as strftimeFn} from "./src/texter.js";
 
-export const cdate = cdateFn;
-export const strftime = strftimeFn;
+export const cdate: typeof types.cdate = cdateFn;
+export const strftime: typeof types.strftime = strftimeFn;
