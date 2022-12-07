@@ -4,16 +4,14 @@ import {texter} from "./texter.js";
 import {add} from "./add.js";
 import {startOf} from "./startof.js";
 import {toISO} from "./iso.js";
-import {getTZ} from "./tz.js";
 import {dateTZ, dateUTC} from "./datetz.js";
 import {getLocale} from "./locale.js";
 
 type Texter = typeof texter;
-type TZ = ReturnType<typeof getTZ>;
 
 interface Options {
     tx?: Texter;
-    tz?: TZ;
+    tz?: string;
 }
 
 export const cdate: typeof cdateFn = (dt) => {
@@ -96,7 +94,7 @@ abstract class CDate implements cdateNS.CDate {
      */
     tz(timezone: string): cdateNS.CDate {
         const x = copyOptions(this.x);
-        x.tz = getTZ(timezone);
+        x.tz = timezone;
         return new CDateTZ(+this, x);
     }
 
