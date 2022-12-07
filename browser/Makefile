@@ -1,8 +1,10 @@
 #!/usr/bin/env bash -c make
 
+DIST=../dist/cdate.min.js
+
 all: dist test
 
-dist: ../dist/cdate.min.js
+dist: $(DIST)
 
 ../dist/cdate.min.js: ../build/bundle.js
 	mkdir -p ../dist
@@ -10,16 +12,15 @@ dist: ../dist/cdate.min.js
 	ls -l $@
 
 # the below does NOT use browserify to keep bundle.js much smaller enough
-../build/bundle.js: ../src/cdate.js wrap.js
-	mkdir -p ../build/
-	grep PRE < wrap.js > $@
-	cat ../locale/en_US.js ../src/*.js >> $@
+../build/bundle.js: ../build/src/cdate.js wrap.cjs
+	grep PRE < wrap.cjs > $@
+	cat ../build/locale/en_US.js ../build/src/*.js >> $@
 	perl -i -pe 's#^("use strict"|Object.defineProperty|exports.*= void 0)#// $$&#' $@
 	perl -i -pe 's#^(const .*_1 = require.)#// $$&#' $@
 	perl -i -pe 's#(\W)((?:\w+_1|exports)\.)(\w)#$$1 /* $$2 */ $$3#g' $@
 	perl -i -pe 's#^(exports\.\w+ = \w+;)#// $$&#' $@
 	perl -i -pe 's#^(exports\.)(\w+)#const /* $$1 */ $$2#' $@
-	grep -v PRE < wrap.js >> $@
+	grep -v PRE < wrap.cjs >> $@
 	ls -l $@
 
 test: dist ../build/test.js
@@ -28,23 +29,29 @@ mocha: ../build/test-local.js
 	../node_modules/.bin/mocha $<
 	@echo '# open "browser/test.html"'
 
+../build/package.json: ../dist/package.json
+	mkdir -p ../build
+	cat $^ > $@
+
 ../build/test-local.js: ../dist/cdate.min.js ../build/test.js
 	cat $^ > $@
 
-../build/test.js: ../test/000.before.js ../browser/import.js
-	mkdir -p ../build/
-	../node_modules/.bin/browserify --list ../test/*.js \
-	-t [ browserify-sed 's#(require\("(?:../)+)("\))#$$1browser/import$$2#' ] | sort
-	../node_modules/.bin/browserify -o $@ ../test/*.js \
-	-t [ browserify-sed 's#(require\("(?:../)+)("\))#$$1browser/import$$2#' ]
+../build/test.js: ../build/test/000.before.js import.cjs
+	../node_modules/.bin/browserify --list ../build/test/*.js \
+	-t [ browserify-sed 's#(require\("(?:../)+)(?:index.js)?("\))#$$1../browser/import.cjs$$2#' ] | sort
+	../node_modules/.bin/browserify -o $@ ../build/test/*.js \
+	-t [ browserify-sed 's#(require\("(?:../)+)(?:index.js)("\))#$$1../browser/import.cjs$$2#' ]
 
-../test/%.js: ../test/%.ts
-	../node_modules/.bin/tsc -p ..
+../build/src/%.js: ../src/%.ts ../build/package.json
+	../node_modules/.bin/tsc -p .
+
+../build/test/%.js: ../test/%.ts ../build/package.json
+	../node_modules/.bin/tsc -p .
 
 TITLE:
 	perl -i -pe '@f = split("/",$$ARGV); s#^const TITLE =.*#const TITLE = "$$f[-1]";#' ../test/*.ts
 
 clean:
-	/bin/rm -fr ../build ../dist/*.js ../src/*.js ../test/*.js
+	/bin/rm -fr ../build $(DIST)
 
 .PHONY: all clean test

@@ -20,6 +20,15 @@
     "terser": "^5.16.1",
     "typescript": "^4.9.3"
   },
+  "files": [
+    "browser/import.cjs",
+    "dist/cdate.min.js",
+    "dist/package.json",
+    "index.js",
+    "locale/*.js",
+    "src/*.js",
+    "types/cdate.d.ts"
+  ],
   "homepage": "https://github.com/kawanet/cdate#readme",
   "keywords": [
     "calendar",
@@ -29,7 +38,8 @@
     "time"
   ],
   "license": "MIT",
-  "main": "index.js",
+  "main": "dist/cdate.min.js",
+  "module": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kawanet/cdate.git"
@@ -43,5 +53,6 @@
     "test-minified": "make -C browser mocha",
     "test-timezone": "for tz in Asia/Tokyo Asia/Kathmandu Europe/London America/St_Johns America/Los_Angeles; do echo TZ=$tz mocha test; TZ=$tz mocha test || break; done"
   },
+  "type": "module",
   "types": "types/cdate.d.ts"
 }

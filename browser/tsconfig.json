@@ -1,26 +1,19 @@
 {
-  "exclude": [
-    "build/",
-    "node_modules",
-    "tmp/"
-  ],
   "include": [
-    "index.ts",
-    "cli/",
-    "locale/",
-    "src/",
-    "test/",
-    "types/"
+    "../locale",
+    "../src",
+    "../test"
   ],
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "module": "ESNext",
+    "esModuleInterop": true,
+    "module": "CommonJS",
     "moduleResolution": "Node",
     "noImplicitAny": true,
     "noImplicitReturns": false,
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "outDir": "../build",
     "removeComments": false,
     "skipLibCheck": false,
     "strictNullChecks": false,
