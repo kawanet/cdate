@@ -17,9 +17,7 @@ interface Options {
 }
 
 export const cdate: typeof cdateFn = (dt) => {
-    if (dt == null) {
-        dt = new Date();
-    } else if ("string" === typeof dt) {
+    if ("string" === typeof dt) {
         dt = new Date(dt);
     }
     return new CDateLocal(dt, null);
@@ -45,6 +43,9 @@ abstract class CDate implements cdateNS.CDate {
      * the constructor
      */
     constructor(t: number | DateLike, x: Options) {
+        if (t == null) {
+            t = new Date();
+        }
         this.t = t;
         if ("number" !== typeof t) {
             this.d = t;
