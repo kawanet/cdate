@@ -18,6 +18,7 @@ describe(TITLE, () => {
         const dt = cdate(date).utc();
         assert.equal(dt.text("%A = %a"), "Wednesday = Wed");
         assert.equal(dt.text("%B = %b"), "April = Apr");
+        assert.equal(dt.text("%p"), "AM");
         assert.equal(dt.text("%x"), "4/5/23");
         assert.match(dt.text("%r"), /0?6:07:08/);
         assert.match(dt.text("%X"), /0?6:07:08/);
@@ -27,6 +28,7 @@ describe(TITLE, () => {
         const dt = cdate(date).utc().locale("en-US");
         assert.equal(dt.text("%A = %a"), "Wednesday = Wed");
         assert.equal(dt.text("%B = %b"), "April = Apr");
+        assert.equal(dt.text("%p"), "AM");
         assert.equal(dt.text("%x"), "4/5/23");
         assert.match(dt.text("%r"), /0?6:07:08/);
         assert.match(dt.text("%X"), /0?6:07:08/);
@@ -54,6 +56,7 @@ describe(TITLE, () => {
         const dt = cdate(date).utc().locale("ja-JP");
         assert.equal(dt.text("%A = %a"), "水曜日 = 水");
         assert.equal(dt.text("%B = %b"), "4月 = 4月");
+        assert.equal(dt.text("%p"), "午前");
         assert.equal(dt.text("%x"), "2023/04/05");
         assert.match(dt.text("%r"), /0?6:07:08/);
         assert.match(dt.text("%X"), /0?6:07:08/);
