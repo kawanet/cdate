@@ -1,5 +1,7 @@
 import {cached, lazy} from "./u.js";
 
+type DTFPartsParser = (parts: Intl.DateTimeFormatPart[], dt?: Date) => number;
+
 const parseTZ = cached((tz: string): number => {
     const matched = tz.match(/(?:^|GMT)?(?:([+-])([01]?\d):?(\d[05])|$)|UTC$/);
     if (!matched) return;
@@ -7,32 +9,30 @@ const parseTZ = cached((tz: string): number => {
     return (matched[1] === "-") ? -offset : offset;
 });
 
-let longOffset: "longOffset";
-let partsToOffset: (parts: Intl.DateTimeFormatPart[], dt?: Date) => number;
+let longOffset = "longOffset" as const;
+
+const getDateTimeFormat = cached((timeZone: string): Intl.DateTimeFormat => {
+    return new Intl.DateTimeFormat("en-US", longOffset ?
+        // node v18
+        {timeZone, timeZoneName: longOffset} :
+        // node v16
+        {timeZone, hour12: false, weekday: "short", day: "numeric", hour: "numeric", minute: "numeric"});
+});
 
 /**
  * Node v16 and below does NOT support {timeZoneName: "longOffset"} option
  * Node v18 however supports it.
  */
-const checkLongOffset = () => {
+const getPartsParser = lazy((): DTFPartsParser => {
     try {
-        const tzn = "longOffset";
-        getDateTimeFormat("UTC", tzn);
-        longOffset = tzn;
-        partsToOffset = parseTimeZoneName; // node v18
+        getDateTimeFormat("UTC");
+        return parseTimeZoneName; // node v18
     } catch (e) {
         // RangeError: Value longOffset out of range for Intl.DateTimeFormat options property timeZoneName
-        partsToOffset = calcTimeZoneOffset; // node v16
+        longOffset = null;
+        return calcTimeZoneOffset; // node v16
     }
-};
-
-const getDateTimeFormat = (timeZone: string, timeZoneName: typeof longOffset): Intl.DateTimeFormat => {
-    return new Intl.DateTimeFormat("en-US", timeZoneName ?
-        // node v18
-        {timeZone, timeZoneName} :
-        // node v16
-        {timeZone, hour12: false, weekday: "short", day: "numeric", hour: "numeric", minute: "numeric"});
-};
+});
 
 class TZ {
     // fixed
@@ -40,9 +40,6 @@ class TZ {
 
     // Asia/Tokyo - IANA time zone name
     private tz: string;
-
-    // DateTimeFormat cached
-    private dtf: Intl.DateTimeFormat;
 
     // last offset cache
     private c: { [ms: string]: number };
@@ -68,9 +65,9 @@ class TZ {
         const dt = new Date(ms);
         const {tz} = self;
 
-        if (!partsToOffset) checkLongOffset();
-        const dtf = self.dtf || (self.dtf = getDateTimeFormat(tz, longOffset));
-        const parts = partsToOffset && dtf && dtf.formatToParts(ms);
+        const partsToOffset = getPartsParser();
+        const dtf = getDateTimeFormat(tz);
+        const parts = dtf && dtf.formatToParts(ms);
         if (parts) {
             offset = partsToOffset(parts, dt);
         }
@@ -85,7 +82,7 @@ class TZ {
     }
 }
 
-const parseTimeZoneName: typeof partsToOffset = (parts) => {
+const parseTimeZoneName: DTFPartsParser = (parts) => {
     const part = parts.find(v => v.type === "timeZoneName");
     if (part) return parseTZ(part.value);
 };
@@ -96,7 +93,7 @@ const weekdayMap = lazy(() => {
     return map;
 });
 
-const calcTimeZoneOffset: typeof partsToOffset = (parts, dt): number => {
+const calcTimeZoneOffset: DTFPartsParser = (parts, dt) => {
     const index: { [key in Intl.DateTimeFormatPartTypes]?: any } = {};
     parts.forEach(v => (index[v.type] = v.value));
     const day = (7 + dt.getUTCDay() - weekdayMap()[index.weekday]) % 7;
