@@ -83,7 +83,7 @@ class DateTZ extends DateLikeBase {
 
     constructor(dt: Date, tz: TZ) {
         const t = +dt;
-        const tzo = tz.tzo(t);
+        const tzo = tz(t);
         super(new Date(t + tzo * d.MINUTE));
         this.t = t;
         this.tz = tz;
@@ -95,7 +95,7 @@ class DateTZ extends DateLikeBase {
     }
 
     setTime(msec: number) {
-        const tzo = this.tzo = this.tz.tzo(msec);
+        const tzo = this.tzo = this.tz(msec);
         this.dt.setTime(+msec + tzo * d.MINUTE);
         return this.t = msec;
     }

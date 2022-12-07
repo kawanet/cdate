@@ -1,6 +1,7 @@
 import {cached, lazy} from "./u.js";
 
 type DTFPartsParser = (parts: Intl.DateTimeFormatPart[], dt?: Date) => number;
+type TimezoneOffsetFn = (ms: number) => number;
 
 const parseTZ = cached((tz: string): number => {
     const matched = tz.match(/(?:^|GMT)?(?:([+-])([01]?\d):?(\d[05])|$)|UTC$/);
@@ -34,54 +35,6 @@ const getPartsParser = lazy((): DTFPartsParser => {
     }
 });
 
-class TZ {
-    // fixed
-    private m: number;
-
-    // Asia/Tokyo - IANA time zone name
-    private tz: string;
-
-    // last offset cache
-    private c: { [ms: string]: number };
-
-    constructor(tz: string) {
-        if (/\//.test(tz)) {
-            this.tz = tz;
-        } else {
-            this.m = parseTZ(tz);
-        }
-    }
-
-    /**
-     * returns time zone offset in minutes
-     */
-    tzo(ms: number): number {
-        const self = this;
-        if (self.m != null) return self.m;
-
-        let offset = self.c && self.c[ms];
-        if (offset != null) return offset;
-
-        const dt = new Date(ms);
-        const {tz} = self;
-
-        const partsToOffset = getPartsParser();
-        const dtf = getDateTimeFormat(tz);
-        const parts = dtf && dtf.formatToParts(ms);
-        if (parts) {
-            offset = partsToOffset(parts, dt);
-        }
-        if (offset == null) {
-            // fallback to local time zone
-            offset = -dt.getTimezoneOffset();
-        }
-
-        self.c = {};
-        self.c[ms] = offset;
-        return offset;
-    }
-}
-
 const parseTimeZoneName: DTFPartsParser = (parts) => {
     const part = parts.find(v => v.type === "timeZoneName");
     if (part) return parseTZ(part.value);
@@ -103,4 +56,34 @@ const calcTimeZoneOffset: DTFPartsParser = (parts, dt) => {
     return -((day * 24 + hour) * 60 + minutes);
 };
 
-export const getTZ = cached(tz => new TZ(tz));
+export const getTZ = cached<TimezoneOffsetFn>(tz => {
+    if (!/\//.test(tz)) {
+        const fixed = parseTZ(tz);
+        return (_: number) => fixed;
+    }
+
+    // last offset prev
+    let prev: { [ms: string]: number };
+
+    return (ms: number) => {
+        let offset = prev && prev[ms];
+        if (offset != null) return offset;
+
+        const partsToOffset = getPartsParser();
+        const dtf = getDateTimeFormat(tz);
+        const parts = dtf && dtf.formatToParts(ms);
+
+        const dt = new Date(ms);
+        if (parts) {
+            offset = partsToOffset(parts, dt);
+        }
+        if (offset == null) {
+            // fallback to local time zone
+            offset = -dt.getTimezoneOffset();
+        }
+
+        prev = {};
+        prev[ms] = offset;
+        return offset;
+    };
+});
