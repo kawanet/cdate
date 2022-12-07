@@ -1,4 +1,4 @@
-import {cached, lazy} from "./u.js";
+import {cached, lazy} from "./cache.js";
 
 type DTFPartsParser = (parts: Intl.DateTimeFormatPart[], dt?: Date) => number;
 type TimezoneOffsetFn = (ms: number) => number;
