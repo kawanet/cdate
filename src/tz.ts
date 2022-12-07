@@ -1,6 +1,8 @@
-const parseTZ = (tz: string) => {
-    const m = +tz.replace(/:/g, "");
-    return Math.trunc(m / 100) * 60 + (m % 100);
+const parseTZ = (tz: string): number => {
+    const matched = tz.match(/(?:^|GMT)?(?:([+-])([01]?\d):?(\d[05])|$)|UTC$/);
+    if (!matched) return;
+    const offset = ((+matched[2]) * 60 + (+matched[3])) | 0;
+    return (matched[1] === "-") ? -offset : offset;
 };
 
 let longOffset: "longOffset";
@@ -83,10 +85,7 @@ class TZ {
 
 const parseTimeZoneName: typeof partsToOffset = (parts) => {
     const part = parts.find(v => v.type === "timeZoneName");
-    const value = part && part.value;
-    if (/^GMT/.test(value)) {
-        return parseTZ(value.substr(3));
-    }
+    if (part) return parseTZ(part.value);
 };
 
 let weekdayMap: { [key: string]: number };
