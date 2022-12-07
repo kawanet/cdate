@@ -1,12 +1,12 @@
 #!/usr/bin/env mocha -R spec
 
 import {strict as assert} from "assert";
-import * as dayjs from "dayjs";
-import * as moment from "moment";
+import dayjs from "dayjs";
+import moment from "moment";
 
-import {cdate} from "../";
+import {cdate} from "../index.js";
 
-const TITLE = __filename.split("/").pop()!;
+const TITLE = "210.format.ts";
 
 describe(TITLE, () => {
     it(`moment().format()`, () => {

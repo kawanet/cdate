@@ -2,9 +2,9 @@
 
 import {strict as assert} from "assert";
 
-import {cdate} from "../";
+import {cdate} from "../index.js";
 
-const TITLE = __filename.split("/").pop()!;
+const TITLE = "200.cdate.ts";
 
 describe(TITLE, () => {
     const date = new Date("2023-04-05 06:07:08.090");

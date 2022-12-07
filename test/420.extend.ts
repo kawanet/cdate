@@ -1,12 +1,12 @@
 #!/usr/bin/env mocha -R spec
 
 import {strict as assert} from "assert";
-import * as samsonjs_strftime from "strftime";
+import samsonjs_strftime from "strftime";
 
-import {cdate} from "../";
-import {locales} from "../locale";
+import {cdate} from "../index.js";
+import {locales} from "../locale/index.js";
 
-const TITLE = __filename.split("/").pop()!;
+const TITLE = "420.extend.ts";
 
 const samsonjs = {strftime: samsonjs_strftime as any as { localizeByIdentifier: (locale: string) => typeof samsonjs_strftime }};
 

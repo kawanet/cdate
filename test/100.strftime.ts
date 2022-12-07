@@ -1,10 +1,10 @@
 #!/usr/bin/env mocha -R spec
 
 import {strict as assert} from "assert";
-import * as samsonjs_strftime from "strftime";
-import * as cdatejs from "../";
+import samsonjs_strftime from "strftime";
+import * as cdatejs from "../index.js";
 
-const TITLE = __filename.split("/").pop()!;
+const TITLE = "100.strftime.ts";
 
 const samsonjs = {strftime: samsonjs_strftime};
 

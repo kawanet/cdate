@@ -1,5 +1,5 @@
-import type {DateLike} from "./datelike";
-import {getUnitShort, Unit, unitMS} from "./unit";
+import type {DateLike} from "./datelike.js";
+import {getUnitShort, Unit, unitMS} from "./unit.js";
 
 const enum d {
     SECOND = 1000,

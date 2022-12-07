@@ -1,4 +1,4 @@
-import type {cdateNS} from "../";
+import type {cdateNS} from "../types/cdate";
 
 const enum d {
     SECOND = 1000,

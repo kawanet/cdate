@@ -31,15 +31,18 @@ mocha: ../build/test-local.js
 ../build/test-local.js: ../dist/cdate.min.js ../build/test.js
 	cat $^ > $@
 
-../build/test.js: ../src/cdate.js ../browser/import.js
+../build/test.js: ../test/000.before.js ../browser/import.js
 	mkdir -p ../build/
 	../node_modules/.bin/browserify --list ../test/*.js \
 	-t [ browserify-sed 's#(require\("(?:../)+)("\))#$$1browser/import$$2#' ] | sort
 	../node_modules/.bin/browserify -o $@ ../test/*.js \
 	-t [ browserify-sed 's#(require\("(?:../)+)("\))#$$1browser/import$$2#' ]
 
-../src/cdate.js: ../src/*.ts ../test/*.ts
+../test/%.js: ../test/%.ts
 	../node_modules/.bin/tsc -p ..
+
+TITLE:
+	perl -i -pe '@f = split("/",$$ARGV); s#^const TITLE =.*#const TITLE = "$$f[-1]";#' ../test/*.ts
 
 clean:
 	/bin/rm -fr ../build ../dist/*.js ../src/*.js ../test/*.js

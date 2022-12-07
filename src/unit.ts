@@ -1,4 +1,4 @@
-import type {cdateNS} from "../";
+import type {cdateNS} from "../types/cdate";
 
 type UnitFlex = cdateNS.UnitForNext | cdateNS.UnitForAdd | cdateNS.UnitForStart;
 

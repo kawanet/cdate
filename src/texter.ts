@@ -1,8 +1,8 @@
-import type {cdateNS, strftime as strftimeFn} from "../";
-import type {DateLike} from "./datelike";
-import {en_US} from "../locale/en_US";
-import {strftimeHandlers} from "./strftime";
-import {formatHandlers} from "./format";
+import type {strftime as strftimeFn, cdateNS} from "../types/cdate";
+import type {DateLike} from "./datelike.js";
+import {en_US} from "../locale/en_US.js";
+import {strftimeHandlers} from "./strftime.js";
+import {formatHandlers} from "./format.js";
 
 type Router = (specifier: string) => (string | ((dt: DateLike) => (string | number)));
 

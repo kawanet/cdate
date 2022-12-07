@@ -1,7 +1,7 @@
-import type {cdateNS} from "../";
-import type {DateLike} from "./datelike";
-import {add} from "./add";
-import {getUnitShort, Unit, unitMS} from "./unit";
+import type {cdateNS} from "../types/cdate";
+import type {DateLike} from "./datelike.js";
+import {add} from "./add.js";
+import {getUnitShort, Unit, unitMS} from "./unit.js";
 
 const enum d {
     SECOND = 1000,

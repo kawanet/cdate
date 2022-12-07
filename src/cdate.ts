@@ -1,12 +1,12 @@
-import type {cdate as cdateFn, cdateNS} from "../";
-import type {DateLike} from "./datelike";
-import {texter} from "./texter";
-import {add} from "./add";
-import {startOf} from "./startof";
-import {toISO} from "./iso";
-import {getTZ} from "./tz";
-import {dateTZ, dateUTC} from "./datetz";
-import {getLocale} from "./locale";
+import type {cdate as cdateFn, cdateNS} from "../types/cdate";
+import type {DateLike} from "./datelike.js";
+import {texter} from "./texter.js";
+import {add} from "./add.js";
+import {startOf} from "./startof.js";
+import {toISO} from "./iso.js";
+import {getTZ} from "./tz.js";
+import {dateTZ, dateUTC} from "./datetz.js";
+import {getLocale} from "./locale.js";
 
 type Texter = typeof texter;
 type TZ = ReturnType<typeof getTZ>;

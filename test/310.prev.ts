@@ -1,12 +1,13 @@
 #!/usr/bin/env mocha -R spec
 
 import {strict as assert} from "assert";
-import * as dayjs from "dayjs";
-import * as moment from "moment";
+import dayjs from "dayjs";
+import moment from "moment";
 
-import {cdate, cdateNS} from "../";
+import {cdate} from "../index.js";
+import type {cdateNS} from "../types/cdate";
 
-const TITLE = __filename.split("/").pop()!;
+const TITLE = "310.prev.ts";
 
 describe(TITLE, () => {
     describe(`moment().subtract()`, () => {

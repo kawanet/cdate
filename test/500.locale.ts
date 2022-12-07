@@ -2,10 +2,10 @@
 
 import {strict as assert} from "assert";
 
-import {cdate} from "../";
-import {fr_FR} from "../locale/fr_FR";
+import {cdate} from "../index.js";
+import {fr_FR} from "../locale/fr_FR.js";
 
-const TITLE = __filename.split("/").pop()!;
+const TITLE = "500.locale.ts";
 
 describe(TITLE, () => {
     const date = new Date("2023-04-05T06:07:08.090Z");

@@ -16,12 +16,12 @@ INDEX=index.ts
 all: en_US.js $(INDEX)
 
 en_US.js:
-	touch en_US.js # dummy
+	echo 'export const en_US = {}' > en_US.js # dummy
 
 index.ts: $(ALL)
 	echo "// cdate/locale" > $@
 	echo "" >> $@
-	for f in $(ALL:.ts=); do echo "import {$$f} from \"./$$f\";" >> $@; done
+	for f in $(ALL:.ts=); do echo "import {$$f} from \"./$$f.js\";" >> $@; done
 	echo "" >> $@
 	echo "export const locales = {$(ALL:.ts=,)};" >> $@
 

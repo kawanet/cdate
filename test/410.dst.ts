@@ -1,18 +1,18 @@
 #!/usr/bin/env mocha -R spec
 
 import {strict as assert} from "assert";
-import * as dayjs from "dayjs";
-import * as utc from "dayjs/plugin/utc";
-import * as timezone from "dayjs/plugin/timezone";
-import * as moment from "moment";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc.js";
+import timezone from "dayjs/plugin/timezone.js";
+import moment from "moment";
 import "moment-timezone"; // side effects only
 
-import {cdate} from "../";
+import {cdate} from "../index.js";
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
-const TITLE = __filename.split("/").pop()!;
+const TITLE = "410.dst.ts";
 
 describe(TITLE, () => {
     /**

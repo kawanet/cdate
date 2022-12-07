@@ -2,9 +2,9 @@
 
 import {strict as assert} from "assert";
 
-import {cdate} from "../";
+import {cdate} from "../index.js";
 
-const TITLE = __filename.split("/").pop()!;
+const TITLE = "220.json.ts";
 
 describe(TITLE, () => {
     it(`Date#toJSON()`, () => {

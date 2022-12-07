@@ -1,6 +1,6 @@
-import type {getTZ} from "./tz";
-import type {DateLike} from "./datelike";
-import {toISO} from "./iso";
+import type {getTZ} from "./tz.js";
+import type {DateLike} from "./datelike.js";
+import {toISO} from "./iso.js";
 
 type TZ = ReturnType<typeof getTZ>;
 
