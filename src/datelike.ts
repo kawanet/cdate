@@ -1,4 +1,4 @@
-declare interface DateLike {
+export interface DateLike {
     getMilliseconds: typeof Date.prototype.getMilliseconds,
     getSeconds: typeof Date.prototype.getSeconds,
     getMinutes: typeof Date.prototype.getMinutes,

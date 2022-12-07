@@ -1,4 +1,5 @@
 import type {cdate as cdateFn, cdateNS} from "../";
+import type {DateLike} from "./datelike";
 import {texter} from "./texter";
 import {add} from "./add";
 import {startOf} from "./startof";

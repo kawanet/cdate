@@ -1,3 +1,4 @@
+import type {DateLike} from "./datelike";
 import {getUnitShort, Unit, unitMS} from "./unit";
 
 const enum d {

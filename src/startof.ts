@@ -1,4 +1,5 @@
 import type {cdateNS} from "../";
+import type {DateLike} from "./datelike";
 import {add} from "./add";
 import {getUnitShort, Unit, unitMS} from "./unit";
 

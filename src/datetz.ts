@@ -1,4 +1,5 @@
 import type {getTZ} from "./tz";
+import type {DateLike} from "./datelike";
 import {toISO} from "./iso";
 
 type TZ = ReturnType<typeof getTZ>;
