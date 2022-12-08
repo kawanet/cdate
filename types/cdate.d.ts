@@ -13,9 +13,9 @@ declare namespace cdateNS {
     interface CDate {
         cdate(dt: Date): CDate;
 
-        format(format: string): string;
+        format(format?: string): string;
 
-        text(format: string): string;
+        text(format?: string): string;
 
         toDate(): Date;
 
@@ -38,10 +38,6 @@ declare namespace cdateNS {
         extend(handlers: Handlers): CDate;
 
         locale(lang: string): CDate;
-    }
-
-    interface strftime {
-        (fmt: string, dt?: Date): string;
     }
 
     type Handler = (dt: Date) => (string | number);

@@ -15,6 +15,8 @@ const strftimeRE = /%(?:[EO]\w|[0_#^-]?[1-9]?\w|::?z|[%+])/g;
 
 const formatRE = new RegExp(["\\[(.*?)\\]"].concat(Object.keys(formatHandlers).sort().reverse()).join("|"), "g");
 
+const ISO = "%Y-%m-%dT%H:%M:%S.%L%:z";
+
 interface Texter {
     strftime(fmt: string, dt: DateLike): string;
 
@@ -44,10 +46,12 @@ const makeTexter = (router?: Router): Texter => {
     const out = {} as Texter;
 
     const strftime = out.strftime = (fmt, dt) => {
+        if (fmt == null) fmt = ISO;
         return fmt.replace(strftimeRE, (specifier) => one(specifier, dt));
     };
 
     out.format = (fmt, dt) => {
+        if (fmt == null) return strftime(fmt, dt);
         return fmt.replace(formatRE, (specifier, raw) => (raw || one(specifier, dt)));
     };
 

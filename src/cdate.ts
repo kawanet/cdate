@@ -3,7 +3,6 @@ import type {DateLike} from "./datelike.js";
 import {texter} from "./texter.js";
 import {add} from "./add.js";
 import {startOf} from "./startof.js";
-import {toISO} from "./iso.js";
 import {dateTZ, dateUTC} from "./datetz.js";
 import {getLocale} from "./locale.js";
 
@@ -124,13 +123,6 @@ abstract class CDate implements cdateNS.CDate {
      */
     toJSON(): string {
         return this.toDate().toJSON();
-    }
-
-    /**
-     * returns an ISO string
-     */
-    toString(): string {
-        return toISO(this.ro());
     }
 
     /**

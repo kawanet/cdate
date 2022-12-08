@@ -1,6 +1,6 @@
 import {getTZ} from "./tz.js";
 import type {DateLike} from "./datelike.js";
-import {toISO} from "./iso.js";
+import {strftime} from "./texter.js";
 
 const enum d {
     SECOND = 1000,
@@ -19,7 +19,8 @@ abstract class DateLikeBase implements DateLike {
     abstract getTimezoneOffset(): number;
 
     toString(): string {
-        return toISO(this);
+        // Fake `this` as a Date which is a DateLike actually, however.
+        return strftime(null, this as unknown as Date);
     }
 
     getMilliseconds() {

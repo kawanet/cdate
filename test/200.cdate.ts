@@ -28,14 +28,11 @@ describe(TITLE, () => {
 
     it(`cdate().text()`, () => {
         assert.equal(cdate(date).text("%Y-%m-%d %H:%M:%S.%L"), "2023-04-05 06:07:08.090");
+        assert.match(cdate(date).text(), /^2023-04-05T06:07:08\.090[+-][012][0-9]:?[0-5][0-9]$/);
     });
 
     it(`cdate().toJSON()`, () => {
         assert.equal(cdate(date).toJSON(), date.toJSON());
         assert.equal(JSON.stringify(cdate(date)), JSON.stringify(date));
-    });
-
-    it(`cdate().toString()`, () => {
-        assert.match(cdate(date).toString(), /^2023-04-05T06:07:08\.090[+-][012][0-9]:?[0-5][0-9]$/);
     });
 });
