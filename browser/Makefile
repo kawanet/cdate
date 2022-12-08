@@ -6,7 +6,7 @@ all: dist test
 
 dist: $(DIST)
 
-../dist/cdate.min.js: ../build/bundle.js
+../dist/cdate.min.js: ../dist/cdate.cjs
 	mkdir -p ../dist
 	../node_modules/.bin/terser -c -m --ecma 6 -o $@ $<
 	ls -l $@
@@ -20,7 +20,7 @@ dist: $(DIST)
 	perl -i -pe 's#(\W)((?:\w+_1|exports)\.)(\w)#$$1\$$$$3#g' $@
 	perl -i -pe 's#(\W)\(0, (\$$\w+)\)(\()#$$1$$2$$3#' $@
 
-../build/bundle.js: ../build/combined.js wrap.cjs
+../dist/cdate.cjs: ../build/combined.js wrap.cjs
 	grep PRE < wrap.cjs | perl -pe 's#\s+//.*##' > $@
 	grep -v '^//' $< >> $@
 	grep -v PRE < wrap.cjs >> $@

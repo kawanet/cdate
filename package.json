@@ -3,6 +3,7 @@
   "description": "a compact calendar date",
   "version": "1.0.0",
   "author": "@kawanet",
+  "browser": "./dist/cdate.min.js",
   "bugs": {
     "url": "https://github.com/kawanet/cdate/issues"
   },
@@ -20,8 +21,13 @@
     "terser": "^5.16.1",
     "typescript": "^4.9.3"
   },
+  "exports": {
+    "import": "./index.js",
+    "require": "./dist/cdate.cjs"
+  },
   "files": [
     "browser/import.cjs",
+    "dist/cdate.cjs",
     "dist/cdate.min.js",
     "dist/package.json",
     "index.js",
@@ -38,8 +44,8 @@
     "time"
   ],
   "license": "MIT",
-  "main": "dist/cdate.min.js",
-  "module": "index.js",
+  "main": "./dist/cdate.cjs",
+  "module": "./index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kawanet/cdate.git"
