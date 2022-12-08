@@ -5,9 +5,11 @@ DIST=../dist/cdate.min.js
 # ../dist/locale/en_US.js
 LOCALECJS=$(addprefix ../dist/locale/,$(addsuffix .js,$(notdir $(basename $(wildcard ../locale/*.ts)))))
 
-all: dist $(LOCALECJS)
+all: $(DIST) $(LOCALECJS)
 
-dist: $(DIST)
+test: ../build/test-local.js
+	../node_modules/.bin/mocha $<
+	@echo '# open "browser/test.html"'
 
 ../dist/cdate.min.js: ../dist/cdate.js
 	mkdir -p ../dist
@@ -29,11 +31,11 @@ dist: $(DIST)
 	grep -v PRE < wrap.cjs >> $@
 	ls -l $@
 
-test: dist ../build/test.js
+../dist/locale/%.js: ../build/locale/%.js ../dist/locale/
+	grep -v '^exports.*= void 0' < $< > $@
 
-mocha: ../build/test-local.js
-	../node_modules/.bin/mocha $<
-	@echo '# open "browser/test.html"'
+../dist/locale:
+	mkdir -p ../dist/locale
 
 ../build/package.json: ../dist/package.json
 	mkdir -p ../build
@@ -56,12 +58,6 @@ mocha: ../build/test-local.js
 
 ../build/test/%.js: ../test/%.ts ../build/package.json
 	../node_modules/.bin/tsc -p .
-
-../dist/locale/%.js: ../build/locale/%.js ../dist/locale/
-	grep -v '^exports.*= void 0' < $< > $@
-
-../dist/locale:
-	mkdir -p ../dist/locale
 
 TITLE:
 	perl -i -pe '@f = split("/",$$ARGV); s#^const TITLE =.*#const TITLE = "$$f[-1]";#' ../test/*.ts
