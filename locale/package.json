@@ -1,0 +1,15 @@
+{
+  "type": "module",
+  "browser": {
+    "./index.js": "../dist/locale/index.js",
+    "./de_DE.js": "../dist/locale/de_DE.js",
+    "./en_US.js": "../dist/locale/en_US.js",
+    "./es_ES.js": "../dist/locale/es_ES.js",
+    "./fr_FR.js": "../dist/locale/fr_FR.js",
+    "./it_IT.js": "../dist/locale/it_IT.js",
+    "./ja_JP.js": "../dist/locale/ja_JP.js",
+    "./ko_KR.js": "../dist/locale/ko_KR.js",
+    "./nl_NL.js": "../dist/locale/nl_NL.js",
+    "./pt_PT.js": "../dist/locale/pt_PT.js"
+  }
+}

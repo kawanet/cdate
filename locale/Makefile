@@ -13,20 +13,23 @@ ALL=\
 
 INDEX=index.ts
 
-all: en_US.js $(INDEX)
+all: $(INDEX)
 
 en_US.js:
 	echo 'export const en_US = {}' > en_US.js # dummy
 
-index.ts: $(ALL)
+$(INDEX): $(ALL)
 	echo "// cdate/locale" > $@
 	echo "" >> $@
 	for f in $(ALL:.ts=); do echo "import {$$f} from \"./$$f.js\";" >> $@; done
 	echo "" >> $@
 	echo "export const locales = {$(ALL:.ts=,)};" >> $@
 
-%.ts:
+%.ts: en_US.js
 	node ../cli/make-locale $(subst _,-,$(basename $@)) > $@
+
+package.json: $(INDEX)
+	node -e 'process.stdout.write(JSON.stringify({type:"module", browser: process.argv.slice(1).reduce((o,v)=>((o["./"+v]="../dist/locale/"+v),o), {})}, null, 2))' index.js $(ALL:.ts=.js) > $@
 
 clean:
 	/bin/rm -fr *.ts *.js
