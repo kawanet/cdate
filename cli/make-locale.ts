@@ -2,7 +2,7 @@
 
 import {cdate} from "../index.js";
 import type {cdateNS} from "../types/cdate";
-import {getLocaleOptions} from "../src/locale/locale";
+import {getLocaleOptions} from "../src/locale/locale.js";
 
 const enum d {
     SECOND = 1000,

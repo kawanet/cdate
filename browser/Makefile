@@ -18,7 +18,7 @@ test: ../build/test-local.js
 
 # the below does NOT use browserify to get .min.js minified enough
 ../build/combined.js: ../build/src/cdate.js
-	cat ../build/locale/en_US.js ../build/src/*.js > $@
+	cat ../build/locale/en_US.js ../build/src/*/*.js ../build/src/*.js > $@
 	perl -i -pe 's#^("use strict"|Object.defineProperty|exports.*= void 0)#// $$&#' $@
 	perl -i -pe 's#^(const \w+_1 = require.)#// $$&#' $@
 	perl -i -pe 's#^exports\.(\w+ =)#const \$$$$1#g' $@

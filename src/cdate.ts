@@ -2,7 +2,7 @@ import type {cdate as cdateFn, cdateNS} from "../types/cdate";
 import {formatPlugin} from "./format/texter.js";
 import {calcPlugin} from "./calc/calc.js";
 import {utcPlugin} from "./timezone/dateutc.js";
-import {tzPlugin} from "./timezone/datetz.js";
+import {tzPlugin} from "./timezone/timezone.js";
 import {localePlugin} from "./locale/locale.js";
 
 export const cdate: typeof cdateFn = (dt) => {
