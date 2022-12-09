@@ -1,4 +1,4 @@
-import type {cdateNS} from "../types/cdate";
+import type {cdateNS} from "../../types/cdate";
 import {getUnitShort, Unit, unitMS} from "./unit.js";
 
 const enum d {
