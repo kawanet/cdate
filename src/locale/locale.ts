@@ -1,5 +1,5 @@
-import type {cdateNS} from "../types/cdate";
-import {cached} from "./cache.js";
+import type {cdateNS} from "../../types/cdate";
+import {cached} from "../cache.js";
 
 const enum d {
     SECOND = 1000,

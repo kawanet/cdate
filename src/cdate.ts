@@ -3,7 +3,7 @@ import {texter} from "./format/texter.js";
 import {add} from "./calc/add.js";
 import {startOf} from "./calc/startof.js";
 import {dateTZ, dateUTC} from "./timezone/datetz.js";
-import {getLocale} from "./locale.js";
+import {getLocale} from "./locale/locale.js";
 
 type Texter = typeof texter;
 
