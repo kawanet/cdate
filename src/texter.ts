@@ -1,10 +1,9 @@
 import type {strftime as strftimeFn, cdateNS} from "../types/cdate";
-import type {DateLike} from "./datelike.js";
 import {en_US} from "../locale/en_US.js";
 import {strftimeHandlers} from "./strftime.js";
 import {formatHandlers} from "./format.js";
 
-type Router = (specifier: string) => (string | ((dt: DateLike) => (string | number)));
+type Router = (specifier: string) => (string | ((dt: cdateNS.DateLike) => (string | number)));
 
 const mergeRouter = (a: Router, b?: Router): Router => ((a && b) ? (specifier => (a(specifier) || b(specifier))) : (a || b));
 
@@ -18,15 +17,15 @@ const formatRE = new RegExp(["\\[(.*?)\\]"].concat(Object.keys(formatHandlers).s
 const ISO = "%Y-%m-%dT%H:%M:%S.%L%:z";
 
 interface Texter {
-    strftime(fmt: string, dt: DateLike): string;
+    strftime(fmt: string, dt: cdateNS.DateLike): string;
 
-    format(fmt: string, dt: DateLike): string;
+    format(fmt: string, dt: cdateNS.DateLike): string;
 
     extend(handlers: cdateNS.Handlers): Texter;
 }
 
 const makeTexter = (router?: Router): Texter => {
-    const one = (specifier: string, dt: DateLike): string => {
+    const one = (specifier: string, dt: cdateNS.DateLike): string => {
         let handler = router(specifier);
 
         if ("string" === typeof handler) {

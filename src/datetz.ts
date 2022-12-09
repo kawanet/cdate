@@ -1,5 +1,5 @@
 import {getTZ} from "./tz.js";
-import type {DateLike} from "./datelike.js";
+import type {cdateNS} from "../types/cdate";
 import {strftime} from "./texter.js";
 
 const enum d {
@@ -7,7 +7,7 @@ const enum d {
     MINUTE = 60 * SECOND,
 }
 
-abstract class DateLikeBase implements DateLike {
+abstract class DateLikeBase implements cdateNS.DateLike {
     constructor(protected dt: Date) {
         //
     }
@@ -105,10 +105,10 @@ class DateTZ extends DateLikeBase {
     }
 }
 
-export function dateUTC(dt: number): DateLike {
+export function dateUTC(dt: number): cdateNS.DateLike {
     return new DateUTC(new Date(+dt));
 }
 
-export function dateTZ(dt: number, timezone: string): DateLike {
+export function dateTZ(dt: number, timezone: string): cdateNS.DateLike {
     return new DateTZ(new Date(+dt), timezone);
 }

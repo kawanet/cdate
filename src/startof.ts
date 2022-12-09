@@ -1,5 +1,4 @@
 import type {cdateNS} from "../types/cdate";
-import type {DateLike} from "./datelike.js";
 import {add} from "./add.js";
 import {getUnitShort, Unit, unitMS} from "./unit.js";
 
@@ -10,12 +9,12 @@ const enum d {
     DAY = 24 * HOUR,
 }
 
-const startOfMonth = (dt: DateLike): void => {
+const startOfMonth = (dt: cdateNS.DateLike): void => {
     startOfDay(dt);
     add(dt, 1 - dt.getDate(), "day");
 };
 
-const startOfDay = (dt: DateLike): void => {
+const startOfDay = (dt: cdateNS.DateLike): void => {
     const tz1 = dt.getTimezoneOffset();
     truncate(dt, d.DAY);
     const tz2 = dt.getTimezoneOffset();
@@ -26,12 +25,12 @@ const startOfDay = (dt: DateLike): void => {
     }
 };
 
-const truncate = (dt: DateLike, unit: number): void => {
+const truncate = (dt: cdateNS.DateLike, unit: number): void => {
     const tz = dt.getTimezoneOffset() * d.MINUTE;
     dt.setTime(Math.trunc((+dt - tz) / unit) * unit + tz);
 };
 
-export const startOf = (dt: DateLike, unit: cdateNS.UnitForStart): void => {
+export const startOf = (dt: cdateNS.DateLike, unit: cdateNS.UnitForStart): void => {
     const u = getUnitShort(unit);
     const msec = unitMS[u];
     if (msec) return truncate(dt, msec);

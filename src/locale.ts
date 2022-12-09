@@ -14,22 +14,22 @@ const makeLocale = (lang: string): cdateNS.Handlers => {
     const makeHandler = (options: Intl.DateTimeFormatOptions, keyFn?: cdateNS.Handler, partType?: Intl.DateTimeFormatPartTypes): cdateNS.Handler => {
         let format: Intl.DateTimeFormat;
 
-        const handler = (dt: Date): string => {
+        const handler = (dt: cdateNS.DateLike): string => {
             // force UTC instead of local time
             const offset = dt.getTimezoneOffset();
-            dt = new Date(+dt - offset * d.MINUTE);
+            const utc = new Date(+dt - offset * d.MINUTE);
 
             // cached DateTimeFormat instance
             if (!format) format = new Intl.DateTimeFormat(lang, options);
 
             // pickup only the single part of parts
             if (partType) {
-                const part = format.formatToParts(dt).find(v => v.type === partType);
+                const part = format.formatToParts(utc).find(v => v.type === partType);
                 return part && part.value;
             }
 
             // stringify
-            const text = format.format(dt);
+            const text = format.format(utc);
 
             // remove "UTC" string for some cases given
             if (text) return text.replace(/\s+UTC$/, "");

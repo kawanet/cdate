@@ -1,4 +1,4 @@
-import type {DateLike} from "./datelike.js";
+import type {cdateNS} from "../types/cdate";
 import {getUnitShort, Unit, unitMS} from "./unit.js";
 
 const enum d {
@@ -8,7 +8,7 @@ const enum d {
     DAY = 24 * HOUR,
 }
 
-const addMonth = (dt: DateLike, months: number): void => {
+const addMonth = (dt: cdateNS.DateLike, months: number): void => {
     const year = dt.getFullYear();
     const month = dt.getMonth();
     const date = dt.getDate();
@@ -33,7 +33,7 @@ const addMonth = (dt: DateLike, months: number): void => {
     }
 };
 
-const addDay = (dt: DateLike, days: number): void => {
+const addDay = (dt: cdateNS.DateLike, days: number): void => {
     const tz1 = dt.getTimezoneOffset();
     dt.setTime(+dt + days * d.DAY);
     const tz2 = dt.getTimezoneOffset();
@@ -44,7 +44,7 @@ const addDay = (dt: DateLike, days: number): void => {
     }
 }
 
-export const add = (dt: DateLike, diff: number, unit?: string): void => {
+export const add = (dt: cdateNS.DateLike, diff: number, unit?: string): void => {
     if (!diff) return;
 
     const u = getUnitShort(unit);

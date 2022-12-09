@@ -1,5 +1,4 @@
 import type {cdate as cdateFn, cdateNS} from "../types/cdate";
-import type {DateLike} from "./datelike.js";
 import {texter} from "./texter.js";
 import {add} from "./add.js";
 import {startOf} from "./startof.js";
@@ -24,12 +23,12 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * millisecond since the UNIX epoch
      */
-    protected readonly t: number | DateLike;
+    protected readonly t: number | cdateNS.DateLike;
 
     /**
      * read-only version of DateLike
      */
-    private d: DateLike;
+    private d: cdateNS.DateLike;
 
     /**
      * options container
@@ -39,7 +38,7 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * the constructor
      */
-    constructor(t: number | DateLike, x: Options) {
+    constructor(t: number | cdateNS.DateLike, x: Options) {
         if (t == null) {
             t = new Date();
         }
@@ -53,7 +52,7 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * creates another CDate object
      */
-    cdate(ms: number | DateLike): this {
+    cdate(ms: number | cdateNS.DateLike): this {
         return new (this.constructor as any)(ms, this.x);
     }
 
@@ -70,12 +69,12 @@ abstract class CDate implements cdateNS.CDate {
     /**
      * returns a read-write version of DateLike for manipulation
      */
-    protected abstract rw(): DateLike;
+    protected abstract rw(): cdateNS.DateLike;
 
     /**
      * returns a read-only version of DateLike for displaying
      */
-    protected ro(): DateLike {
+    protected ro(): cdateNS.DateLike {
         return this.d || (this.d = this.rw());
     }
 
@@ -184,19 +183,19 @@ abstract class CDate implements cdateNS.CDate {
 }
 
 class CDateLocal extends CDate {
-    protected rw(): DateLike {
+    protected rw(): cdateNS.DateLike {
         return new Date(+this.t);
     }
 }
 
 class CDateUTC extends CDate {
-    protected rw(): DateLike {
+    protected rw(): cdateNS.DateLike {
         return dateUTC(+this.t);
     }
 }
 
 class CDateTZ extends CDateUTC {
-    protected rw(): DateLike {
+    protected rw(): cdateNS.DateLike {
         return dateTZ(+this.t, this.x.tz);
     }
 }
