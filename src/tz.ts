@@ -6,7 +6,6 @@ const enum d {
     MINUTE15 = 15 * MINUTE,
 }
 
-type DTFPartsParser = (parts: Intl.DateTimeFormatPart[], dt?: Date) => number;
 type TimezoneOffsetFn = (ms: number) => number;
 
 const parseTZ = cached((tz: string): number => {
@@ -16,49 +15,28 @@ const parseTZ = cached((tz: string): number => {
     return (matched[1] === "-") ? -offset : offset;
 });
 
-let longOffset = "longOffset" as const;
-
-const getDateTimeFormat = cached((timeZone: string): Intl.DateTimeFormat => {
-    return new Intl.DateTimeFormat("en-US", longOffset ?
-        // node v18
-        {timeZone, timeZoneName: longOffset} :
-        // node v16
-        {timeZone, hour12: false, weekday: "short", day: "numeric", hour: "numeric", minute: "numeric"});
-});
-
-/**
- * Node v16 and below does NOT support {timeZoneName: "longOffset"} option
- * Node v18 however supports it.
- */
-const getPartsParser = lazy((): DTFPartsParser => {
-    try {
-        getDateTimeFormat("UTC");
-        return parseTimeZoneName; // node v18
-    } catch (e) {
-        // RangeError: Value longOffset out of range for Intl.DateTimeFormat options property timeZoneName
-        longOffset = null;
-        return calcTimeZoneOffset; // node v16
-    }
-});
-
-const parseTimeZoneName: DTFPartsParser = (parts) => {
-    const part = parts.find(v => v.type === "timeZoneName");
-    if (part) return parseTZ(part.value);
-};
-
 const weekdayMap = lazy(() => {
     const map: { [key: string]: number } = {};
     ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach((key, idx) => (map[key] = idx));
     return map;
 });
 
-const calcTimeZoneOffset: DTFPartsParser = (parts, dt) => {
+const calcTimeZoneOffset = (dtf: Intl.DateTimeFormat, dt: Date) => {
+    const parts = dtf.formatToParts(dt);
     const index: { [key in Intl.DateTimeFormatPartTypes]?: any } = {};
     parts.forEach(v => (index[v.type] = v.value));
-    const day = (7 + dt.getUTCDay() - weekdayMap()[index.weekday]) % 7;
-    const hour = dt.getUTCHours() - (index.hour) % 24;
+
+    // difference of days:
+    let day = (7 + dt.getUTCDay() - weekdayMap()[index.weekday]) % 7;
+    if (day > 3) day -= 7;
+
+    // difference of hours: some locales use h24
+    const hour = dt.getUTCHours() - (index.hour % 24);
+
+    // difference of minutes:
     const minutes = dt.getUTCMinutes() - index.minute;
 
+    // difference in minutes:
     return -((day * 24 + hour) * 60 + minutes);
 };
 
@@ -68,7 +46,11 @@ export const getTZ = cached<TimezoneOffsetFn>(tz => {
         return (_: number) => fixed;
     }
 
-    // last offset prev
+    const getDTF = lazy(() => {
+        return new Intl.DateTimeFormat("en-US", {timeZone: tz, hour12: false, weekday: "short", hour: "numeric", minute: "numeric"});
+    });
+
+    // latest offset result
     let prev: { [minute15: string]: number };
 
     return (ms: number) => {
@@ -78,16 +60,11 @@ export const getTZ = cached<TimezoneOffsetFn>(tz => {
         let offset = prev && prev[minute15];
         if (offset != null) return offset;
 
-        const partsToOffset = getPartsParser();
-        const dtf = getDateTimeFormat(tz);
-        const parts = dtf && dtf.formatToParts(ms);
-
         const dt = new Date(ms);
-        if (parts) {
-            offset = partsToOffset(parts, dt);
-        }
+        offset = calcTimeZoneOffset(getDTF(), dt);
+
+        // fallback to local time zone
         if (offset == null) {
-            // fallback to local time zone
             offset = -dt.getTimezoneOffset();
         }
 
