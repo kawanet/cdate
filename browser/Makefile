@@ -18,10 +18,16 @@ test: ../build/test-local.js
 
 # the below does NOT use browserify to get .min.js minified enough
 ../build/combined.js: ../build/src/cdate.js
-	cat ../build/locale/en_US.js ../build/src/*/*.js ../build/src/*.js > $@
+	echo "// $(notdir $@)" > $@
+	for file in ../build/locale/en_US.js ../build/src/*/*.js ../build/src/*.js; do \
+  		grep '^exports\.' < $$file | perl -pe 's#^exports\.(\w+).*#let \$$$$1;#g' | sort | uniq >> $@ && \
+  		echo "{" >> $@ && \
+  		cat $$file >> $@ && \
+  		echo "}" >> $@; \
+	done
 	perl -i -pe 's#^("use strict"|Object.defineProperty|exports.*= void 0)#// $$&#' $@
 	perl -i -pe 's#^(const \w+_1 = require.)#// $$&#' $@
-	perl -i -pe 's#^exports\.(\w+ =)#const \$$$$1#g' $@
+	perl -i -pe 's#^exports\.(\w+ =)#\$$$$1#g' $@
 	perl -i -pe 's#(\W)((?:\w+_1|exports)\.)(\w)#$$1\$$$$3#g' $@
 	perl -i -pe 's#(\W)\(0, (\$$\w+)\)(\()#$$1$$2$$3#' $@
 
