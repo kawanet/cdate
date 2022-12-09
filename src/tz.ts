@@ -1,5 +1,11 @@
 import {cached, lazy} from "./cache.js";
 
+const enum d {
+    SECOND = 1000,
+    MINUTE = 60 * SECOND,
+    MINUTE15 = 15 * MINUTE,
+}
+
 type DTFPartsParser = (parts: Intl.DateTimeFormatPart[], dt?: Date) => number;
 type TimezoneOffsetFn = (ms: number) => number;
 
@@ -63,10 +69,13 @@ export const getTZ = cached<TimezoneOffsetFn>(tz => {
     }
 
     // last offset prev
-    let prev: { [ms: string]: number };
+    let prev: { [minute15: string]: number };
 
     return (ms: number) => {
-        let offset = prev && prev[ms];
+        // time zone offset never changes within every 15 minutes
+        const minute15 = Math.floor(ms / d.MINUTE15);
+
+        let offset = prev && prev[minute15];
         if (offset != null) return offset;
 
         const partsToOffset = getPartsParser();
@@ -83,7 +92,7 @@ export const getTZ = cached<TimezoneOffsetFn>(tz => {
         }
 
         prev = {};
-        prev[ms] = offset;
+        prev[minute15] = offset;
         return offset;
     };
 });
