@@ -1,5 +1,5 @@
 import {getTZ} from "./tz.js";
-import type {cdateNS} from "../types/cdate";
+import type {cdateNS} from "../../types/cdate";
 
 const enum d {
     SECOND = 1000,

@@ -1,4 +1,4 @@
-import {cached, lazy} from "./cache.js";
+import {cached, lazy} from "../cache.js";
 
 const enum d {
     SECOND = 1000,
