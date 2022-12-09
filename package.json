@@ -8,9 +8,11 @@
     "url": "https://github.com/kawanet/cdate/issues"
   },
   "devDependencies": {
+    "@types/benchmark": "^2.1.2",
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.11.9",
     "@types/strftime": "^0.9.4",
+    "benchmark": "^2.1.4",
     "browserify": "^17.0.0",
     "browserify-sed": "^0.8.0",
     "dayjs": "^1.11.6",
