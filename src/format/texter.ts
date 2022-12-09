@@ -60,5 +60,40 @@ const makeTexter = (router?: Router): Texter => {
 };
 
 export const texter = makeTexter().extend(en_US).extend(formatHandlers).extend(strftimeHandlers());
+
 const _strftime = texter.strftime;
 export const strftime: typeof strftimeFn = (fmt, dt) => _strftime(fmt, dt || new Date());
+
+const getTexter = (x: { tx: typeof texter }): typeof texter => (x && x.tx || texter);
+
+interface Options {
+    tx: Texter;
+}
+
+export const formatPlugin: cdateNS.Plugin<Options> = Parent => {
+    return class CDateFormat extends Parent {
+        /**
+         * updates strftime option with the given locale
+         */
+        extend(handlers: cdateNS.Handlers) {
+            const out = this.inherit();
+            const {x} = out;
+            x.tx = getTexter(x).extend(handlers);
+            return out;
+        }
+
+        /**
+         * returns a text with "YYYY-MM-DD" formatting style
+         */
+        format(fmt: string): string {
+            return getTexter(this.x).format(fmt, this.ro());
+        }
+
+        /**
+         * returns a text with "%y/%m/%d formatting style
+         */
+        text(fmt: string): string {
+            return getTexter(this.x).strftime(fmt, this.ro());
+        }
+    }
+};

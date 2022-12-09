@@ -6,7 +6,7 @@ const enum d {
     MINUTE15 = 15 * MINUTE,
 }
 
-type TimezoneOffsetFn = (ms: number) => number;
+type TZF = (ms: number) => number;
 
 const parseTZ = cached((tz: string): number => {
     const matched = tz.match(/(?:^|GMT)?(?:([+-])([01]?\d):?(\d[05])|$)|UTC$/);
@@ -40,10 +40,10 @@ const calcTimeZoneOffset = (dtf: Intl.DateTimeFormat, dt: Date) => {
     return -((day * 24 + hour) * 60 + minutes);
 };
 
-export const getTZ = cached<TimezoneOffsetFn>(tz => {
+export const getTZF = cached<TZF>(tz => {
     if (!/\//.test(tz)) {
         const fixed = parseTZ(tz);
-        return (_: number) => fixed;
+        return _ => fixed;
     }
 
     // cache latest results
@@ -51,7 +51,7 @@ export const getTZ = cached<TimezoneOffsetFn>(tz => {
     let count = 0;
     let dtf: Intl.DateTimeFormat;
 
-    return (ms: number) => {
+    return ms => {
         // time zone offset never changes within every 15 minutes
         const minute15 = Math.floor(ms / d.MINUTE15);
 

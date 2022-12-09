@@ -1,82 +1,21 @@
-import {getTZ} from "./tz.js";
 import type {cdateNS} from "../../types/cdate";
+import {getTZF} from "./tzf.js";
+import {DateUTC} from "./dateutc.js";
 
 const enum d {
     SECOND = 1000,
     MINUTE = 60 * SECOND,
 }
 
-abstract class DateLikeBase implements cdateNS.DateLike {
-    constructor(protected dt: Date) {
-        //
-    }
-
-    abstract valueOf(): number;
-
-    abstract setTime(msec: number): number;
-
-    abstract getTimezoneOffset(): number;
-
-    getMilliseconds() {
-        return this.dt.getUTCMilliseconds();
-    }
-
-    getSeconds() {
-        return this.dt.getUTCSeconds();
-    }
-
-    getMinutes() {
-        return this.dt.getUTCMinutes();
-    }
-
-    getHours() {
-        return this.dt.getUTCHours();
-    }
-
-    getDay() {
-        return this.dt.getUTCDay();
-    }
-
-    getDate() {
-        return this.dt.getUTCDate();
-    };
-
-    getMonth() {
-        return this.dt.getUTCMonth();
-    }
-
-    getFullYear() {
-        return this.dt.getUTCFullYear();
-    }
-
-    getTime() {
-        return +this;
-    }
-}
-
-class DateUTC extends DateLikeBase {
-    valueOf(): number {
-        return +this.dt;
-    }
-
-    setTime(msec: number) {
-        return this.dt.setTime(msec);
-    }
-
-    getTimezoneOffset() {
-        return 0; // always UTC
-    }
-}
-
-class DateTZ extends DateLikeBase {
+class DateTZ extends DateUTC {
     // dt: Date; // UTC
     private t: number; // local time
-    private tzf: ReturnType<typeof getTZ>;
+    private tzf: ReturnType<typeof getTZF>;
     private tzo: number;
 
     constructor(dt: Date, timezone: string) {
         const t = +dt;
-        const tzf = getTZ(timezone);
+        const tzf = getTZF(timezone);
         const tzo = tzf(t);
         super(new Date(t + tzo * d.MINUTE));
         this.t = t;
@@ -99,10 +38,14 @@ class DateTZ extends DateLikeBase {
     }
 }
 
-export function dateUTC(dt: number): cdateNS.DateLike {
-    return new DateUTC(new Date(+dt));
-}
-
-export function dateTZ(dt: number, timezone: string): cdateNS.DateLike {
-    return new DateTZ(new Date(+dt), timezone);
-}
+export const tzPlugin: cdateNS.Plugin<{ tz: string }> = Parent => {
+    return class CDateTZ extends Parent {
+        tz(timezone: string) {
+            const out = this.inherit();
+            const {x} = out;
+            x.tz = timezone;
+            x.rw = (dt) => new DateTZ(new Date(+dt), timezone);
+            return out;
+        }
+    }
+};

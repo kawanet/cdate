@@ -10,8 +10,11 @@ declare namespace cdateNS {
     type UnitForAdd = UnitForNext | UnitLongS | "milliseconds";
     type UnitForStart = UnitLong | UnitShort | "date";
 
+    /**
+     * Public Interface for consumers
+     */
     interface CDate {
-        cdate(dt: Date): CDate;
+        cdate(dt: number | Date): CDate;
 
         format(format?: string): string;
 
@@ -38,7 +41,37 @@ declare namespace cdateNS {
         extend(handlers: Handlers): CDate;
 
         locale(lang: string): CDate;
+
+        plugin(fn: Plugin): CDate;
     }
+
+    /**
+     * Internal interface for plugin developers
+     */
+    interface CDateI<T> extends CDate {
+        t: number | DateLike;
+        x: Options & T;
+
+        cdate(dt: number | DateLike): CDate;
+
+        rw(): cdateNS.DateLike;
+
+        ro(): cdateNS.DateLike;
+
+        inherit(): CDateI<T>;
+    }
+
+    interface CDateClass<T = {}> {
+        new(t: number | cdateNS.DateLike, x: T): CDateI<T>;
+
+        prototype: CDateI<T>;
+    }
+
+    interface Options {
+        rw?: (t: number) => cdateNS.DateLike;
+    }
+
+    type Plugin<T = {}> = (Cdate: CDateClass<T>) => CDateClass<T>;
 
     interface DateLike {
         getMilliseconds: typeof Date.prototype.getMilliseconds,
