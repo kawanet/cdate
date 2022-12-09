@@ -46,30 +46,40 @@ export const getTZ = cached<TimezoneOffsetFn>(tz => {
         return (_: number) => fixed;
     }
 
-    const getDTF = lazy(() => {
-        return new Intl.DateTimeFormat("en-US", {timeZone: tz, hour12: false, weekday: "short", hour: "numeric", minute: "numeric"});
-    });
-
-    // latest offset result
-    let prev: { [minute15: string]: number };
+    // cache latest results
+    let cache: { [minute15: string]: number } = {};
+    let count = 0;
+    let dtf: Intl.DateTimeFormat;
 
     return (ms: number) => {
         // time zone offset never changes within every 15 minutes
         const minute15 = Math.floor(ms / d.MINUTE15);
 
-        let offset = prev && prev[minute15];
+        // check cached result
+        let offset = cache && cache[minute15];
         if (offset != null) return offset;
 
+        // reset all cache simply at every 24 x 4 times
+        if (count++ > 96) {
+            cache = {};
+            count = 0;
+        }
+
         const dt = new Date(ms);
-        offset = calcTimeZoneOffset(getDTF(), dt);
+
+        // DateTimeFormat is much slow
+        if (!dtf) {
+            dtf = new Intl.DateTimeFormat("en-US", {timeZone: tz, hour12: false, weekday: "short", hour: "numeric", minute: "numeric"});
+        }
+        offset = calcTimeZoneOffset(dtf, dt);
 
         // fallback to local time zone
         if (offset == null) {
             offset = -dt.getTimezoneOffset();
         }
 
-        prev = {};
-        prev[minute15] = offset;
+        // write to cache
+        cache[minute15] = offset;
         return offset;
     };
 });
