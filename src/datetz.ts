@@ -1,6 +1,5 @@
 import {getTZ} from "./tz.js";
 import type {cdateNS} from "../types/cdate";
-import {strftime} from "./texter.js";
 
 const enum d {
     SECOND = 1000,
@@ -17,11 +16,6 @@ abstract class DateLikeBase implements cdateNS.DateLike {
     abstract setTime(msec: number): number;
 
     abstract getTimezoneOffset(): number;
-
-    toString(): string {
-        // Fake `this` as a Date which is a DateLike actually, however.
-        return strftime(null, this as unknown as Date);
-    }
 
     getMilliseconds() {
         return this.dt.getUTCMilliseconds();

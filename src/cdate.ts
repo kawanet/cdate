@@ -1,5 +1,5 @@
 import type {cdate as cdateFn, cdateNS} from "../types/cdate";
-import {texter} from "./texter.js";
+import {texter} from "./format/texter.js";
 import {add} from "./calc/add.js";
 import {startOf} from "./calc/startof.js";
 import {dateTZ, dateUTC} from "./datetz.js";
