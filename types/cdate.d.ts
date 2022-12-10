@@ -38,7 +38,7 @@ declare namespace cdateNS {
 
         tz(timezone: string): CDate;
 
-        extend(handlers: Handlers): CDate;
+        handler(handlers: Handlers): CDate;
 
         locale(lang: string): CDate;
 

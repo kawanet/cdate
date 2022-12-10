@@ -36,7 +36,7 @@ const main = async (lang: string) => {
         "%p": dt => (dt.getHours() < 12 ? ampm[0] : ampm[1]),
     };
 
-    const dt = cdate(initDate).utc().extend(locale);
+    const dt = cdate(initDate).utc().handler(locale);
     const formatOptions = getLocaleOptions();
 
     {
@@ -73,7 +73,7 @@ const main = async (lang: string) => {
         const format = Intl.DateTimeFormat(lang, formatOptions.x);
         const parts = format.formatToParts(initDate);
         style.x = fixHours(parts.map(parsePart).join(""));
-        sample.x = dt.extend({"%x": style.x}).text("%x");
+        sample.x = dt.handler({"%x": style.x}).text("%x");
         console.warn("Intl:  ", format.format(initDate));
         console.warn(`locale: "${style.x}"`);
         console.warn("cdate: ", sample.x);
@@ -83,7 +83,7 @@ const main = async (lang: string) => {
         const format = Intl.DateTimeFormat(lang, formatOptions.X);
         const parts = format.formatToParts(initDate);
         style.X = fixHours(parts.map(parsePart).join(""));
-        sample.X = dt.extend({"%X": style.X}).text("%X");
+        sample.X = dt.handler({"%X": style.X}).text("%X");
         console.warn("Intl:  ", format.format(initDate));
         console.warn("cdate: ", sample.X);
         console.warn(`locale: "${style.X}"`);
@@ -93,7 +93,7 @@ const main = async (lang: string) => {
         const format = Intl.DateTimeFormat(lang, formatOptions.r);
         const parts = format.formatToParts(initDate);
         style.r = fixHours(parts.map(parsePart).join(""));
-        sample.r = dt.extend({"%r": style.r}).text("%r");
+        sample.r = dt.handler({"%r": style.r}).text("%r");
         console.warn("Intl:  ", format.format(initDate));
         console.warn("cdate: ", sample.r);
         console.warn(`locale: "${style.r}"`);
@@ -103,7 +103,7 @@ const main = async (lang: string) => {
         const format = Intl.DateTimeFormat(lang, formatOptions.c);
         const parts = format.formatToParts(initDate);
         style.c = fixHours(parts.map(parsePart).join(""), /%-?H/);
-        sample.c = dt.extend({"%c": style.c}).text("%c");
+        sample.c = dt.handler({"%c": style.c}).text("%c");
         console.warn("Intl:  ", format.format(initDate));
         console.warn("cdate: ", sample.c);
         console.warn(`locale: "${style.c}"`);

@@ -100,7 +100,7 @@ const getLocale = cached(makeLocale);
 export const localePlugin: cdateNS.Plugin = Parent => {
     return class CDateLocale extends Parent {
         locale(lang: string) {
-            return this.extend(getLocale(lang));
+            return this.handler(getLocale(lang));
         }
     }
 };

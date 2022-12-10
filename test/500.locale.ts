@@ -35,7 +35,7 @@ describe(TITLE, () => {
     });
 
     it(`cdate().extend(fr_FR)`, () => {
-        const dt = cdate(date).utc().extend(fr_FR);
+        const dt = cdate(date).utc().handler(fr_FR);
         assert.equal(dt.text("%A = %a"), "mercredi = mer.");
         assert.equal(dt.text("%B = %b"), "avril = avr.");
         assert.equal(dt.text("%x"), "05/04/2023");

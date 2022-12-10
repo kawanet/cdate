@@ -21,7 +21,7 @@ interface Texter {
 
     format(fmt: string, dt: cdateNS.DateLike): string;
 
-    extend(handlers: cdateNS.Handlers): Texter;
+    handler(handlers: cdateNS.Handlers): Texter;
 }
 
 const makeTexter = (router?: Router): Texter => {
@@ -54,12 +54,12 @@ const makeTexter = (router?: Router): Texter => {
         return fmt.replace(formatRE, (specifier, raw) => (raw || one(specifier, dt)));
     };
 
-    out.extend = specifiers => makeTexter(mergeRouter(makeRouter(specifiers), router));
+    out.handler = specifiers => makeTexter(mergeRouter(makeRouter(specifiers), router));
 
     return out;
 };
 
-export const texter = makeTexter().extend(en_US).extend(formatHandlers).extend(strftimeHandlers());
+export const texter = makeTexter().handler(en_US).handler(formatHandlers).handler(strftimeHandlers());
 
 const _strftime = texter.strftime;
 export const strftime: typeof strftimeFn = (fmt, dt) => _strftime(fmt, dt || new Date());
@@ -75,10 +75,10 @@ export const formatPlugin: cdateNS.Plugin<Options> = Parent => {
         /**
          * updates strftime option with the given locale
          */
-        extend(handlers: cdateNS.Handlers) {
+        handler(handlers: cdateNS.Handlers) {
             const out = this.inherit();
             const {x} = out;
-            x.tx = getTexter(x).extend(handlers);
+            x.tx = getTexter(x).handler(handlers);
             return out;
         }
 
