@@ -9,14 +9,14 @@ export const cdate: typeof cdateFn = (dt) => {
     if ("string" === typeof dt) {
         dt = new Date(dt);
     }
-    return root.cdate(dt);
+    return root.cdate(dt) as unknown as cdateNS.CDate;
 };
 
 class CDateCore {
     /**
      * millisecond since the UNIX epoch
      */
-    protected readonly t: number | cdateNS.DateLike;
+    readonly t: number | cdateNS.DateLike;
 
     /**
      * read-only version of DateLike
@@ -26,7 +26,7 @@ class CDateCore {
     /**
      * options container
      */
-    protected x: cdateNS.Options;
+    readonly x: cdateNS.Options;
 
     /**
      * the constructor
@@ -45,17 +45,16 @@ class CDateCore {
     /**
      * creates another CDate object
      */
-    cdate(ms?: number | cdateNS.DateLike) {
-        return new (this.constructor as cdateNS.CDateClass)(ms, this.x);
+    cdate(dt?: number | cdateNS.DateLike) {
+        return new (this.constructor as cdateNS.cClass)(dt, this.x);
     }
 
     /**
      * returns a read-write version of DateLike for manipulation
      */
     rw(): cdateNS.DateLike {
-        const {x} = this;
-        const {rw} = x;
         const t = +this.t;
+        const rw = this.x.rw;
         return rw ? rw(t) : new Date(t);
     }
 
@@ -87,23 +86,23 @@ class CDateCore {
         return this.toDate().toJSON();
     }
 
-    plugin(fn: cdateNS.Plugin) {
-        const CDateClass = this.constructor as cdateNS.CDateClass;
+    plugin<T, X>(fn: cdateNS.cPlugin<T, X>) {
+        const CDateClass = this.constructor as cdateNS.cClass<{}, X>;
         const CDateX = fn(CDateClass) || CDateClass;
-        return new CDateX(this.t, this.x);
+        return new CDateX(this.t, this.x as X);
     }
 
     inherit() {
         const out = this.cdate(+this);
-        out.x = Object.create(out.x);
+        // x is readonly
+        (out as { x: typeof out.x }).x = Object.create(out.x);
         return out;
     }
 }
 
-let root = new CDateCore(0, {}) as unknown as cdateNS.CDate;
-
-root = root.plugin(formatPlugin);
-root = root.plugin(calcPlugin);
-root = root.plugin(localePlugin);
-root = root.plugin(utcPlugin);
-root = root.plugin(tzPlugin);
+const root = new CDateCore(0, {})
+    .plugin(formatPlugin)
+    .plugin(calcPlugin)
+    .plugin(localePlugin)
+    .plugin(utcPlugin)
+    .plugin(tzPlugin);

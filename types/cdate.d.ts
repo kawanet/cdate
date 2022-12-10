@@ -13,65 +13,81 @@ declare namespace cdateNS {
     /**
      * Public Interface for consumers
      */
-    interface CDate {
-        cdate(dt: number | Date): CDate;
+    type CDate = cCore & cFormatPlugin & cCalcPlugin & cUTCPlugin & cTimezonePlugin & cLocalePlugin;
 
-        format(format?: string): string;
-
-        text(format?: string): string;
+    interface cCore {
+        cdate(dt: number | Date): this;
 
         toDate(): Date;
 
         toJSON(): string;
 
-        add(diff: number, unit?: UnitForAdd): CDate;
-
-        startOf(unit: UnitForStart): CDate;
-
-        endOf(unit: UnitForStart): CDate;
-
-        next(unit: UnitForNext): CDate;
-
-        prev(unit: UnitForNext): CDate;
-
-        utc(): CDate;
-
-        tz(timezone: string): CDate;
-
-        handler(handlers: Handlers): CDate;
-
-        locale(lang: string): CDate;
-
-        plugin(fn: Plugin): CDate;
+        plugin<T>(fn: cPlugin<T>): this & T;
     }
+
+    interface cFormatPlugin {
+        format(format?: string): string;
+
+        text(format?: string): string;
+
+        handler(handlers: Handlers): this;
+    }
+
+    interface cCalcPlugin {
+        add(diff: number, unit?: UnitForAdd): this;
+
+        startOf(unit: UnitForStart): this;
+
+        endOf(unit: UnitForStart): this;
+
+        next(unit: UnitForNext): this;
+
+        prev(unit: UnitForNext): this;
+    }
+
+    interface cUTCPlugin {
+        utc(): this;
+    }
+
+    interface cTimezonePlugin {
+        tz(timezone: string): this;
+    }
+
+    interface cLocalePlugin {
+        locale(lang: string): this;
+    }
+
+    type Handler = (dt: DateLike) => (string | number);
+
+    type Handlers = { [specifier: string]: string | Handler };
 
     /**
      * Internal interface for plugin developers
      */
-    interface CDateI<T> extends CDate {
-        t: number | DateLike;
-        x: Options & T;
+    interface cInternal<T = {}, X = {}> extends cCore {
+        readonly t: number | DateLike;
+        readonly x: Options & X;
 
-        cdate(dt: number | DateLike): CDate;
+        cdate(dt: number | DateLike): this;
 
-        rw(): cdateNS.DateLike;
+        inherit(): this;
 
-        ro(): cdateNS.DateLike;
+        rw(): DateLike;
 
-        inherit(): CDateI<T>;
+        ro(): DateLike;
     }
 
-    interface CDateClass<T = {}> {
-        new(t: number | cdateNS.DateLike, x: T): CDateI<T>;
-
-        prototype: CDateI<T>;
+    interface cClass<T = {}, X = {}> {
+        new(t: number | DateLike, x: X): cInternal<T, X>;
     }
 
     interface Options {
-        rw?: (t: number) => cdateNS.DateLike;
+        rw?: (t: number) => DateLike;
     }
 
-    type Plugin<T = {}> = (Cdate: CDateClass<T>) => CDateClass<T>;
+    interface cPlugin<T = {}, X = {}, P = {}> {
+        (Parent: cClass<P, X>): cClass<T, X>;
+    }
 
     interface DateLike {
         getMilliseconds: typeof Date.prototype.getMilliseconds,
@@ -86,10 +102,6 @@ declare namespace cdateNS {
         getTime: typeof Date.prototype.getTime,
         setTime: typeof Date.prototype.setTime,
     }
-
-    type Handler = (dt: DateLike) => (string | number);
-
-    type Handlers = { [specifier: string]: string | Handler };
 }
 
 export const cdate: (dt?: string | number | Date) => cdateNS.CDate;
