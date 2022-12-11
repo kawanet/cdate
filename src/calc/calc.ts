@@ -10,7 +10,7 @@ export const calcPlugin: cdateNS.cPlugin<cdateNS.cCalcPlugin> = (Parent) => {
         startOf(unit: cdateNS.UnitForStart) {
             const dt = this.rw();
             startOf(dt, unit);
-            return this.cdate(dt);
+            return this.create(dt);
         }
 
         /**
@@ -21,7 +21,7 @@ export const calcPlugin: cdateNS.cPlugin<cdateNS.cCalcPlugin> = (Parent) => {
             startOf(dt, unit);
             add(dt, 1, unit);
             add(dt, -1);
-            return this.cdate(dt);
+            return this.create(dt);
         }
 
         /**
@@ -30,7 +30,7 @@ export const calcPlugin: cdateNS.cPlugin<cdateNS.cCalcPlugin> = (Parent) => {
         add(diff: number, unit: cdateNS.UnitForAdd) {
             const dt = this.rw();
             add(dt, diff, unit);
-            return this.cdate(dt);
+            return this.create(dt);
         }
 
         /**

@@ -68,7 +68,7 @@ declare namespace cdateNS {
         readonly t: number | DateLike;
         readonly x: Options & X;
 
-        cdate(dt: number | string | DateLike): this;
+        create(dt: cdateNS.DateLike): this;
 
         inherit(): this;
 

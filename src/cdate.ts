@@ -5,10 +5,6 @@ import {utcPlugin} from "./timezone/dateutc.js";
 import {tzPlugin} from "./timezone/timezone.js";
 import {localePlugin} from "./locale/locale.js";
 
-export const cdate: typeof cdateFn = (dt) => {
-    return root.cdate(dt) as unknown as cdateNS.CDate;
-};
-
 class CDateCore {
     /**
      * millisecond since the UNIX epoch
@@ -39,13 +35,15 @@ class CDateCore {
     /**
      * creates another CDate object
      */
-    cdate(dt?: number | string | cdateNS.DateLike) {
-        if ("string" === typeof dt) {
-            dt = new Date(dt);
-        } else if (dt == null) {
-            dt = new Date();
+    cdate(dt?: number | string | Date) {
+        if (dt == null) {
+            dt = new Date(); // now
+        } else if ("string" === typeof dt) {
+            dt = new Date(dt); // parse ISO string
+        } else {
+            dt = new Date(+dt); // number or DateLike
         }
-        return new (this.constructor as cdateNS.cClass)(dt, this.x);
+        return this.create(dt);
     }
 
     /**
@@ -91,8 +89,18 @@ class CDateCore {
         return new CDateX(this.t, this.x as X);
     }
 
+    /**
+     * creates another CDate object with the DateLike given
+     */
+    create(dt: number | cdateNS.DateLike) {
+        return new (this.constructor as cdateNS.cClass)(dt, this.x);
+    }
+
+    /**
+     * clones the CDate object
+     */
     inherit() {
-        const out = this.cdate(+this);
+        const out = this.create(+this);
         // x is readonly
         (out as { x: typeof out.x }).x = Object.create(out.x);
         return out;
@@ -105,3 +113,5 @@ const root = new CDateCore(0, {})
     .plugin(localePlugin)
     .plugin(utcPlugin)
     .plugin(tzPlugin);
+
+export const cdate: typeof cdateFn = (dt) => root.cdate(dt) as unknown as cdateNS.CDate;

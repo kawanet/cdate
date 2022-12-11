@@ -11,7 +11,11 @@ describe(TITLE, () => {
         runTests((dt) => dt.toJSON());
     });
 
-    it(`cdate().strftime()`, () => {
+    it(`cdate().toJSON()`, () => {
+        runTests((dt) => cdate(dt).toJSON());
+    });
+
+    it(`cdate().utc().strftime()`, () => {
         runTests((dt) => cdate(dt).utc().text("%Y-%m-%dT%H:%M:%S.%LZ"));
     });
 });
