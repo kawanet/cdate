@@ -16,7 +16,7 @@ declare namespace cdateNS {
     type CDate = cCore & cFormatPlugin & cCalcPlugin & cUTCPlugin & cTimezonePlugin & cLocalePlugin;
 
     interface cCore {
-        cdate(dt: number | Date): this;
+        cdate(dt: number | string | Date): this;
 
         toDate(): Date;
 
@@ -68,7 +68,7 @@ declare namespace cdateNS {
         readonly t: number | DateLike;
         readonly x: Options & X;
 
-        cdate(dt: number | DateLike): this;
+        cdate(dt: number | string | DateLike): this;
 
         inherit(): this;
 

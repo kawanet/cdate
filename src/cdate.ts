@@ -6,9 +6,6 @@ import {tzPlugin} from "./timezone/timezone.js";
 import {localePlugin} from "./locale/locale.js";
 
 export const cdate: typeof cdateFn = (dt) => {
-    if ("string" === typeof dt) {
-        dt = new Date(dt);
-    }
     return root.cdate(dt) as unknown as cdateNS.CDate;
 };
 
@@ -32,9 +29,6 @@ class CDateCore {
      * the constructor
      */
     constructor(t: number | cdateNS.DateLike, x: cdateNS.Options) {
-        if (t == null) {
-            t = new Date();
-        }
         this.t = t;
         if ("number" !== typeof t) {
             this.d = t;
@@ -45,7 +39,12 @@ class CDateCore {
     /**
      * creates another CDate object
      */
-    cdate(dt?: number | cdateNS.DateLike) {
+    cdate(dt?: number | string | cdateNS.DateLike) {
+        if ("string" === typeof dt) {
+            dt = new Date(dt);
+        } else if (dt == null) {
+            dt = new Date();
+        }
         return new (this.constructor as cdateNS.cClass)(dt, this.x);
     }
 
