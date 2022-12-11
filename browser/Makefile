@@ -20,6 +20,7 @@ test: ../build/test-local.js
 	tsc -p ..
 
 ../build/cdate.var.js: ../dist/cdate.js wrap.cjs
+	mkdir -p ../build
 	grep -v END < wrap.cjs > $@
 	cat $< | perl -pe 's#^(const) ((cdate|strftime) =)#/* $$1 */ $$2#' >> $@
 	grep END < wrap.cjs >> $@
