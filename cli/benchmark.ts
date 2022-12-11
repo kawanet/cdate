@@ -9,6 +9,12 @@ import timezone from "dayjs/plugin/timezone.js";
 import "moment-timezone"; // side effects only
 import {DateTime} from "luxon";
 
+/**
+ * @example
+ * env ONLY=cdate node cli/benchmark
+ * env EACH=1 node cli/benchmark
+ */
+
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -31,10 +37,13 @@ const COMPAT_FORMAT = "YYYY-MM-DD[T]hh:mm:ss.SSSZ";
 // displaying format only for Luxon
 const LUXON_FORMAT = "yyyy-MM-dd'T'hh:mm:ss.SSSZZ";
 
+const {ONLY} = process.env;
+
 const runBenchmark = (tests: { [key: string]: () => string }) => new Promise(resolve => {
     const suite = new Benchmark.Suite();
 
     Object.keys(tests).forEach(name => {
+        if (ONLY && ONLY.indexOf(name) < 0) return; // skip
         const test = tests[name];
         console.warn(`## ${name}:\t${test()}`);
         suite.add(name, test);
@@ -191,9 +200,6 @@ const luxonMixed = (fn: () => DateTime): string => {
 const dt = new Date("2022-01-01 00:00:00");
 
 const main = async () => {
-    /**
-     * env EACH=1 node cli/benchmark
-     */
     const RUN_EACH = !!process.env.EACH;
 
     if (RUN_EACH) {
