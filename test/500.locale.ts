@@ -3,7 +3,6 @@
 import {strict as assert} from "assert";
 
 import {cdate} from "../index.js";
-import {fr_FR} from "../locale/fr_FR.js";
 
 const TITLE = "500.locale.ts";
 
@@ -30,15 +29,6 @@ describe(TITLE, () => {
         assert.equal(dt.text("%B = %b"), "April = Apr");
         assert.equal(dt.text("%p"), "AM");
         assert.equal(dt.text("%x"), "4/5/23");
-        assert.match(dt.text("%r"), /0?6:07:08/);
-        assert.match(dt.text("%X"), /0?6:07:08/);
-    });
-
-    it(`cdate().extend(fr_FR)`, () => {
-        const dt = cdate(date).utc().handler(fr_FR);
-        assert.equal(dt.text("%A = %a"), "mercredi = mer.");
-        assert.equal(dt.text("%B = %b"), "avril = avr.");
-        assert.equal(dt.text("%x"), "05/04/2023");
         assert.match(dt.text("%r"), /0?6:07:08/);
         assert.match(dt.text("%X"), /0?6:07:08/);
     });

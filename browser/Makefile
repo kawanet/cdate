@@ -2,10 +2,7 @@
 
 DIST=../dist/cdate.min.js
 
-# ../dist/locale/en_US.js
-LOCALECJS=$(addprefix ../dist/locale/,$(addsuffix .js,$(notdir $(basename $(wildcard ../locale/*.ts)))))
-
-all: $(DIST) $(LOCALECJS)
+all: $(DIST)
 
 test: ../build/test-local.js
 	../node_modules/.bin/mocha $<
@@ -19,7 +16,7 @@ test: ../build/test-local.js
 # the below does NOT use browserify to get .min.js minified enough
 ../build/combined.js: ../build/src/cdate.js
 	echo "// $(notdir $@)" > $@
-	for file in ../build/locale/en_US.js ../build/src/*/*.js ../build/src/*.js; do \
+	for file in ../build/src/*/*.js ../build/src/*.js; do \
   		echo "{" >> $@ && \
   		perl -pe 's#^#    #' < $$file >> $@ && \
   		echo "}" >> $@; \
@@ -33,15 +30,9 @@ test: ../build/test-local.js
 ../dist/cdate.js: ../build/combined.js wrap.cjs
 	grep PRE < wrap.cjs | perl -pe 's#\s+//.*##' > $@
 	grep '^\s*\$$.*=' < $< | perl -pe 's#^\s*(\$$\w+)\W.*$$#let $$1;#' >> $@
-	grep -v '^//' < $< >> $@
+	grep -v '^\s*//' < $< >> $@
 	grep -v PRE < wrap.cjs >> $@
 	ls -l $@
-
-../dist/locale/%.js: ../build/locale/%.js ../dist/locale/
-	grep -v '^exports.*= void 0' < $< > $@
-
-../dist/locale:
-	mkdir -p ../dist/locale
 
 ../build/package.json: ../dist/package.json
 	mkdir -p ../build
@@ -56,9 +47,6 @@ test: ../build/test-local.js
 	../node_modules/.bin/browserify -o $@ ../build/test/*.js \
 	-t [ browserify-sed 's#(require\("(?:../)+)(?:index.js)("\))#$$1../browser/import.cjs$$2#' ]
 
-../build/locale/%.js: ../locale/%.ts
-	../node_modules/.bin/tsc -p .
-
 ../build/src/%.js: ../src/%.ts ../build/package.json
 	../node_modules/.bin/tsc -p .
 
@@ -69,6 +57,6 @@ TITLE:
 	perl -i -pe '@f = split("/",$$ARGV); s#^const TITLE =.*#const TITLE = "$$f[-1]";#' ../test/*.ts
 
 clean:
-	/bin/rm -fr ../build $(DIST) $(LOCALECJS)
+	/bin/rm -fr ../build $(DIST)
 
 .PHONY: all clean test

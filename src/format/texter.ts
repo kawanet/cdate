@@ -1,5 +1,5 @@
 import type {strftime as strftimeFn, cdateNS} from "../../types/cdate";
-import {en_US} from "../../locale/en_US.js";
+import {en_US} from "./en_US.js";
 import {strftimeHandlers} from "./strftime.js";
 import {formatHandlers} from "./format.js";
 
