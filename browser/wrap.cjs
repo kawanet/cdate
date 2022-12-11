@@ -1,10 +1,5 @@
-"use strict"; // PRE
-var cdate, strftime; // PRE
-!((__then) => { // PRE
+"use strict";
+var cdate, strftime;
+!((exports) => {
 
-    __then($cdate, $strftime);
-})(($cdate, $strftime) => {
-    const __exports = ("undefined" !== typeof exports ? exports : {});
-    cdate = __exports.cdate = $cdate;
-    strftime = __exports.strftime = $strftime;
-});
+})("undefined" !== typeof exports ? exports : {}); // END

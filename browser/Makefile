@@ -8,30 +8,21 @@ test: ../build/test-local.js
 	../node_modules/.bin/mocha $<
 	@echo '# open "browser/test.html"'
 
-../dist/cdate.min.js: ../dist/cdate.js
+../dist/cdate.min.js: ../build/cdate.var.js
 	mkdir -p ../dist
 	../node_modules/.bin/terser -c -m --ecma 6 -o $@ $<
 	ls -l $@
 
-# the below does NOT use browserify to get .min.js minified enough
-../build/combined.js: ../build/src/cdate.js
-	echo "// $(notdir $@)" > $@
-	for file in ../build/src/*/*.js ../build/src/*.js; do \
-  		echo "{" >> $@ && \
-  		perl -pe 's#^#    #' < $$file >> $@ && \
-  		echo "}" >> $@; \
-	done
-	perl -i -pe 's#^(\s*)("use strict"|Object.defineProperty|exports.*= void 0)#$$1// $$2#' $@
-	perl -i -pe 's#^(\s*)(const \w+_1 = require.)#$$1// $$2#' $@
-	perl -i -pe 's#^(\s*)exports\.(\w+ =)#$$1\$$$$2#g' $@
-	perl -i -pe 's#(\W)((?:\w+_1|exports)\.)(\w)#$$1\$$$$3#g' $@
-	perl -i -pe 's#(\W)\(0, (\$$\w+)\)(\()#$$1$$2$$3#' $@
+../dist/cdate.js: ../index.js
+	../node_modules/.bin/rollup -f cjs -p "@rollup/plugin-node-resolve" $< > $@
 
-../dist/cdate.js: ../build/combined.js wrap.cjs
-	grep PRE < wrap.cjs | perl -pe 's#\s+//.*##' > $@
-	grep '^\s*\$$.*=' < $< | perl -pe 's#^\s*(\$$\w+)\W.*$$#let $$1;#' >> $@
-	grep -v '^\s*//' < $< >> $@
-	grep -v PRE < wrap.cjs >> $@
+../index.js: ../index.ts
+	tsc -p ..
+
+../build/cdate.var.js: ../dist/cdate.js wrap.cjs
+	grep -v END < wrap.cjs > $@
+	cat $< | perl -pe 's#^(const) ((cdate|strftime) =)#/* $$1 */ $$2#' >> $@
+	grep END < wrap.cjs >> $@
 	ls -l $@
 
 ../build/package.json: ../dist/package.json
