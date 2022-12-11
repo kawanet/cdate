@@ -20,20 +20,20 @@ test: ../build/test-local.js
 ../build/combined.js: ../build/src/cdate.js
 	echo "// $(notdir $@)" > $@
 	for file in ../build/locale/en_US.js ../build/src/*/*.js ../build/src/*.js; do \
-  		grep '^exports\.' < $$file | perl -pe 's#^exports\.(\w+).*#let \$$$$1;#g' | sort | uniq >> $@ && \
   		echo "{" >> $@ && \
-  		cat $$file >> $@ && \
+  		perl -pe 's#^#    #' < $$file >> $@ && \
   		echo "}" >> $@; \
 	done
-	perl -i -pe 's#^("use strict"|Object.defineProperty|exports.*= void 0)#// $$&#' $@
-	perl -i -pe 's#^(const \w+_1 = require.)#// $$&#' $@
-	perl -i -pe 's#^exports\.(\w+ =)#\$$$$1#g' $@
+	perl -i -pe 's#^(\s*)("use strict"|Object.defineProperty|exports.*= void 0)#$$1// $$2#' $@
+	perl -i -pe 's#^(\s*)(const \w+_1 = require.)#$$1// $$2#' $@
+	perl -i -pe 's#^(\s*)exports\.(\w+ =)#$$1\$$$$2#g' $@
 	perl -i -pe 's#(\W)((?:\w+_1|exports)\.)(\w)#$$1\$$$$3#g' $@
 	perl -i -pe 's#(\W)\(0, (\$$\w+)\)(\()#$$1$$2$$3#' $@
 
 ../dist/cdate.js: ../build/combined.js wrap.cjs
 	grep PRE < wrap.cjs | perl -pe 's#\s+//.*##' > $@
-	grep -v '^//' $< >> $@
+	grep '^\s*\$$.*=' < $< | perl -pe 's#^\s*(\$$\w+)\W.*$$#let $$1;#' >> $@
+	grep -v '^//' < $< >> $@
 	grep -v PRE < wrap.cjs >> $@
 	ls -l $@
 
