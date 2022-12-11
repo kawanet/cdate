@@ -12,7 +12,17 @@ const makeRouter = (handlers: cdateNS.Handlers): Router => (handlers && (specifi
 // @see https://docs.ruby-lang.org/en/3.1/DateTime.html#method-i-strftime
 const strftimeRE = /%(?:[EO]\w|[0_#^-]?[1-9]?\w|::?z|[%+])/g;
 
-const formatRE = new RegExp(["\\[(.*?)\\]"].concat(Object.keys(formatHandlers).sort().reverse()).join("|"), "g");
+// /\[(.*?)\]|A+|a+|B+|b+|C+|c+|...|Z+|z+/g
+const makeFormatRE = () => {
+    let re: string[] = ["\\[(.*?)\\]"];
+    const c = (code: number) => String.fromCharCode(code + 65) + "+";
+    for (let i = 0; i < 26; i++) {
+        re.push(c(i), c(i + 32));
+    }
+    return new RegExp(re.join("|"), "g");
+};
+
+const formatRE = makeFormatRE();
 
 const ISO = "%Y-%m-%dT%H:%M:%S.%L%:z";
 
@@ -45,12 +55,12 @@ const makeTexter = (router?: Router): Texter => {
     const out = {} as Texter;
 
     const strftime = out.strftime = (fmt, dt) => {
-        if (fmt == null) fmt = ISO;
+        if (fmt == null) return _strftime(ISO, dt);
         return fmt.replace(strftimeRE, (specifier) => one(specifier, dt));
     };
 
     out.format = (fmt, dt) => {
-        if (fmt == null) return strftime(fmt, dt);
+        if (fmt == null) return _strftime(ISO, dt);
         return fmt.replace(formatRE, (specifier, raw) => (raw || one(specifier, dt)));
     };
 
