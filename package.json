@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@types/benchmark": "^2.1.2",
+    "@types/luxon": "^3.1.0",
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.11.9",
     "@types/strftime": "^0.9.4",
@@ -16,6 +17,7 @@
     "browserify": "^17.0.0",
     "browserify-sed": "^0.8.0",
     "dayjs": "^1.11.6",
+    "luxon": "^3.1.1",
     "mocha": "^10.1.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.39",
