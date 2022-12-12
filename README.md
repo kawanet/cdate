@@ -2,6 +2,7 @@
 
 [![Node.js CI](https://github.com/kawanet/cdate/workflows/Node.js%20CI/badge.svg?branch=main)](https://github.com/kawanet/cdate/actions/)
 [![npm version](https://img.shields.io/npm/v/cdate)](https://www.npmjs.com/package/cdate)
+[![gzip size](https://img.badgesize.io/https://unpkg.com/cdate/dist/cdate.min.js?compression=gzip)](https://unpkg.com/cdate/dist/cdate.min.js)
 
 - Fast: the benchmark results shows that [cdate](https://github.com/kawanet/cdate) is faster
   than [Moment.js](https://www.npmjs.com/package/moment), [Day.js](https://www.npmjs.com/package/dayjs)
@@ -11,7 +12,7 @@
 - Manipulation: `.add(1, "month").startOf("week").endOf("day")` like `moment` does but immutable
 - Timezone: names like `America/New_York` supported by `Intl.DateTimeFormat` as well as UTC offset like `GMT-05:00`
 - I18N: `.locale("fr").text("%c")` results `dim. 2 janv. 2022, 03:04:05` managed by `Intl.DateTimeFormat`
-- Lightweight: 8KB minified and 3KB gzip including time zone supports
+- Small: [8KB minified](https://cdn.jsdelivr.net/npm/cdate/dist/cdate.min.js) and 3KB gzip including time zone supports
 - Fully immutable: no need to take care for the *"dual package hazard"* even for the plugins
 - Pure ESM, CommonJS - Node.js, Browsers, TypeScript
 
