@@ -1,4 +1,4 @@
-import {cached, lazy} from "../cache.js";
+import {cached} from "../cache.js";
 
 const enum d {
     SECOND = 1000,
@@ -15,11 +15,8 @@ const parseTZ = cached((tz: string): number => {
     return (matched[1] === "-") ? -offset : offset;
 });
 
-const weekdayMap = lazy(() => {
-    const map: { [key: string]: number } = {};
-    ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach((key, idx) => (map[key] = idx));
-    return map;
-});
+const shorten = (s: any) => String(s).toLowerCase().substr(0, 2);
+const weekdayMap = {su: 0, mo: 1, tu: 2, we: 3, th: 4, fr: 5, sa: 6};
 
 const calcTimeZoneOffset = (dtf: Intl.DateTimeFormat, dt: Date) => {
     const parts = dtf.formatToParts(dt);
@@ -27,7 +24,8 @@ const calcTimeZoneOffset = (dtf: Intl.DateTimeFormat, dt: Date) => {
     parts.forEach(v => (index[v.type] = v.value));
 
     // difference of days:
-    let day = (7 + dt.getUTCDay() - weekdayMap()[index.weekday]) % 7;
+    const wday = weekdayMap[shorten(index.weekday) as keyof typeof weekdayMap];
+    let day = (7 + dt.getUTCDay() - wday) % 7;
     if (day > 3) day -= 7;
 
     // difference of hours: some locales use h24

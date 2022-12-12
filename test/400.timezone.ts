@@ -25,6 +25,7 @@ const STD = {
     "Europe/London": "+0000", // Greenwich Mean Time (GMT)
     "America/St_Johns": "-0330", // Newfoundland Standard Time (NST)
     "America/Sao_Paulo": "-0300",
+    "America/New_York": "-0500", // Eastern Standard Time (EST)
     "America/Los_Angeles": "-0800", // Pacific Standard Time (PST)
     "Pacific/Niue": "-1100",
     "Pacific/Kiritimati": "+1400",
@@ -40,6 +41,7 @@ const DST = {
     "Europe/London": "+0100", // British Summer Time (BST)
     "America/St_Johns": "-0230", // Newfoundland Daylight Time (NDT)
     "America/Sao_Paulo": "-0300",
+    "America/New_York": "-0400", // Eastern Daylight Time (EDT)
     "America/Los_Angeles": "-0700", // Pacific Daylight Time (PDT)
     "Pacific/Niue": "-1100",
     "Pacific/Kiritimati": "+1400",
@@ -116,5 +118,19 @@ function runTests(fn: (dt: Date, tz: keyof typeof STD, map?: typeof STD | typeof
     it("Pacific/Kiritimati", () => {
         assert.equal(fn(winter, "Pacific/Kiritimati", STD), "2022/01/02 14:00:00.000 +14:00");
         assert.equal(fn(summer, "Pacific/Kiritimati", DST), "2022/08/02 14:00:00.000 +14:00");
+    });
+
+    // test for one week
+    it("America/New_York", () => {
+        const dt = cdate("2022-01-01T00:00:00-05:00");
+        const TZ = "America/New_York";
+        assert.equal(fn(dt.add(0, "day").toDate(), TZ, STD), "2022/01/01 00:00:00.000 -05:00");
+        assert.equal(fn(dt.add(1, "day").toDate(), TZ, STD), "2022/01/02 00:00:00.000 -05:00");
+        assert.equal(fn(dt.add(2, "day").toDate(), TZ, STD), "2022/01/03 00:00:00.000 -05:00");
+        assert.equal(fn(dt.add(3, "day").toDate(), TZ, STD), "2022/01/04 00:00:00.000 -05:00");
+        assert.equal(fn(dt.add(4, "day").toDate(), TZ, STD), "2022/01/05 00:00:00.000 -05:00");
+        assert.equal(fn(dt.add(5, "day").toDate(), TZ, STD), "2022/01/06 00:00:00.000 -05:00");
+        assert.equal(fn(dt.add(6, "day").toDate(), TZ, STD), "2022/01/07 00:00:00.000 -05:00");
+        assert.equal(fn(dt.add(7, "day").toDate(), TZ, STD), "2022/01/08 00:00:00.000 -05:00");
     });
 }
