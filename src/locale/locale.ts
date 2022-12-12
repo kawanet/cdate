@@ -97,9 +97,9 @@ const styleOptions = getLocaleOptions();
 
 const getLocale = cached(makeLocale);
 
-export const localePlugin: cdate.cPlugin<cdate.cLocalePlugin> = (Parent) => {
-    return class CDateLocale extends Parent implements cdate.cLocalePlugin {
-        locale(this: cdate.cFormatPlugin, lang: string) {
+export const localePlugin: cdate.cPlugin<cdate.CDateLocale> = (Parent) => {
+    return class CDateLocale extends Parent implements cdate.CDateLocale {
+        locale(this: cdate.CDateFormat, lang: string) {
             return this.handler(getLocale(lang)) as unknown as this;
         }
     }

@@ -25,9 +25,9 @@ export declare namespace cdate {
     /**
      * Public Interface for consumers
      */
-    type CDate = cCore & cFormatPlugin & cCalcPlugin & cUTCPlugin & cTimezonePlugin & cLocalePlugin;
+    type CDate = CDateCore & CDateFormat & CDateCalc & CDateUTC & CDateTZ & CDateLocale;
 
-    interface cCore {
+    interface CDateCore {
         cdate(dt: number | string | Date): this;
 
         toDate(): Date;
@@ -37,7 +37,7 @@ export declare namespace cdate {
         plugin<T>(fn: cPlugin<T>): this & T;
     }
 
-    interface cFormatPlugin {
+    interface CDateFormat {
         format(format?: string): string;
 
         text(format?: string): string;
@@ -45,7 +45,7 @@ export declare namespace cdate {
         handler(handlers: Handlers): this;
     }
 
-    interface cCalcPlugin {
+    interface CDateCalc {
         add(diff: number, unit?: UnitForAdd): this;
 
         startOf(unit: UnitForStart): this;
@@ -57,15 +57,15 @@ export declare namespace cdate {
         prev(unit: UnitForNext): this;
     }
 
-    interface cUTCPlugin {
+    interface CDateUTC {
         utc(): this;
     }
 
-    interface cTimezonePlugin {
+    interface CDateTZ {
         tz(timezone: string): this;
     }
 
-    interface cLocalePlugin {
+    interface CDateLocale {
         locale(lang: string): this;
     }
 
@@ -76,7 +76,7 @@ export declare namespace cdate {
     /**
      * Internal interface for plugin developers
      */
-    interface cInternal<T = {}, X = {}> extends cCore {
+    interface cInternal<T = {}, X = {}> extends CDateCore {
         readonly t: number | DateLike;
         readonly x: Options & X;
 

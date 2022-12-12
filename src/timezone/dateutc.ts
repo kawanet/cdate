@@ -54,8 +54,8 @@ export class DateUTC implements cdate.DateLike {
     }
 }
 
-export const utcPlugin: cdate.cPlugin<cdate.cUTCPlugin> = (Parent) => {
-    return class CDateUTC extends Parent implements cdate.cUTCPlugin {
+export const utcPlugin: cdate.cPlugin<cdate.CDateUTC> = (Parent) => {
+    return class CDateUTC extends Parent implements cdate.CDateUTC {
         utc() {
             const out = this.inherit();
             out.x.rw = (dt) => new DateUTC(new Date(+dt));

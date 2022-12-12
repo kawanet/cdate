@@ -80,8 +80,8 @@ interface Options {
     tx: Texter;
 }
 
-export const formatPlugin: cdate.cPlugin<cdate.cFormatPlugin, Options> = (Parent) => {
-    return class CDateFormat extends Parent implements cdate.cFormatPlugin {
+export const formatPlugin: cdate.cPlugin<cdate.CDateFormat, Options> = (Parent) => {
+    return class CDateFormat extends Parent implements cdate.CDateFormat {
         /**
          * updates strftime option with the given locale
          */

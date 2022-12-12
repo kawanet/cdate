@@ -2,8 +2,8 @@ import type {cdate} from "../../index.js";
 import {add} from "./add.js";
 import {startOf} from "./startof.js";
 
-export const calcPlugin: cdate.cPlugin<cdate.cCalcPlugin> = (Parent) => {
-    return class CDateCalc extends Parent implements cdate.cCalcPlugin {
+export const calcPlugin: cdate.cPlugin<cdate.CDateCalc> = (Parent) => {
+    return class CDateCalc extends Parent implements cdate.CDateCalc {
         /**
          * returns a new CDate object manipulated
          */
