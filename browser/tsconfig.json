@@ -1,8 +1,6 @@
 {
   "include": [
-    "../locale",
-    "../src",
-    "../test"
+    "../test/"
   ],
   "compilerOptions": {
     "esModuleInterop": true,
@@ -13,7 +11,7 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "outDir": "../build",
+    "outDir": "../build/test/",
     "removeComments": true,
     "skipLibCheck": false,
     "strictNullChecks": false,

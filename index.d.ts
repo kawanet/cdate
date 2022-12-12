@@ -2,11 +2,8 @@
  * @see https://github.com/kawanet/cdate
  */
 
-import {cdate as cdateFn} from "./src/cdate.js";
-import {strftime as strftimeFn} from "./src/format/texter.js";
-
-export const cdate: cdate.cdate = cdateFn;
-export const strftime: cdate.strftime = strftimeFn;
+export const cdate: cdate.cdate;
+export const strftime: cdate.strftime;
 
 export declare namespace cdate {
     type cdate = (dt?: string | number | Date) => CDate;

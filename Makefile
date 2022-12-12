@@ -2,10 +2,9 @@
 
 MINJS=./dist/cdate.min.js
 CJS=./dist/cdate.js
-TYPES=./types/cdate.d.ts
 WRAP=./browser/wrap.cjs
 
-all: $(CJS) $(MINJS) $(TYPES)
+all: $(CJS) $(MINJS)
 
 test: test-title mocha test-cjs test-minjs test-browser
 
@@ -29,14 +28,11 @@ $(MINJS): ./build/cdate.tmp.js
 	./node_modules/.bin/terser -c -m --ecma 6 -o $@ $<
 	ls -l $@
 
-$(TYPES): ./index.ts
-	grep -v "^import" < $< | perl -pe 's#^(export.*) =.*#$$1;#' > $@
+$(CJS): ./index.js src/cdate.js
+	./node_modules/.bin/rollup -f cjs -p "@rollup/plugin-node-resolve" -o $@ $<
 
-$(CJS): ./index.js
-	./node_modules/.bin/rollup -f cjs -p "@rollup/plugin-node-resolve" $< > $@
-
-./index.js: ./index.ts
-	tsc -p .
+./src/%.js: ./src/%.ts
+	./node_modules/.bin/tsc -p .
 
 ./test/%.js: ./test/%.ts
 	./node_modules/.bin/tsc -p .
@@ -83,6 +79,6 @@ test-title:
 	perl -i -pe '@f = split("/",$$ARGV); s#^const TITLE =.*#const TITLE = "$$f[-1]";#' ./test/*.ts
 
 clean:
-	/bin/rm -fr ./build $(CJS) $(MINJS) $(TYPES)
+	/bin/rm -fr ./build $(CJS) $(MINJS)
 
 .PHONY: all clean test

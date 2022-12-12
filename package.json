@@ -36,10 +36,10 @@
     "dist/cdate.js",
     "dist/cdate.min.js",
     "dist/package.json",
+    "index.d.ts",
     "index.js",
     "src/*.js",
-    "src/*/*.js",
-    "types/cdate.d.ts"
+    "src/*/*.js"
   ],
   "homepage": "https://github.com/kawanet/cdate#readme",
   "keywords": [
@@ -66,5 +66,5 @@
   },
   "sideEffects": false,
   "type": "module",
-  "types": "./types/cdate.d.ts"
+  "types": "./index.d.ts"
 }
