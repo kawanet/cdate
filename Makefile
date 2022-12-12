@@ -5,25 +5,41 @@ CJS=./dist/cdate.js
 TYPES=./types/cdate.d.ts
 WRAP=./browser/wrap.cjs
 
-all: $(MINJS) $(TYPES)
+all: $(CJS) $(MINJS) $(TYPES)
 
-test: ./build/test-local.js
+test: test-title mocha test-cjs test-minjs test-browser
+
+# test index.js (ESM) on node.js
+mocha: ./test/000.before.js
+	./node_modules/.bin/mocha test/*.js
+
+# test cdate.js (CJS) on node.js
+test-cjs: ./build/test-cjs.js
 	./node_modules/.bin/mocha $<
+
+# test cdate.min.js on node.js
+test-minjs: ./build/test-minjs.js
+	./node_modules/.bin/mocha $<
+
+# test cdate.min.js on web browsers
+test-browser: ./build/test-browser.js
 	@echo '# open "browser/test.html"'
 
 $(MINJS): ./build/cdate.tmp.js
-	mkdir -p ./dist
 	./node_modules/.bin/terser -c -m --ecma 6 -o $@ $<
 	ls -l $@
 
-$(TYPES): index.ts
+$(TYPES): ./index.ts
 	grep -v "^import" < $< | perl -pe 's#^(export.*) =.*#$$1;#' > $@
 
-$(CJS): index.js
+$(CJS): ./index.js
 	./node_modules/.bin/rollup -f cjs -p "@rollup/plugin-node-resolve" $< > $@
 
-./index.js: index.ts
-	tsc -p ..
+./index.js: ./index.ts
+	tsc -p .
+
+./test/%.js: ./test/%.ts
+	./node_modules/.bin/tsc -p .
 
 ./build/cdate.tmp.js: $(CJS) $(WRAP)
 	mkdir -p ./build
@@ -36,25 +52,37 @@ $(CJS): index.js
 	mkdir -p ./build
 	cat $^ > $@
 
-./build/test-local.js: $(MINJS) ./build/test.js
-	cat $^ > $@
-
-./build/test.js: ./build/test/000.before.js ./browser/import.cjs
+# test script for cdate.min.js on web browsers
+./build/test-browser.js: ./build/test/000.before.js ./browser/import.cjs $(MINJS)
 	./node_modules/.bin/browserify --list ./build/test/*.js \
-	-t [ browserify-sed 's#(require\("(?:./)+)(?:index.js)?("\))#$$1./browser/import.cjs$$2#' ] | sort
+	-t [ browserify-sed 's#(require\("(?:\.+/)+)(?:index.js)?("\))#$$1../browser/import.cjs$$2#' ] | sort
 	./node_modules/.bin/browserify -o $@ ./build/test/*.js \
-	-t [ browserify-sed 's#(require\("(?:./)+)(?:index.js)("\))#$$1./browser/import.cjs$$2#' ]
+	-t [ browserify-sed 's#(require\("(?:\.+/)+)(?:index.js)("\))#$$1../browser/import.cjs$$2#' ]
+
+# test script for cdate.min.js on node.js
+./build/test-minjs.js: ./build/test/000.before.js $(MINJS)
+	./node_modules/.bin/browserify --list ./build/test/*.js \
+	-t [ browserify-sed 's#(require\("(?:\.+/)+)(?:index.js)?("\))#$$1../$(MINJS)$$2#' ] | sort
+	./node_modules/.bin/browserify -o $@ ./build/test/*.js \
+	-t [ browserify-sed 's#(require\("(?:\.+/)+)(?:index.js)("\))#$$1../$(MINJS)$$2#' ]
+
+# test script for cdate.js on node.js
+./build/test-cjs.js: ./build/test/000.before.js $(CJS)
+	./node_modules/.bin/browserify --list ./build/test/*.js \
+	-t [ browserify-sed 's#(require\("(?:\.+/)+)(?:index.js)?("\))#$$1../$(CJS)$$2#' ] | sort
+	./node_modules/.bin/browserify -o $@ ./build/test/*.js \
+	-t [ browserify-sed 's#(require\("(?:\.+/)+)(?:index.js)("\))#$$1../$(CJS)$$2#' ]
 
 ./build/src/%.js: ./src/%.ts ./build/package.json
-	./node_modules/.bin/tsc -p .
+	./node_modules/.bin/tsc -p browser
 
 ./build/test/%.js: ./test/%.ts ./build/package.json
-	./node_modules/.bin/tsc -p .
+	./node_modules/.bin/tsc -p browser
 
-TITLE:
+test-title:
 	perl -i -pe '@f = split("/",$$ARGV); s#^const TITLE =.*#const TITLE = "$$f[-1]";#' ./test/*.ts
 
 clean:
-	/bin/rm -fr ./build $(MINJS) $(TYPES)
+	/bin/rm -fr ./build $(CJS) $(MINJS) $(TYPES)
 
 .PHONY: all clean test

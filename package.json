@@ -57,12 +57,11 @@
   },
   "scripts": {
     "build": "tsc -p .",
-    "build-locale": "make -C locale clean all",
-    "build-minified": "make -C browser clean all",
+    "build-cjs": "make clean all",
     "fixpack": "fixpack",
-    "prepack": "npm run build && npm run build-minified && npm test && npm run test-minified && npm run test-timezone",
+    "prepack": "npm run build-cjs && npm run test-cjs && npm run build && npm test && npm run test-timezone",
     "test": "mocha test",
-    "test-minified": "make -C browser test",
+    "test-cjs": "make test",
     "test-timezone": "for tz in Asia/Tokyo Asia/Kathmandu Europe/London America/St_Johns America/Los_Angeles; do echo TZ=$tz mocha test; TZ=$tz mocha test || break; done"
   },
   "sideEffects": false,
