@@ -79,7 +79,7 @@ console.log(tokyo.locale("ja").text("%c"));
 
 ## TYPESCRIPT
 
-See TypeScript declaration [cdate.d.ts](https://github.com/kawanet/cdate/blob/main/types/cdate.d.ts) for detail. API may
+See TypeScript declaration [index.d.ts](https://github.com/kawanet/cdate/blob/main/index.d.ts) for detail. API may
 change.
 
 ## LINKS
