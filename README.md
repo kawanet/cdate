@@ -6,18 +6,16 @@
 - Fast: the benchmark results shows that [cdate](https://github.com/kawanet/cdate) is faster
   than [Moment.js](https://www.npmjs.com/package/moment), [Day.js](https://www.npmjs.com/package/dayjs)
   and [Luxon](https://www.npmjs.com/package/luxon)
-- Fully immutable: no need to take care for the *"dual package hazard"* even for the plugins
 - Display: `moment`-style `.format("YYYY-MM-DD hh:mm:ss")`
 - Developer friendly display: `strftime`-style `.text("%Y-%m-%d %H:%M:%S")`
-- Manipulation: `moment`-style `.add(1, "month").startOf("week").endOf("day")`
+- Manipulation: `.add(1, "month").startOf("week").endOf("day")` like `moment` does but immutable
 - Timezone: names like `America/New_York` supported by `Intl.DateTimeFormat` as well as UTC offset like `GMT-05:00`
 - I18N: `.locale("fr").text("%c")` results `dim. 2 janv. 2022, 03:04:05` managed by `Intl.DateTimeFormat`
 - Lightweight: 8KB minified and 3KB gzip including time zone supports
+- Fully immutable: no need to take care for the *"dual package hazard"* even for the plugins
 - Pure ESM, CommonJS - Node.js, Browsers, TypeScript
 
 ## SYNOPSIS
-
-Loading: ESM or CommonJS
 
 ```js
 // ESM
@@ -27,10 +25,20 @@ import {cdate} from "cdate";
 const {cdate} = require("cdate"); 
 ```
 
-Code:
+Display:
 
 ```js
-const today = cdate().tz("America/New_York");
+const now = cdate();
+
+console.log(now.format("YYYY-MM-DD hh:mm:ss.SSSZ"));
+
+console.log(now.text("%Y-%m-%d %H:%M:%S.%L%:z"));
+```
+
+Manipulation:
+
+```js
+const today = cdate("2023-01-01");
 console.log(today.format("   MMMM YYYY"));
 
 const start = today.startOf("month").startOf("week");
@@ -49,12 +57,24 @@ for (let day = start; +day < +end;) {
 Results:
 
 ```txt
-   December 2022
-27 28 29 30 01 02 03
-04 05 06 07 08 09 10
-11 12 13 14 15 16 17
-18 19 20 21 22 23 24
-25 26 27 28 29 30 31
+   January 2023
+01 02 03 04 05 06 07
+08 09 10 11 12 13 14
+15 16 17 18 19 20 21
+22 23 24 25 26 27 28
+29 30 31 01 02 03 04
+```
+
+Locale and time zone:
+
+```js
+const tokyo = cdate("2023-01-01T00:00:00Z").tz("Asia/Tokyo");
+
+console.log(tokyo.text());
+// => 2023-01-01T09:00:00.000+09:00
+
+console.log(tokyo.locale("ja").text("%c"));
+// => 2023年1月1日(日) 09:00:00
 ```
 
 ## TYPESCRIPT
