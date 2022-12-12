@@ -1,4 +1,4 @@
-import type {cdateNS} from "../../types/cdate";
+import type {cdate} from "../../index.js";
 import {cached} from "../cache.js";
 
 const enum d {
@@ -9,12 +9,12 @@ const enum d {
 /**
  * build an on-demand Handlers for the language specified
  */
-const makeLocale = (lang: string): cdateNS.Handlers => {
+const makeLocale = (lang: string): cdate.Handlers => {
     // build a handler function which converts from Date to string
-    const makeHandler = (options: Intl.DateTimeFormatOptions, keyFn?: cdateNS.Handler, partType?: Intl.DateTimeFormatPartTypes): cdateNS.Handler => {
+    const makeHandler = (options: Intl.DateTimeFormatOptions, keyFn?: cdate.Handler, partType?: Intl.DateTimeFormatPartTypes): cdate.Handler => {
         let format: Intl.DateTimeFormat;
 
-        const handler = (dt: cdateNS.DateLike): string => {
+        const handler = (dt: cdate.DateLike): string => {
             // force UTC instead of local time
             const offset = dt.getTimezoneOffset();
             const utc = new Date(+dt - offset * d.MINUTE);
@@ -39,7 +39,7 @@ const makeLocale = (lang: string): cdateNS.Handlers => {
         if (!keyFn) return handler;
 
         // cached results
-        const cache: { [key: string]: ReturnType<cdateNS.Handler> } = {};
+        const cache: { [key: string]: ReturnType<cdate.Handler> } = {};
 
         return dt => {
             const key = keyFn(dt);
@@ -97,9 +97,9 @@ const styleOptions = getLocaleOptions();
 
 const getLocale = cached(makeLocale);
 
-export const localePlugin: cdateNS.cPlugin<cdateNS.cLocalePlugin> = (Parent) => {
-    return class CDateLocale extends Parent implements cdateNS.cLocalePlugin {
-        locale(this: cdateNS.cFormatPlugin, lang: string) {
+export const localePlugin: cdate.cPlugin<cdate.cLocalePlugin> = (Parent) => {
+    return class CDateLocale extends Parent implements cdate.cLocalePlugin {
+        locale(this: cdate.cFormatPlugin, lang: string) {
             return this.handler(getLocale(lang)) as unknown as this;
         }
     }

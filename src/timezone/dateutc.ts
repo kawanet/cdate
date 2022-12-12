@@ -1,6 +1,6 @@
-import type {cdateNS} from "../../types/cdate";
+import type {cdate} from "../../index.js";
 
-export class DateUTC implements cdateNS.DateLike {
+export class DateUTC implements cdate.DateLike {
     constructor(protected dt: Date) {
         //
     }
@@ -54,8 +54,8 @@ export class DateUTC implements cdateNS.DateLike {
     }
 }
 
-export const utcPlugin: cdateNS.cPlugin<cdateNS.cUTCPlugin> = (Parent) => {
-    return class CDateUTC extends Parent implements cdateNS.cUTCPlugin {
+export const utcPlugin: cdate.cPlugin<cdate.cUTCPlugin> = (Parent) => {
+    return class CDateUTC extends Parent implements cdate.cUTCPlugin {
         utc() {
             const out = this.inherit();
             out.x.rw = (dt) => new DateUTC(new Date(+dt));

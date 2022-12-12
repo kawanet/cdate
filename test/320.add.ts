@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 import moment from "moment";
 
 import {cdate} from "../index.js";
-import type {cdateNS} from "../types/cdate";
 
 const TITLE = "320.add.ts";
 
@@ -23,7 +22,7 @@ describe(TITLE, () => {
     });
 });
 
-function runTests(fn: (dt: Date, diff: number, unit: cdateNS.UnitForAdd) => string) {
+function runTests(fn: (dt: Date, diff: number, unit: cdate.UnitForAdd) => string) {
     const dt = new Date("2023-12-31 23:59:59.999");
 
     it(`add(number, "year")`, () => {

@@ -1,4 +1,4 @@
-import type {cdateNS} from "../../types/cdate";
+import type {cdate} from "../../index.js";
 import {getTZF} from "./tzf.js";
 import {DateUTC} from "./dateutc.js";
 
@@ -38,8 +38,8 @@ class DateTZ extends DateUTC {
     }
 }
 
-export const tzPlugin: cdateNS.cPlugin<cdateNS.cTimezonePlugin> = (Parent) => {
-    return class CDateTZ extends Parent implements cdateNS.cTimezonePlugin {
+export const tzPlugin: cdate.cPlugin<cdate.cTimezonePlugin> = (Parent) => {
+    return class CDateTZ extends Parent implements cdate.cTimezonePlugin {
         tz(timezone: string) {
             const out = this.inherit();
             out.x.rw = (dt) => new DateTZ(new Date(+dt), timezone);

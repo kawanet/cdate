@@ -3,7 +3,6 @@
 import {strict as assert} from "assert";
 
 import {cdate} from "../index.js";
-import type {cdateNS} from "../types/cdate";
 
 const TITLE = "230.handler.ts";
 
@@ -17,7 +16,7 @@ describe(TITLE, () => {
         const monthShort = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
         const monthLong = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
-        const fr_FR: cdateNS.Handlers = {
+        const fr_FR: cdate.Handlers = {
             "%a": dt => weekdayShort[dt.getDay()],
             "%A": dt => weekdayLong[dt.getDay()],
             "%b": dt => monthShort[dt.getMonth()],

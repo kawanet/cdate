@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 import moment from "moment";
 
 import {cdate} from "../index.js";
-import type {cdateNS} from "../types/cdate";
 
 const TITLE = "310.prev.ts";
 
@@ -23,7 +22,7 @@ describe(TITLE, () => {
     });
 });
 
-function runTests(fn: (dt: Date, unit: cdateNS.UnitForNext) => string) {
+function runTests(fn: (dt: Date, unit: cdate.UnitForNext) => string) {
     const dt1 = new Date("2023-01-01 00:00:00.000");
     const dt2 = new Date("2023-04-05 06:07:08.090");
     const dt3 = new Date("2023-12-31 23:59:59.999");

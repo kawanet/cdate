@@ -1,8 +1,13 @@
-/**
- * cdate.d.ts
- */
+export const cdate: cdate.cdate;
+export const strftime: cdate.strftime;
 
-declare namespace cdateNS {
+declare namespace cdate {
+    type cdate = (dt?: string | number | Date) => CDate;
+    type strftime = (fmt: string, dt?: Date) => string;
+
+    /**
+     * Unit
+     */
     type UnitLong = "second" | "minute" | "hour" | "day" | "week" | "month" | "year";
     type UnitLongS = "seconds" | "minutes" | "hours" | "days" | "weeks" | "months" | "years";
     type UnitShort = "s" | "m" | "h" | "d" | "w" | "M" | "y";
@@ -68,7 +73,7 @@ declare namespace cdateNS {
         readonly t: number | DateLike;
         readonly x: Options & X;
 
-        create(dt: cdateNS.DateLike): this;
+        create(dt: DateLike): this;
 
         inherit(): this;
 
@@ -103,7 +108,3 @@ declare namespace cdateNS {
         setTime: typeof Date.prototype.setTime,
     }
 }
-
-export const cdate: (dt?: string | number | Date) => cdateNS.CDate;
-
-export const strftime: (fmt: string, dt?: Date) => string;

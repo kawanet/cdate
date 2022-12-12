@@ -1,13 +1,13 @@
-import type {strftime as strftimeFn, cdateNS} from "../../types/cdate";
+import type {cdate} from "../../index.js";
 import {en_US} from "./en_US.js";
 import {strftimeHandlers} from "./strftime.js";
 import {formatHandlers} from "./format.js";
 
-type Router = (specifier: string) => (string | ((dt: cdateNS.DateLike) => (string | number)));
+type Router = (specifier: string) => (string | ((dt: cdate.DateLike) => (string | number)));
 
 const mergeRouter = (a: Router, b?: Router): Router => ((a && b) ? (specifier => (a(specifier) || b(specifier))) : (a || b));
 
-const makeRouter = (handlers: cdateNS.Handlers): Router => (handlers && (specifier => handlers[specifier]));
+const makeRouter = (handlers: cdate.Handlers): Router => (handlers && (specifier => handlers[specifier]));
 
 // @see https://docs.ruby-lang.org/en/3.1/DateTime.html#method-i-strftime
 const strftimeRE = /%(?:[EO]\w|[0_#^-]?[1-9]?\w|::?z|[%+])/g;
@@ -27,15 +27,15 @@ const formatRE = makeFormatRE();
 const ISO = "%Y-%m-%dT%H:%M:%S.%L%:z";
 
 interface Texter {
-    strftime(fmt: string, dt: cdateNS.DateLike): string;
+    strftime(fmt: string, dt: cdate.DateLike): string;
 
-    format(fmt: string, dt: cdateNS.DateLike): string;
+    format(fmt: string, dt: cdate.DateLike): string;
 
-    handler(handlers: cdateNS.Handlers): Texter;
+    handler(handlers: cdate.Handlers): Texter;
 }
 
 const makeTexter = (router?: Router): Texter => {
-    const one = (specifier: string, dt: cdateNS.DateLike): string => {
+    const one = (specifier: string, dt: cdate.DateLike): string => {
         let handler = router(specifier);
 
         if ("string" === typeof handler) {
@@ -72,7 +72,7 @@ const makeTexter = (router?: Router): Texter => {
 export const texter = makeTexter().handler(en_US).handler(formatHandlers).handler(strftimeHandlers());
 
 const _strftime = texter.strftime;
-export const strftime: typeof strftimeFn = (fmt, dt) => _strftime(fmt, dt || new Date());
+export const strftime: cdate.strftime = (fmt, dt) => _strftime(fmt, dt || new Date());
 
 const getTexter = (x: { tx: typeof texter }): typeof texter => (x && x.tx || texter);
 
@@ -80,12 +80,12 @@ interface Options {
     tx: Texter;
 }
 
-export const formatPlugin: cdateNS.cPlugin<cdateNS.cFormatPlugin, Options> = (Parent) => {
-    return class CDateFormat extends Parent implements cdateNS.cFormatPlugin {
+export const formatPlugin: cdate.cPlugin<cdate.cFormatPlugin, Options> = (Parent) => {
+    return class CDateFormat extends Parent implements cdate.cFormatPlugin {
         /**
          * updates strftime option with the given locale
          */
-        handler(handlers: cdateNS.Handlers) {
+        handler(handlers: cdate.Handlers) {
             const out = this.inherit();
             const {x} = out;
             x.tx = getTexter(x).handler(handlers);

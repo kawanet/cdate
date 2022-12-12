@@ -1,6 +1,6 @@
-import type {cdateNS} from "../../types/cdate";
+import type {cdate} from "../../index.js";
 
-type UnitFlex = cdateNS.UnitForNext | cdateNS.UnitForAdd | cdateNS.UnitForStart;
+type UnitFlex = cdate.UnitForNext | cdate.UnitForAdd | cdate.UnitForStart;
 
 export const enum Unit {
     year = "y",
@@ -25,15 +25,15 @@ const unitMap = {
     millisecond: Unit.millisecond,
 } as { [key in UnitFlex]?: Unit };
 
-Object.keys(unitMap).forEach((key: cdateNS.UnitForNext) => {
-    const s = (key + "s") as cdateNS.UnitLongS;
+Object.keys(unitMap).forEach((key: cdate.UnitForNext) => {
+    const s = (key + "s") as cdate.UnitLongS;
     const v = unitMap[key] as Unit;
     unitMap[s] = unitMap[v] = unitMap[key];
 });
 
 export const getUnitShort = (unit: string): Unit => {
-    const u = unitMap[(unit || Unit.millisecond) as cdateNS.UnitForAdd] ||
-        unitMap[String(unit).toLowerCase() as cdateNS.UnitForAdd];
+    const u = unitMap[(unit || Unit.millisecond) as cdate.UnitForAdd] ||
+        unitMap[String(unit).toLowerCase() as cdate.UnitForAdd];
     if (!u) throw new RangeError("Invalid unit: " + unit);
     return u;
 };

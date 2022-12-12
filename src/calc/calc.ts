@@ -1,13 +1,13 @@
-import type {cdateNS} from "../../types/cdate";
+import type {cdate} from "../../index.js";
 import {add} from "./add.js";
 import {startOf} from "./startof.js";
 
-export const calcPlugin: cdateNS.cPlugin<cdateNS.cCalcPlugin> = (Parent) => {
-    return class CDateCalc extends Parent implements cdateNS.cCalcPlugin {
+export const calcPlugin: cdate.cPlugin<cdate.cCalcPlugin> = (Parent) => {
+    return class CDateCalc extends Parent implements cdate.cCalcPlugin {
         /**
          * returns a new CDate object manipulated
          */
-        startOf(unit: cdateNS.UnitForStart) {
+        startOf(unit: cdate.UnitForStart) {
             const dt = this.rw();
             startOf(dt, unit);
             return this.create(dt);
@@ -16,7 +16,7 @@ export const calcPlugin: cdateNS.cPlugin<cdateNS.cCalcPlugin> = (Parent) => {
         /**
          * returns a new CDate object manipulated
          */
-        endOf(unit: cdateNS.UnitForStart) {
+        endOf(unit: cdate.UnitForStart) {
             const dt = this.rw();
             startOf(dt, unit);
             add(dt, 1, unit);
@@ -27,7 +27,7 @@ export const calcPlugin: cdateNS.cPlugin<cdateNS.cCalcPlugin> = (Parent) => {
         /**
          * returns a new CDate object manipulated
          */
-        add(diff: number, unit: cdateNS.UnitForAdd) {
+        add(diff: number, unit: cdate.UnitForAdd) {
             const dt = this.rw();
             add(dt, diff, unit);
             return this.create(dt);
@@ -36,14 +36,14 @@ export const calcPlugin: cdateNS.cPlugin<cdateNS.cCalcPlugin> = (Parent) => {
         /**
          * returns a new CDate object manipulated
          */
-        next(unit: cdateNS.UnitForNext) {
+        next(unit: cdate.UnitForNext) {
             return this.add(1, unit);
         }
 
         /**
          * returns a new CDate object manipulated
          */
-        prev(unit: cdateNS.UnitForNext) {
+        prev(unit: cdate.UnitForNext) {
             return this.add(-1, unit);
         }
     }

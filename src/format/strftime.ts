@@ -1,10 +1,10 @@
-import type {cdateNS} from "../../types/cdate";
+import type {cdate} from "../../index.js";
 
 type ToNumber = (dt: Date) => number;
 type ToString = (dt: Date) => string;
 type Pad = (fn: ToNumber) => ToString;
 
-export const strftimeHandlers = (): cdateNS.Handlers => {
+export const strftimeHandlers = (): cdate.Handlers => {
     const pad2: Pad = fn => (dt) => ("0" + fn(dt)).substr(-2);
     const pad2S: Pad = fn => (dt) => (" " + fn(dt)).substr(-2);
     const pad3: Pad = fn => (dt) => ("00" + fn(dt)).substr(-3);
