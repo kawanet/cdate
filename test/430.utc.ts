@@ -23,6 +23,7 @@ describe(TITLE, () => {
     const format = "YYYY/MM/DD HH:mm:ss Z";
 
     it(`moment().utc()`, () => {
+        assert.equal(moment(std).utc().format(), "2022-03-27T00:59:59Z");
         assert.equal(moment(std).utc().format(format), "2022/03/27 00:59:59 +00:00");
         assert.equal(moment(dst).utc().format(format), "2022/03/27 01:00:01 +00:00");
 
@@ -47,6 +48,7 @@ describe(TITLE, () => {
     });
 
     it(`dayjs().utc()`, () => {
+        assert.equal(dayjs(std).utc().format(), "2022-03-27T00:59:59Z");
         assert.equal(dayjs(std).utc().format(format), "2022/03/27 00:59:59 +00:00");
         assert.equal(dayjs(dst).utc().format(format), "2022/03/27 01:00:01 +00:00");
 
@@ -71,6 +73,7 @@ describe(TITLE, () => {
     });
 
     it(`cdate().utc()`, () => {
+        assert.equal(cdate(std).utc().format(), "2022-03-27T00:59:59.000+00:00");
         assert.equal(cdate(std).utc().format(format), "2022/03/27 00:59:59 +00:00");
         assert.equal(cdate(dst).utc().format(format), "2022/03/27 01:00:01 +00:00");
 

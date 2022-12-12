@@ -24,7 +24,7 @@ const makeFormatRE = () => {
 
 const formatRE = makeFormatRE();
 
-const ISO = "%Y-%m-%dT%H:%M:%S.%L%:z";
+const ISO: cdate.Handlers = {ISO: "%Y-%m-%dT%H:%M:%S.%L%:z"};
 
 interface Texter {
     strftime(fmt: string, dt: cdate.DateLike): string;
@@ -55,12 +55,12 @@ const makeTexter = (router?: Router): Texter => {
     const out = {} as Texter;
 
     const strftime = out.strftime = (fmt, dt) => {
-        if (fmt == null) return _strftime(ISO, dt);
+        if (fmt == null) return one("ISO", dt);
         return fmt.replace(strftimeRE, (specifier) => one(specifier, dt));
     };
 
     out.format = (fmt, dt) => {
-        if (fmt == null) return _strftime(ISO, dt);
+        if (fmt == null) return one("ISO", dt);
         return fmt.replace(formatRE, (specifier, raw) => (raw || one(specifier, dt)));
     };
 
@@ -69,7 +69,7 @@ const makeTexter = (router?: Router): Texter => {
     return out;
 };
 
-export const texter = makeTexter().handler(en_US).handler(formatHandlers).handler(strftimeHandlers());
+export const texter = makeTexter().handler(ISO).handler(en_US).handler(formatHandlers).handler(strftimeHandlers());
 
 const _strftime = texter.strftime;
 export const strftime: cdate.strftime = (fmt, dt) => _strftime(fmt, dt || new Date());
