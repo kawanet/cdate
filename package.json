@@ -67,5 +67,5 @@
   },
   "sideEffects": false,
   "type": "module",
-  "types": "types/cdate.d.ts"
+  "types": "./types/cdate.d.ts"
 }

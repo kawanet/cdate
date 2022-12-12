@@ -1,7 +1,12 @@
+/**
+ * @see https://github.com/kawanet/cdate
+ */
+
+
 export const cdate: cdate.cdate;
 export const strftime: cdate.strftime;
 
-declare namespace cdate {
+export declare namespace cdate {
     type cdate = (dt?: string | number | Date) => CDate;
     type strftime = (fmt: string, dt?: Date) => string;
 
