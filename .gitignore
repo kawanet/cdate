@@ -1,8 +1,8 @@
 *.cjs
-*.js
 *.js.map
 *.swp
 *.tgz
+*/**/*.js
 *~
 .DS_Store
 .Thumbs
