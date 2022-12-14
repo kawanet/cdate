@@ -40,6 +40,12 @@ class DateTZ extends DateUTC {
 
 export const tzPlugin: cdate.cPlugin<cdate.CDateTZ> = (Parent) => {
     return class CDateTZ extends Parent implements cdate.CDateTZ {
+        utc() {
+            const out = this.inherit();
+            out.x.rw = (dt) => new DateUTC(new Date(+dt));
+            return out;
+        }
+
         tz(timezone: string) {
             const out = this.inherit();
             out.x.rw = (dt) => new DateTZ(new Date(+dt), timezone);

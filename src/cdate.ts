@@ -1,7 +1,6 @@
 import type {cdate as cdateNS} from "../index.js";
 import {formatPlugin} from "./format/texter.js";
 import {calcPlugin} from "./calc/calc.js";
-import {utcPlugin} from "./timezone/dateutc.js";
 import {tzPlugin} from "./timezone/timezone.js";
 
 class CDateCore {
@@ -109,7 +108,6 @@ class CDateCore {
 const root = new CDateCore(0, {})
     .plugin(formatPlugin)
     .plugin(calcPlugin)
-    .plugin(utcPlugin)
     .plugin(tzPlugin);
 
 export const cdate: cdateNS.cdate = (dt) => root.cdate(dt) as unknown as cdateNS.CDate;
