@@ -17,7 +17,7 @@ export declare namespace cdate {
     type UnitShort = "s" | "m" | "h" | "d" | "w" | "M" | "y";
     type UnitForNext = UnitLong | UnitShort | "millisecond" | "ms";
     type UnitForAdd = UnitForNext | UnitLongS | "milliseconds";
-    type UnitForStart = UnitLong | UnitShort | "date";
+    type UnitForStart = UnitLong | UnitShort | "date" | "D";
 
     /**
      * Public Interface for consumers

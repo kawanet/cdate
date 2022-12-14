@@ -27,12 +27,12 @@ export const strftimeHandlers = (): cdate.Handlers => {
     /**
      * %C     The century number (year/100) as a 2-digit integer. (SU)
      */
-    const C: ToNumber = dt => Math.floor(dt.getFullYear() / 100);
+    const C: ToNumber = dt => Math.floor(Y(dt) / 100);
 
     /**
      * %d     The day of the month as a decimal number (range 01 to 31).
      */
-    const d = getUnit[Unit.day]
+    const d = getUnit[Unit.date];
 
     /**
      * %H     The hour as a decimal number using a 24-hour clock (range 00 to 23).
@@ -42,7 +42,7 @@ export const strftimeHandlers = (): cdate.Handlers => {
     /**
      * %I     The hour as a decimal number using a 12-hour clock (range 01 to 12).
      */
-    const I: ToNumber = dt => (((dt.getHours() + 11) % 12) + 1);
+    const I: ToNumber = dt => (((H(dt) + 11) % 12) + 1);
 
     /***
      * %L - Millisecond of the second (000..999)
@@ -52,7 +52,8 @@ export const strftimeHandlers = (): cdate.Handlers => {
     /**
      * %m     The month as a decimal number (range 01 to 12).
      */
-    const m: ToNumber = dt => (dt.getMonth() + 1);
+    const m: ToNumber = dt => (_m(dt) + 1);
+    const _m = getUnit[Unit.month];
 
     /**
      * %M     The minute as a decimal number (range 00 to 59).
@@ -68,7 +69,7 @@ export const strftimeHandlers = (): cdate.Handlers => {
      * %U     The week number [NOT IMPLEMENTED]
      * %y     The year as a decimal number without a century (range 00 to 99).
      */
-    const y: ToNumber = dt => dt.getFullYear() % 100;
+    const y: ToNumber = dt => (Y(dt) % 100);
 
     /**
      * %Y     The year as a decimal number including the century.
@@ -114,7 +115,7 @@ export const strftimeHandlers = (): cdate.Handlers => {
         "%m": pad2(m),
         "%-M": M,
         "%M": pad2(M),
-        "%P": dt => (dt.getHours() < 12 ? "am" : "pm"),
+        "%P": dt => (H(dt) < 12 ? "am" : "pm"),
         "%R": "%H:%M",
         "%-S": S,
         "%S": pad2(S),
@@ -124,7 +125,7 @@ export const strftimeHandlers = (): cdate.Handlers => {
         "%-Y": Y,
         "%Y": padY(Y),
         "%v": "%e-%b-%Y", // VMS
-        "%w": dt => dt.getDay(),
+        "%w": getUnit[Unit.day],
         "%:z": makeZ(":"),
         "%z": makeZ(""),
         "%%": () => "%",  // %%     A literal '%' character.

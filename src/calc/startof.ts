@@ -47,6 +47,7 @@ export const startOf = (dt: cdate.DateLike, unit: cdate.UnitForStart): void => {
             startOfDay(dt);
             return add(dt, -dt.getDay(), Unit.day);
 
+        case Unit.date:
         case Unit.day:
             return startOfDay(dt);
     }

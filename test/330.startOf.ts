@@ -51,6 +51,14 @@ function runTests(fn: (dt: Date, unit: cdate.UnitForStart) => string) {
         });
     });
 
+    it(`startOf("date")`, () => {
+        (["date", "D"] as const).forEach(unit => {
+            assert.equal(fn(dt1, unit), "2023/01/01 00:00:00.000");
+            assert.equal(fn(dt2, unit), "2023/04/05 00:00:00.000");
+            assert.equal(fn(dt3, unit), "2023/12/31 00:00:00.000");
+        });
+    });
+
     it(`startOf("day")`, () => {
         (["day", "d"] as const).forEach(unit => {
             assert.equal(fn(dt1, unit), "2023/01/01 00:00:00.000");

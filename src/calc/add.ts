@@ -64,6 +64,7 @@ export const add = (dt: cdate.DateLike, diff: number, unit?: string): void => {
         case Unit.week:
             return addDay(dt, diff * 7);
 
+        case Unit.date:
         case Unit.day:
             return addDay(dt, diff);
     }
