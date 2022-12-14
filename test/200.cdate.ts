@@ -35,4 +35,11 @@ describe(TITLE, () => {
         assert.equal(cdate(date).toJSON(), date.toJSON());
         assert.equal(JSON.stringify(cdate(date)), JSON.stringify(date));
     });
+
+    it(`cdate(invalid)`, () => {
+        const dt = cdate("");
+        assert.equal(String(+dt), String(NaN));
+        assert.equal(dt.format(), "Invalid Date");
+        assert.equal(dt.text(), "Invalid Date");
+    });
 });
