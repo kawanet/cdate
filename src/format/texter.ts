@@ -2,6 +2,7 @@ import type {cdate} from "../../index.js";
 import {en_US} from "./en_US.js";
 import {strftimeHandlers} from "./strftime.js";
 import {formatHandlers} from "./format.js";
+import {localeHandlers} from "./locale.js";
 
 type Router = (specifier: string) => (string | ((dt: cdate.DateLike) => (string | number)));
 
@@ -104,6 +105,10 @@ export const formatPlugin: cdate.cPlugin<cdate.CDateFormat, Options> = (Parent) 
          */
         text(fmt: string): string {
             return getTexter(this.x).strftime(fmt, this.ro());
+        }
+
+        locale(this: cdate.CDateFormat, lang: string) {
+            return this.handler(localeHandlers(lang)) as unknown as this;
         }
     }
 };

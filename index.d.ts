@@ -23,7 +23,7 @@ export declare namespace cdate {
     /**
      * Public Interface for consumers
      */
-    type CDate = CDateCore & CDateFormat & CDateCalc & CDateUTC & CDateTZ & CDateLocale;
+    type CDate = CDateCore & CDateFormat & CDateCalc & CDateUTC & CDateTZ;
 
     interface CDateCore {
         cdate(dt: number | string | Date): this;
@@ -41,6 +41,8 @@ export declare namespace cdate {
         text(format?: string): string;
 
         handler(handlers: Handlers): this;
+
+        locale(lang: string): this;
     }
 
     interface CDateCalc {
@@ -65,10 +67,6 @@ export declare namespace cdate {
 
     interface CDateTZ {
         tz(timezone: string): this;
-    }
-
-    interface CDateLocale {
-        locale(lang: string): this;
     }
 
     type Handler = (dt: DateLike) => (string | number);

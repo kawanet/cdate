@@ -3,7 +3,6 @@ import {formatPlugin} from "./format/texter.js";
 import {calcPlugin} from "./calc/calc.js";
 import {utcPlugin} from "./timezone/dateutc.js";
 import {tzPlugin} from "./timezone/timezone.js";
-import {localePlugin} from "./locale/locale.js";
 
 class CDateCore {
     /**
@@ -110,7 +109,6 @@ class CDateCore {
 const root = new CDateCore(0, {})
     .plugin(formatPlugin)
     .plugin(calcPlugin)
-    .plugin(localePlugin)
     .plugin(utcPlugin)
     .plugin(tzPlugin);
 
