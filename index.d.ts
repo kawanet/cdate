@@ -13,7 +13,7 @@ export declare namespace cdate {
      * Unit
      */
     type UnitLong = "second" | "minute" | "hour" | "day" | "month" | "year";
-    type UnitLongS = "seconds" | "minutes" | "hours" | "days" | "weeks" | "months" | "years";
+    type UnitLongS = "seconds" | "minutes" | "hours" | "days" | "months" | "years";
     type UnitShort = "s" | "m" | "h" | "d" | "M" | "y";
     type UnitForNext = UnitLong | UnitShort | "week" | "w" | "millisecond" | "ms";
     type UnitForAdd = UnitForNext | UnitLongS | "weeks" | "milliseconds";
@@ -45,6 +45,8 @@ export declare namespace cdate {
 
     interface CDateCalc {
         get(unit: UnitForGet): number;
+
+        set(unit: UnitForGet, value: number): this;
 
         add(diff: number, unit?: UnitForAdd): this;
 

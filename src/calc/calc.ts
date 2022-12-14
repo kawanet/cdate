@@ -14,6 +14,19 @@ export const calcPlugin: cdate.cPlugin<cdate.CDateCalc> = (Parent) => {
         }
 
         /**
+         * setter
+         */
+        set(unit: cdate.UnitForGet, value: number) {
+            const u = getUnitShort(unit);
+            const fn = getUnit[u];
+            if (!fn) return this;
+
+            const dt = this.rw();
+            add(dt, (value - fn(dt)), unit);
+            return this.create(dt);
+        }
+
+        /**
          * returns a new CDate object manipulated
          */
         startOf(unit: cdate.UnitForStart) {
