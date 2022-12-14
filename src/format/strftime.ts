@@ -79,9 +79,10 @@ export const strftimeHandlers = (): cdate.Handlers => {
     /**
      * %z     The +hhmm or -hhmm numeric timezone (that is, the hour and minute offset from UTC). (SU)
      */
+    const tzo = getUnit[Unit.timeZoneOffset];
     const makeZ = (delim: string): ToString => {
         return dt => {
-            let offset = -dt.getTimezoneOffset();
+            let offset = -tzo(dt);
             const isMinus = (offset < 0);
             if (isMinus) offset = -offset;
             const hour = Math.floor(offset / 60);

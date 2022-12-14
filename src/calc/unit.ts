@@ -1,6 +1,6 @@
 import type {cdate} from "../../index.js";
 
-type UnitFlex = cdate.UnitForNext | cdate.UnitForAdd | cdate.UnitForStart;
+type UnitFlex = cdate.UnitForNext | cdate.UnitForAdd | Unit;
 
 export const enum Unit {
     year = "y",
@@ -12,6 +12,7 @@ export const enum Unit {
     minute = "m",
     second = "s",
     millisecond = "ms",
+    timeZoneOffset = "tzo",
 }
 
 const unitMap = {
@@ -29,7 +30,7 @@ const unitMap = {
 Object.keys(unitMap).forEach((key: UnitFlex) => {
     const s = (key + "s") as cdate.UnitLongS;
     const v = unitMap[key] as Unit;
-    unitMap[s] = unitMap[v] = unitMap[key];
+    if (v) unitMap[s] = unitMap[v] = v;
 });
 
 export const getUnitShort = (unit: string): Unit => {
@@ -61,4 +62,5 @@ export const getUnit: { [unit in Unit]?: (dt: cdate.DateLike) => number } = {
     m: dt => dt.getMinutes(),
     s: dt => dt.getSeconds(),
     ms: dt => dt.getMilliseconds(),
-}
+    tzo: dt => dt.getTimezoneOffset(),
+};
