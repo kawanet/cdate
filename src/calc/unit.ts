@@ -50,3 +50,13 @@ export const unitMS: { [unit in Unit]?: number } = {
     s: d.SECOND,
     ms: 1,
 };
+
+export const getUnit: { [unit in Unit]?: (dt: cdate.DateLike) => number } = {
+    y: dt => dt.getFullYear(),
+    M: dt => dt.getMonth(),
+    d: dt => dt.getDate(),
+    h: dt => dt.getHours(),
+    m: dt => dt.getMinutes(),
+    s: dt => dt.getSeconds(),
+    ms: dt => dt.getMilliseconds(),
+}

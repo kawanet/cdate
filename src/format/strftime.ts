@@ -1,4 +1,5 @@
 import type {cdate} from "../../index.js";
+import {getUnit, Unit} from "../calc/unit.js";
 
 type ToNumber = (dt: Date) => number;
 type ToString = (dt: Date) => string;
@@ -31,12 +32,12 @@ export const strftimeHandlers = (): cdate.Handlers => {
     /**
      * %d     The day of the month as a decimal number (range 01 to 31).
      */
-    const d: ToNumber = dt => dt.getDate();
+    const d = getUnit[Unit.day]
 
     /**
      * %H     The hour as a decimal number using a 24-hour clock (range 00 to 23).
      */
-    const H: ToNumber = dt => dt.getHours();
+    const H = getUnit[Unit.hour];
 
     /**
      * %I     The hour as a decimal number using a 12-hour clock (range 01 to 12).
@@ -46,7 +47,7 @@ export const strftimeHandlers = (): cdate.Handlers => {
     /***
      * %L - Millisecond of the second (000..999)
      */
-    const L: ToNumber = dt => dt.getMilliseconds();
+    const L = getUnit[Unit.millisecond];
 
     /**
      * %m     The month as a decimal number (range 01 to 12).
@@ -56,12 +57,12 @@ export const strftimeHandlers = (): cdate.Handlers => {
     /**
      * %M     The minute as a decimal number (range 00 to 59).
      */
-    const M: ToNumber = dt => dt.getMinutes();
+    const M = getUnit[Unit.minute];
 
     /**
      * %S     The second as a decimal number (range 00 to 60)
      */
-    const S: ToNumber = dt => dt.getSeconds();
+    const S = getUnit[Unit.second];
 
     /**
      * %U     The week number [NOT IMPLEMENTED]
@@ -72,7 +73,7 @@ export const strftimeHandlers = (): cdate.Handlers => {
     /**
      * %Y     The year as a decimal number including the century.
      */
-    const Y: ToNumber = dt => dt.getFullYear();
+    const Y = getUnit[Unit.year];
 
     /**
      * %z     The +hhmm or -hhmm numeric timezone (that is, the hour and minute offset from UTC). (SU)
