@@ -12,12 +12,13 @@ export declare namespace cdate {
     /**
      * Unit
      */
-    type UnitLong = "second" | "minute" | "hour" | "day" | "week" | "month" | "year";
+    type UnitLong = "second" | "minute" | "hour" | "day" | "month" | "year";
     type UnitLongS = "seconds" | "minutes" | "hours" | "days" | "weeks" | "months" | "years";
-    type UnitShort = "s" | "m" | "h" | "d" | "w" | "M" | "y";
-    type UnitForNext = UnitLong | UnitShort | "millisecond" | "ms";
-    type UnitForAdd = UnitForNext | UnitLongS | "milliseconds";
-    type UnitForStart = UnitLong | UnitShort | "date" | "D";
+    type UnitShort = "s" | "m" | "h" | "d" | "M" | "y";
+    type UnitForNext = UnitLong | UnitShort | "week" | "w" | "millisecond" | "ms";
+    type UnitForAdd = UnitForNext | UnitLongS | "weeks" | "milliseconds";
+    type UnitForStart = UnitLong | UnitShort | "week" | "w" | "date" | "D";
+    type UnitForGet = UnitLong | UnitShort | "date" | "D" | "millisecond" | "ms";
 
     /**
      * Public Interface for consumers
@@ -43,6 +44,8 @@ export declare namespace cdate {
     }
 
     interface CDateCalc {
+        get(unit: UnitForGet): number;
+
         add(diff: number, unit?: UnitForAdd): this;
 
         startOf(unit: UnitForStart): this;

@@ -1,9 +1,18 @@
 import type {cdate} from "../../index.js";
 import {add} from "./add.js";
 import {startOf} from "./startof.js";
+import {getUnit, getUnitShort} from "./unit.js";
 
 export const calcPlugin: cdate.cPlugin<cdate.CDateCalc> = (Parent) => {
     return class CDateCalc extends Parent implements cdate.CDateCalc {
+        /**
+         * getter
+         */
+        get(unit: cdate.UnitForGet): number {
+            const fn = getUnit[getUnitShort(unit)];
+            if (fn) return fn(this.ro());
+        }
+
         /**
          * returns a new CDate object manipulated
          */
