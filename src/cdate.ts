@@ -81,8 +81,8 @@ class CDateCore {
         return this.toDate().toJSON();
     }
 
-    plugin<T, X>(fn: cdateNS.cPlugin<T, X>) {
-        const CDateClass = this.constructor as cdateNS.cClass<{}, X>;
+    plugin<T, X>(fn: cdateNS.Plugin<T, X>) {
+        const CDateClass = this.constructor as cdateNS.Class<{}, X>;
         const CDateX = fn(CDateClass) || CDateClass;
         return new CDateX(this.t, this.x as X);
     }
@@ -91,7 +91,7 @@ class CDateCore {
      * creates another CDate object with the DateLike given
      */
     create(dt: number | cdateNS.DateLike) {
-        return new (this.constructor as cdateNS.cClass)(dt, this.x);
+        return new (this.constructor as cdateNS.Class)(dt, this.x);
     }
 
     /**

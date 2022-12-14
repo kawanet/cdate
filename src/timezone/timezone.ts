@@ -38,7 +38,7 @@ class DateTZ extends DateUTC {
     }
 }
 
-export const tzPlugin: cdate.cPlugin<cdate.CDateTZ> = (Parent) => {
+export const tzPlugin: cdate.Plugin<cdate.CDateTZ> = (Parent) => {
     return class CDateTZ extends Parent implements cdate.CDateTZ {
         utc() {
             const out = this.inherit();

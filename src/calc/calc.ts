@@ -3,7 +3,7 @@ import {add} from "./add.js";
 import {startOf} from "./startof.js";
 import {getUnit, getUnitShort} from "./unit.js";
 
-export const calcPlugin: cdate.cPlugin<cdate.CDateCalc> = (Parent) => {
+export const calcPlugin: cdate.Plugin<cdate.CDateCalc> = (Parent) => {
     return class CDateCalc extends Parent implements cdate.CDateCalc {
         /**
          * getter

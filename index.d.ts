@@ -32,7 +32,7 @@ export declare namespace cdate {
 
         toJSON(): string;
 
-        plugin<T>(fn: cPlugin<T>): this & T;
+        plugin<T>(fn: Plugin<T>): this & T;
     }
 
     interface CDateFormat {
@@ -74,7 +74,7 @@ export declare namespace cdate {
     /**
      * Internal interface for plugin developers
      */
-    interface cInternal<T = {}, X = {}> extends CDateCore {
+    interface Internal<T = {}, X = {}> extends CDateCore {
         readonly t: number | DateLike;
         readonly x: Options & X;
 
@@ -87,16 +87,16 @@ export declare namespace cdate {
         ro(): DateLike;
     }
 
-    interface cClass<T = {}, X = {}> {
-        new(t: number | DateLike, x: X): cInternal<T, X>;
+    interface Class<T = {}, X = {}> {
+        new(t: number | DateLike, x: X): Internal<T, X>;
     }
 
     interface Options {
         rw?: (t: number) => DateLike;
     }
 
-    interface cPlugin<T = {}, X = {}, P = {}> {
-        (Parent: cClass<P, X>): cClass<T, X>;
+    interface Plugin<T = {}, X = {}, P = {}> {
+        (Parent: Class<P, X>): Class<T, X>;
     }
 
     interface DateLike {
