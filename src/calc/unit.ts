@@ -33,11 +33,9 @@ Object.keys(unitMap).forEach((key: UnitFlex) => {
     if (v) unitMap[s] = unitMap[v] = v;
 });
 
-export const getUnitShort = (unit: string): Unit => {
-    const u = unitMap[(unit || Unit.millisecond) as cdate.UnitForAdd] ||
+export const getShortUnit = (unit: string): Unit => {
+    return unitMap[(unit || Unit.millisecond) as cdate.UnitForAdd] ||
         unitMap[String(unit).toLowerCase() as cdate.UnitForAdd];
-    if (!u) throw new RangeError("Invalid unit: " + unit);
-    return u;
 };
 
 const enum d {
