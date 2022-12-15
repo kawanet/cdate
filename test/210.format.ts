@@ -39,7 +39,7 @@ function runTests(fn: (dt: Date, format: string) => string) {
         D: "5",
         DD: "05",
         d: "3",
-        // dd: "We",
+        dd: "We",
         ddd: "Wed",
         dddd: "Wednesday",
         H: "6",

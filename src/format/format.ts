@@ -1,4 +1,10 @@
-export const formatHandlers: { [fmt: string]: string } = {
+import type {cdate} from "../../index.js";
+import {getUnit, Unit} from "../calc/unit.js";
+
+const getDay = getUnit[Unit.day];
+const dd = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+export const formatHandlers: cdate.Handlers = {
     YY: "%y", // 18 = Two-digit year
     YYYY: "%Y", // 2018 = Four-digit year
     M: "%-m", // 1-12 = The month, beginning at 1
@@ -8,7 +14,7 @@ export const formatHandlers: { [fmt: string]: string } = {
     D: "%-d", // 1-31 = The day of the month
     DD: "%d", // 01-31 = The day of the month, 2-digits
     d: "%w", // 0-6 = The day of the week, with Sunday as 0
-    dd: "%a", // Su-Sa = The min name of the day of the week
+    dd: dt => dd[getDay(dt)], // Su-Sa = The min name of the day of the week
     ddd: "%a", // Sun-Sat = The short name of the day of the week
     dddd: "%A", // Sunday-Saturday = The name of the day of the week
     H: "%-H", // 0-23 = The hour
