@@ -70,6 +70,11 @@ export declare namespace cdate {
         utcOffset(offset: string): this;
 
         /**
+         * returns 540 for "GMT+09:00"
+         */
+        utcOffset(): number;
+
+        /**
          * "Asia/Tokyo", "America/New_York",...
          */
         tz(timezone: string): this;

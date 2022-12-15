@@ -49,7 +49,14 @@ export const tzPlugin: cdate.Plugin<cdate.CDateTZ> = (Parent) => {
         /**
          * "+0900", "+09:00", "GMT+09:00", "Z", "UTC",...
          */
-        utcOffset(offset: string) {
+
+        utcOffset(offset: string): this;
+        utcOffset(): number;
+        utcOffset(offset?: string) {
+            if (offset == null) {
+                return 0 - this.ro().getTimezoneOffset();
+            }
+
             const out = this.inherit();
             out.x.rw = (dt) => new DateTZ(new Date(+dt), parseTZ(offset));
             return out;
