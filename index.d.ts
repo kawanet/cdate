@@ -36,8 +36,14 @@ export declare namespace cdate {
     }
 
     interface CDateFormat {
+        /**
+         * format("YYYY/MM/DD HH:mm:ss.SSSZ")
+         */
         format(format?: string): string;
 
+        /**
+         * text("%Y-%m-%dT%H:%M:%S.%LZ")
+         */
         text(format?: string): string;
 
         handler(handlers: Handlers): this;
@@ -46,22 +52,46 @@ export declare namespace cdate {
     }
 
     interface CDateCalc {
+        /**
+         * get("date"), get("hour"),...
+         */
         get(unit: UnitForGet): number;
 
+        /**
+         * set("date", 31), set("day", 0),...
+         */
         set(unit: UnitForGet, value: number): this;
 
+        /**
+         * add(1, "day"), add(2, "hours"),...
+         */
         add(diff: number, unit?: UnitForAdd): this;
 
+        /**
+         * startOf("day"), startOf("month"),...
+         */
         startOf(unit: UnitForStart): this;
 
+        /**
+         * endOf("day") == startOf("day").next("day").add(-1, "ms")
+         */
         endOf(unit: UnitForStart): this;
 
+        /**
+         * next("day") == add(1, "day")
+         */
         next(unit: UnitForNext): this;
 
+        /**
+         * prev("day") == add(-1, "day")
+         */
         prev(unit: UnitForNext): this;
     }
 
     interface CDateTZ {
+        /**
+         * UTC
+         */
         utc(): this;
 
         /**

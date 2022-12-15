@@ -40,7 +40,7 @@ Get + Set:
 
 ```js
 const isLeapYear = (year) => {
-    return cdate().set("year", year).set("month", 1).set("date", 29).get("date") === 29;
+    return cdate().set("year", year).set("month", 1).endOf("month").get("date") === 29;
 }
 
 isLeapYear(2020); // => true
