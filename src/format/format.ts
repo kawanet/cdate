@@ -4,6 +4,9 @@ import {getUnit, Unit} from "../calc/unit.js";
 const getDay = getUnit[Unit.day];
 const dd = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
+const thMap = ["th", "st", "nd", "rd"];
+const thFn = (num: number) => num + (thMap[num] || (num > 20 && thMap[num % 10]) || thMap[0]);
+
 export const formatHandlers: cdate.Handlers = {
     YY: "%y", // 18 = Two-digit year
     YYYY: "%Y", // 2018 = Four-digit year
@@ -12,6 +15,7 @@ export const formatHandlers: cdate.Handlers = {
     MMM: "%b", // Jan-Dec = The abbreviated month name
     MMMM: "%B", // January-December = The full month name
     D: "%-d", // 1-31 = The day of the month
+    Do: dt => thFn(dt.getDate()), // 1st - 31st
     DD: "%d", // 01-31 = The day of the month, 2-digits
     d: "%w", // 0-6 = The day of the week, with Sunday as 0
     dd: dt => dd[getDay(dt)], // Su-Sa = The min name of the day of the week

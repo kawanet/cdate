@@ -15,7 +15,7 @@ const strftimeRE = /%(?:[EO]\w|[0_#^-]?[1-9]?\w|::?z|[%+])/g;
 
 // /\[(.*?)\]|A+|a+|B+|b+|C+|c+|...|Z+|z+/g
 const makeFormatRE = () => {
-    let re: string[] = ["\\[(.*?)\\]"];
+    let re: string[] = ["\\[(.*?)\\]", "[A-Za-z]o"];
     const c = (code: number) => String.fromCharCode(code + 65) + "+";
     for (let i = 0; i < 26; i++) {
         re.push(c(i), c(i + 32));
