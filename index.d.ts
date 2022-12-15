@@ -92,12 +92,12 @@ export declare namespace cdate {
         /**
          * UTC
          */
-        utc(): this;
+        utc(keepLocalTime?: boolean): this;
 
         /**
          * "+0900", "+09:00", "GMT+09:00", 540,...
          */
-        utcOffset(offset: string | number): this;
+        utcOffset(offset: string | number, keepLocalTime?: boolean): this;
 
         /**
          * returns 540 for "GMT+09:00"
@@ -107,7 +107,7 @@ export declare namespace cdate {
         /**
          * "Asia/Tokyo", "America/New_York",...
          */
-        tz(timezone: string): this;
+        tz(timeZoneName: string, keepLocalTime?: boolean): this;
     }
 
     type Handler = (dt: DateLike) => (string | number);
@@ -117,13 +117,13 @@ export declare namespace cdate {
     /**
      * Internal interface for plugin developers
      */
-    interface Internal<T = {}, X = {}> extends CDateCore {
+    interface Internal<T = {}, X = {}> extends CDate {
         readonly t: number | DateLike;
         readonly x: Options & X;
 
         create(dt: DateLike): this;
 
-        inherit(): this;
+        inherit(): this & T;
 
         rw(): DateLike;
 
