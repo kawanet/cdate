@@ -95,9 +95,9 @@ export declare namespace cdate {
         utc(): this;
 
         /**
-         * "+0900", "+09:00", "GMT+09:00", "Z", "UTC",...
+         * "+0900", "+09:00", "GMT+09:00", 540,...
          */
-        utcOffset(offset: string): this;
+        utcOffset(offset: string | number): this;
 
         /**
          * returns 540 for "GMT+09:00"

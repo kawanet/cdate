@@ -50,9 +50,9 @@ export const tzPlugin: cdate.Plugin<cdate.CDateTZ> = (Parent) => {
          * "+0900", "+09:00", "GMT+09:00", "Z", "UTC",...
          */
 
-        utcOffset(offset: string): this;
+        utcOffset(offset: string | number): this;
         utcOffset(): number;
-        utcOffset(offset?: string) {
+        utcOffset(offset?: string | number) {
             if (offset == null) {
                 return 0 - this.ro().getTimezoneOffset();
             }
@@ -73,11 +73,17 @@ export const tzPlugin: cdate.Plugin<cdate.CDateTZ> = (Parent) => {
     }
 };
 
-const parseTZ = cached((tz: string): TZF => {
-    const matched = tz.match(/(?:^|GMT)?(?:([+-])([01]?\d):?(\d[05])|$)|(UTC|Z)$/);
-    if (!matched) return;
-    let offset = ((+matched[2]) * 60 + (+matched[3])) | 0;
-    if (matched[1] === "-") offset = -offset;
+const parseTZ = cached((offset: string | number): TZF => {
+    if ("number" === typeof offset) {
+        if (-16 < offset && offset < 16) {
+            offset *= 60;
+        }
+    } else {
+        const matched = String(offset).match(/(?:^|GMT)?(?:([+-])([01]?\d):?(\d[05])|$)|(UTC|Z)$/);
+        if (!matched) return;
+        offset = ((+matched[2]) * 60 + (+matched[3])) | 0;
+        if (matched[1] === "-") offset = 0 - offset;
+    }
 
-    return (_) => offset;
+    return (_) => offset as number;
 });

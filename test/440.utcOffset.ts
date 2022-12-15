@@ -14,7 +14,7 @@ const TITLE = "440.utcOffset.ts";
 interface Common {
     utc(): Common;
 
-    utcOffset(offset: string): Common;
+    utcOffset(offset: string | number): Common;
 
     utcOffset(): number;
 
@@ -38,9 +38,12 @@ describe(TITLE, () => {
         assert.equal(fn(dt).utc().utcOffset(), 0);
         assert.equal(fn(dt).utc().format(format), "2023/01/01 12:00:00 +00:00");
 
+        assert.equal(fn(dt).utcOffset(9).utcOffset(), 9 * 60);
+        assert.equal(fn(dt).utcOffset(9 * 60).utcOffset(), 9 * 60);
         assert.equal(fn(dt).utcOffset("+09:00").utcOffset(), 9 * 60);
         assert.equal(fn(dt).utcOffset("+09:00").format(format), "2023/01/01 21:00:00 +09:00");
 
+        assert.equal(fn(dt).utcOffset(-3 * 60).utcOffset(), -3 * 60);
         assert.equal(fn(dt).utcOffset("-03:00").utcOffset(), -3 * 60);
         assert.equal(fn(dt).utcOffset("-03:00").format(format), "2023/01/01 09:00:00 -03:00");
     }
