@@ -64,6 +64,14 @@ export declare namespace cdate {
     interface CDateTZ {
         utc(): this;
 
+        /**
+         * "+0900", "+09:00", "GMT+09:00", "Z", "UTC",...
+         */
+        utcOffset(offset: string): this;
+
+        /**
+         * "Asia/Tokyo", "America/New_York",...
+         */
         tz(timezone: string): this;
     }
 

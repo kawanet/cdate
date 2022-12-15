@@ -62,11 +62,11 @@ describe(TITLE, () => {
         runTests((dt, tz, map) => samsonjs.strftime.timezone(map[tz])("%Y/%m/%d %H:%M:%S.%L %:z", dt));
     });
 
-    describe(`cdate().timezone(offset)`, () => {
-        runTests((dt, tz, map) => cdate(dt).tz(map[tz]).text("%Y/%m/%d %H:%M:%S.%L %:z"));
+    describe(`cdate().utcOffset(offset)`, () => {
+        runTests((dt, tz, map) => cdate(dt).utcOffset(map[tz]).text("%Y/%m/%d %H:%M:%S.%L %:z"));
     });
 
-    describe(`cdate().timezone(name)`, () => {
+    describe(`cdate().tz(name)`, () => {
         runTests((dt, tz) => cdate(dt).tz(tz).text("%Y/%m/%d %H:%M:%S.%L %:z"));
     });
 });

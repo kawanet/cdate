@@ -1,6 +1,7 @@
 import type {cdate} from "../../index.js";
-import {getTZF} from "./tzf.js";
+import {getTZF, TZF} from "./tzf.js";
 import {DateUTC} from "./dateutc.js";
+import {cached} from "../cache.js";
 
 const enum d {
     SECOND = 1000,
@@ -10,12 +11,11 @@ const enum d {
 class DateTZ extends DateUTC {
     // dt: Date; // UTC
     private t: number; // local time
-    private tzf: ReturnType<typeof getTZF>;
+    private tzf: TZF;
     private tzo: number;
 
-    constructor(dt: Date, timezone: string) {
+    constructor(dt: Date, tzf: TZF) {
         const t = +dt;
-        const tzf = getTZF(timezone);
         const tzo = tzf(t);
         super(new Date(t + tzo * d.MINUTE));
         this.t = t;
@@ -46,10 +46,31 @@ export const tzPlugin: cdate.Plugin<cdate.CDateTZ> = (Parent) => {
             return out;
         }
 
+        /**
+         * "+0900", "+09:00", "GMT+09:00", "Z", "UTC",...
+         */
+        utcOffset(offset: string) {
+            const out = this.inherit();
+            out.x.rw = (dt) => new DateTZ(new Date(+dt), parseTZ(offset));
+            return out;
+        }
+
+        /**
+         * "Asia/Tokyo", "America/New_York",...
+         */
         tz(timezone: string) {
             const out = this.inherit();
-            out.x.rw = (dt) => new DateTZ(new Date(+dt), timezone);
+            out.x.rw = (dt) => new DateTZ(new Date(+dt), getTZF(timezone));
             return out;
         }
     }
 };
+
+const parseTZ = cached((tz: string): TZF => {
+    const matched = tz.match(/(?:^|GMT)?(?:([+-])([01]?\d):?(\d[05])|$)|(UTC|Z)$/);
+    if (!matched) return;
+    let offset = ((+matched[2]) * 60 + (+matched[3])) | 0;
+    if (matched[1] === "-") offset = -offset;
+
+    return (_) => offset;
+});
