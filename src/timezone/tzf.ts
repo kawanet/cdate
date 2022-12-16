@@ -27,8 +27,11 @@ const calcTimeZoneOffset = (dtf: Intl.DateTimeFormat, dt: Date) => {
     // difference of minutes:
     const minutes = dt.getUTCMinutes() - index.minute;
 
+    // difference of seconds:
+    const seconds = dt.getUTCSeconds() - index.second;
+
     // difference in minutes:
-    return -((day * 24 + hour) * 60 + minutes);
+    return -((day * 24 + hour) * 60 + minutes + (seconds / 60));
 };
 
 export const getTZF = cached<TZF>(tz => {
@@ -55,7 +58,8 @@ export const getTZF = cached<TZF>(tz => {
 
         // DateTimeFormat is much slow
         if (!dtf) {
-            dtf = new Intl.DateTimeFormat("en-US", {timeZone: tz, hour12: false, weekday: "short", hour: "numeric", minute: "numeric"});
+            const numeric = "numeric";
+            dtf = new Intl.DateTimeFormat("en-US", {timeZone: tz, hour12: false, weekday: "short", hour: numeric, minute: numeric, second: numeric});
         }
         offset = calcTimeZoneOffset(dtf, dt);
 

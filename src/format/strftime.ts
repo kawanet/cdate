@@ -86,7 +86,7 @@ export const strftimeHandlers = (): cdate.Handlers => {
             const isMinus = (offset < 0);
             if (isMinus) offset = -offset;
             const hour = Math.floor(offset / 60);
-            const min = offset % 60;
+            const min = Math.floor(offset % 60);
             return (isMinus ? "-" : "+") + (hour < 10 ? "0" + hour : hour) + delim + (min < 10 ? "0" + min : min);
         }
     };
