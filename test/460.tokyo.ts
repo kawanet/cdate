@@ -23,7 +23,16 @@ describe(TITLE, () => {
 
     describe(`dayjs()`, () => testFn(dt => dayjs(dt), true));
 
-    describe(`cdate()`, () => testFn(dt => cdate(dt)));
+    describe(`cdate()`, () => {
+        testFn(dt => cdate(dt));
+
+        it(`%::z`, () => {
+            const dt1 = new Date("1888-01-01T00:00:00+09:00");
+            const dt2 = new Date(+dt1 - 1);
+            assert.equal(cdate(dt1).tz("Asia/Tokyo").text("%Y/%m/%d %H:%M:%S.%L %::z"), "1888/01/01 00:00:00.000 +09:00:00");
+            assert.equal(cdate(dt2).tz("Asia/Tokyo").text("%Y/%m/%d %H:%M:%S.%L %::z"), "1888/01/01 00:18:58.999 +09:18:59");
+        });
+    });
 });
 
 function testFn(fn: (dt: Date) => Common, skip?: boolean) {

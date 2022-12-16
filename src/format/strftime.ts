@@ -80,14 +80,16 @@ export const strftimeHandlers = (): cdate.Handlers => {
      * %z     The +hhmm or -hhmm numeric timezone (that is, the hour and minute offset from UTC). (SU)
      */
     const tzo = getUnit[Unit.timeZoneOffset];
-    const makeZ = (delim: string): ToString => {
+    const pad0 = (num: number) => (num < 10 ? "0" + num : num);
+    const makeZ = (delim: string, hasSecond?: boolean): ToString => {
         return dt => {
             let offset = -tzo(dt);
             const isMinus = (offset < 0);
             if (isMinus) offset = -offset;
             const hour = Math.floor(offset / 60);
             const min = Math.floor(offset % 60);
-            return (isMinus ? "-" : "+") + (hour < 10 ? "0" + hour : hour) + delim + (min < 10 ? "0" + min : min);
+            const second = hasSecond ? delim + pad0(Math.floor((offset % 1) * 60)) : "";
+            return (isMinus ? "-" : "+") + pad0(hour) + delim + pad0(min) + second;
         }
     };
 
@@ -127,6 +129,7 @@ export const strftimeHandlers = (): cdate.Handlers => {
         "%Y": padY(Y),
         "%v": "%e-%b-%Y", // VMS
         "%w": getUnit[Unit.day],
+        "%::z": makeZ(":", true),
         "%:z": makeZ(":"),
         "%z": makeZ(""),
         "%%": () => "%",  // %%     A literal '%' character.
