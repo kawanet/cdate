@@ -31,17 +31,10 @@ class CDateCore {
     }
 
     /**
-     * creates another CDate object
+     * cdate function factory
      */
-    cdate(dt?: number | string | Date) {
-        if (dt == null) {
-            dt = new Date(); // now
-        } else if ("string" === typeof dt) {
-            dt = new Date(dt); // parse ISO string
-        } else {
-            dt = new Date(+dt); // number or DateLike
-        }
-        return this.create(dt);
+    cdateFn(): cdateNS.cdate {
+        return cdateFn(this);
     }
 
     /**
@@ -68,19 +61,22 @@ class CDateCore {
     }
 
     /**
-     * returns a raw Date object
+     * returns a bare Date object
      */
     toDate(): Date {
         return new Date(+this);
     }
 
     /**
-     * returns a JSON string
+     * returns a JSON representation of Date
      */
     toJSON(): string {
         return this.toDate().toJSON();
     }
 
+    /**
+     * returns an instance including the plugin
+     */
     plugin<T, X>(fn: cdateNS.Plugin<T, X>) {
         const CDateClass = this.constructor as cdateNS.Class<{}, X>;
         const CDateX = fn(CDateClass) || CDateClass;
@@ -105,9 +101,21 @@ class CDateCore {
     }
 }
 
-const root = new CDateCore(0, {})
+const cdateFn = (base: CDateCore): cdateNS.cdate => {
+    return (dt) => {
+        if (dt == null) {
+            dt = new Date(); // now
+        } else if ("string" === typeof dt) {
+            dt = new Date(dt); // parse ISO string
+        } else {
+            dt = new Date(+dt); // number or DateLike
+        }
+        return base.create(dt);
+    }
+};
+
+export const cdate: cdateNS.cdate = new CDateCore(0, {})
     .plugin(formatPlugin)
     .plugin(calcPlugin)
-    .plugin(tzPlugin);
-
-export const cdate: cdateNS.cdate = (dt) => root.cdate(dt) as unknown as cdateNS.CDate;
+    .plugin(tzPlugin)
+    .cdateFn();

@@ -26,13 +26,25 @@ export declare namespace cdate {
     type CDate = CDateCore & CDateFormat & CDateCalc & CDateTZ;
 
     interface CDateCore {
-        cdate(dt: number | string | Date): this;
-
+        /**
+         * returns a bare Date object
+         */
         toDate(): Date;
 
+        /**
+         * returns a JSON representation of Date
+         */
         toJSON(): string;
 
+        /**
+         * returns an instance including the plugin
+         */
         plugin<T>(fn: Plugin<T>): this & T;
+
+        /**
+         * cdate function factory
+         */
+        cdateFn(): cdate;
     }
 
     interface CDateFormat {
