@@ -1,7 +1,7 @@
 {
   "name": "cdate",
   "description": "a compact calendar date",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "@kawanet",
   "browser": "./dist/cdate.min.js",
   "bugs": {

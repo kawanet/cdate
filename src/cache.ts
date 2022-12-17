@@ -9,7 +9,7 @@ export const lazy = <T>(fn: (() => T)): (() => T) => {
 /**
  * cache
  */
-export const cached = <T>(fn: ((key: string) => T)): ((key: string) => T) => {
+export const cached = <T, U = string>(fn: ((key: U) => T)): ((key: U) => T) => {
     let cached: { [key: string]: T } = {};
-    return key => (cached[key] || (cached[key] = fn(key)));
+    return key => (cached[key as string] || (cached[key as string] = fn(key)));
 };

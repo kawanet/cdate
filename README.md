@@ -7,7 +7,7 @@
 - Fast: the benchmark results shows that [cdate](https://github.com/kawanet/cdate) is faster
   than [Moment.js](https://www.npmjs.com/package/moment), [Day.js](https://www.npmjs.com/package/dayjs)
   and [Luxon](https://www.npmjs.com/package/luxon)
-- Display: `moment`-style `.format("YYYY-MM-DD hh:mm:ss")`
+- Display: `moment`-style `.format("YYYY-MM-DD HH:mm:ss")`
 - Developer friendly display: `strftime`-style `.text("%Y-%m-%d %H:%M:%S")`
 - Manipulation: `.add(1, "month").startOf("week").endOf("day")` like `moment` does but immutable
 - Timezone: names like `America/New_York` supported by `Intl.DateTimeFormat` as well as UTC offset like `GMT-05:00`
@@ -31,9 +31,23 @@ Display:
 ```js
 const now = cdate();
 
-console.log(now.format("YYYY-MM-DD hh:mm:ss.SSSZ"));
+console.log(now.format("YYYY-MM-DD HH:mm:ss.SSSZ"));
 
 console.log(now.text("%Y-%m-%d %H:%M:%S.%L%:z"));
+```
+
+Get + Set:
+
+```js
+const isLeapYear = (year) => {
+    return cdate().set("year", year).set("month", 1).endOf("month").get("date") === 29;
+}
+
+isLeapYear(2020); // => true
+isLeapYear(2021); // => false
+isLeapYear(2022); // => false
+isLeapYear(2023); // => false
+isLeapYear(2024); // => true
 ```
 
 Manipulation:
@@ -86,4 +100,5 @@ change.
 ## LINKS
 
 - https://github.com/kawanet/cdate
+- https://github.com/kawanet/cdate-locale
 - https://www.npmjs.com/package/cdate

@@ -1,5 +1,5 @@
 import type {cdate} from "../../index.js";
-import {getUnitShort, Unit, unitMS} from "./unit.js";
+import {getShortUnit, Unit, unitMS} from "./unit.js";
 
 const enum d {
     SECOND = 1000,
@@ -44,10 +44,10 @@ const addDay = (dt: cdate.DateLike, days: number): void => {
     }
 }
 
-export const add = (dt: cdate.DateLike, diff: number, unit?: string): void => {
+export const add = (dt: cdate.DateLike, diff: number, unit?: cdate.UnitForAdd | cdate.UnitForGet): void => {
     if (!diff) return;
 
-    const u = getUnitShort(unit);
+    const u = getShortUnit(unit);
     const msec = unitMS[u];
     if (msec) {
         dt.setTime(+dt + diff * msec);
@@ -64,6 +64,7 @@ export const add = (dt: cdate.DateLike, diff: number, unit?: string): void => {
         case Unit.week:
             return addDay(dt, diff * 7);
 
+        case Unit.date:
         case Unit.day:
             return addDay(dt, diff);
     }

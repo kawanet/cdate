@@ -1,4 +1,5 @@
 import type {cdate} from "../../index.js";
+import {getUnit, Unit} from "../calc/unit.js";
 
 type ToNumber = (dt: Date) => number;
 type ToString = (dt: Date) => string;
@@ -23,68 +24,32 @@ export const strftimeHandlers = (): cdate.Handlers => {
         return prefix + (("00000" + year).substr(-6));
     };
 
-    /**
-     * %C     The century number (year/100) as a 2-digit integer. (SU)
-     */
-    const C: ToNumber = dt => Math.floor(dt.getFullYear() / 100);
+    const getFullYear = getUnit[Unit.year];
+    const getMonth = getUnit[Unit.month];
+    const getDate = getUnit[Unit.date];
+    const getDay = getUnit[Unit.day];
+    const getHours = getUnit[Unit.hour];
+    const getMinutes = getUnit[Unit.minute];
+    const getSeconds = getUnit[Unit.second];
+    const getMilliseconds = getUnit[Unit.millisecond];
+    const getTime = getUnit[Unit.time];
+    const getTimezoneOffset = getUnit[Unit.timeZoneOffset];
 
-    /**
-     * %d     The day of the month as a decimal number (range 01 to 31).
-     */
-    const d: ToNumber = dt => dt.getDate();
+    const C: ToNumber = dt => Math.floor(getFullYear(dt) / 100);
+    const I: ToNumber = dt => (((getHours(dt) + 11) % 12) + 1);
+    const m: ToNumber = dt => (getMonth(dt) + 1);
+    const y: ToNumber = dt => (getFullYear(dt) % 100);
+    const pad0 = (num: number) => (num < 10 ? "0" + num : num);
 
-    /**
-     * %H     The hour as a decimal number using a 24-hour clock (range 00 to 23).
-     */
-    const H: ToNumber = dt => dt.getHours();
-
-    /**
-     * %I     The hour as a decimal number using a 12-hour clock (range 01 to 12).
-     */
-    const I: ToNumber = dt => (((dt.getHours() + 11) % 12) + 1);
-
-    /***
-     * %L - Millisecond of the second (000..999)
-     */
-    const L: ToNumber = dt => dt.getMilliseconds();
-
-    /**
-     * %m     The month as a decimal number (range 01 to 12).
-     */
-    const m: ToNumber = dt => (dt.getMonth() + 1);
-
-    /**
-     * %M     The minute as a decimal number (range 00 to 59).
-     */
-    const M: ToNumber = dt => dt.getMinutes();
-
-    /**
-     * %S     The second as a decimal number (range 00 to 60)
-     */
-    const S: ToNumber = dt => dt.getSeconds();
-
-    /**
-     * %U     The week number [NOT IMPLEMENTED]
-     * %y     The year as a decimal number without a century (range 00 to 99).
-     */
-    const y: ToNumber = dt => dt.getFullYear() % 100;
-
-    /**
-     * %Y     The year as a decimal number including the century.
-     */
-    const Y: ToNumber = dt => dt.getFullYear();
-
-    /**
-     * %z     The +hhmm or -hhmm numeric timezone (that is, the hour and minute offset from UTC). (SU)
-     */
-    const makeZ = (delim: string): ToString => {
+    const makeZ = (delim: string, hasSecond?: boolean): ToString => {
         return dt => {
-            let offset = -dt.getTimezoneOffset();
+            let offset = -getTimezoneOffset(dt);
             const isMinus = (offset < 0);
             if (isMinus) offset = -offset;
             const hour = Math.floor(offset / 60);
-            const min = offset % 60;
-            return (isMinus ? "-" : "+") + (hour < 10 ? "0" + hour : hour) + delim + (min < 10 ? "0" + min : min);
+            const min = Math.floor(offset % 60);
+            const second = hasSecond ? delim + pad0(Math.floor((offset % 1) * 60)) : "";
+            return (isMinus ? "-" : "+") + pad0(hour) + delim + pad0(min) + second;
         }
     };
 
@@ -92,42 +57,115 @@ export const strftimeHandlers = (): cdate.Handlers => {
      * %c %r %x and %X are defined at locale files
      */
 
-    return {
+    const handlers: cdate.Handlers = {
+        // "%c": the locale's appropriate date and time representation
         "%c": "%a %b %e %T %Y",
+
+        // "%C": the century as a decimal number
         "%-C": C,
         "%C": pad2(C),
-        "%-d": d,
-        "%d": pad2(d),
+
+        // "%d": the day of the month as a decimal number
+        "%-d": getDate,
+        "%d": pad2(getDate),
+
+        // "%D": the date in the format `%m/%d/%y`
         "%D": "%m/%d/%y",
-        "%e": pad2S(d),
+
+        // "%e": the day of month as a decimal number
+        "%e": pad2S(getDate),
+
+        // "%F": the date in the format `%Y-%m-%d`
         "%F": "%Y-%m-%d", // ISO
-        "%-H": H,
-        "%H": pad2(H),
+
+        // "%H": the hour (24-hour clock) as a decimal number
+        "%-H": getHours,
+        "%H": pad2(getHours),
+
+        // "%I": the hour (12-hour clock) as a decimal number
         "%-I": I,
         "%I": pad2(I),
-        "%k": pad2S(H),
+
+        // "%k": the hour (24-hour clock) as a decimal number
+        "%k": pad2S(getHours),
+
+        // "%l": the hour (12-hour clock) as a decimal number
         "%l": pad2S(I),
-        "%-L": pad3(L),
-        "%L": pad3(L),
+
+        // "%L": the millisecond as a decimal number
+        "%-L": pad3(getMilliseconds),
+        "%L": pad3(getMilliseconds),
+
+        // "%m": the month as a decimal number
         "%-m": m,
         "%m": pad2(m),
-        "%-M": M,
-        "%M": pad2(M),
-        "%P": dt => (dt.getHours() < 12 ? "am" : "pm"),
+
+        // "%M": the minute as a decimal number
+        "%-M": getMinutes,
+        "%M": pad2(getMinutes),
+        "%P": dt => (getHours(dt) < 12 ? "am" : "pm"),
+
+        // "%R": the time in the format `%H:%M`
         "%R": "%H:%M",
-        "%-S": S,
-        "%S": pad2(S),
+
+        // "%s": the number of seconds since the Epoch, UTC
+        "%s": dt => Math.floor(getTime(dt) / 1000),
+
+        // "%S": the second as a decimal number
+        "%-S": getSeconds,
+        "%S": pad2(getSeconds),
+
+        // "%T": the time in the format `%H:%M:%S`
         "%T": "%H:%M:%S",
+
+        // "%y": the year without century as a decimal number
         "%-y": y,
         "%y": pad2(y),
-        "%-Y": Y,
-        "%Y": padY(Y),
+
+        // "%Y": the year with century as a decimal number
+        "%-Y": getFullYear,
+        "%Y": padY(getFullYear),
+
+        // "%u": the weekday (Monday as the first day of the week) as a decimal number
+        "%u": dt => ((getDay(dt) + 6) % 7 + 1),
+
+        // "%v": the date in the format `%e-%b-%Y`
         "%v": "%e-%b-%Y", // VMS
-        "%w": dt => dt.getDay(),
+
+        // "%w": the weekday (Sunday as the first day of the week) as a decimal number
+        "%w": getDay,
+
+        // "%z": the offset from UTC in the format `+HHMM` or `-HHMM`
+        "%::z": makeZ(":", true),
         "%:z": makeZ(":"),
         "%z": makeZ(""),
-        "%%": () => "%",  // %%     A literal '%' character.
-        "%n": () => "\n", // %n     A newline character. (SU)
-        "%t": () => "\t", // %t     A tab character. (SU)
+
+        // "%%": a literal `%` character
+        "%%": () => "%",
+
+        // "%n": a newline character
+        "%n": () => "\n",
+
+        // "%t": a tab character
+        "%t": () => "\t",
+
+        // ==== NOT IMPLEMENTED HANDLERS BELOW ====
+        // "%G": the ISO 8601 year with century as a decimal number
+        // "%g": the ISO 8601 year without century as a decimal number
+        // "%j": the day of the year as a decimal number
+        // "%U": the week number of the year (Sunday as the first day of the week)
+        // "%V": the week number of the year (Monday as the first day of the week)
+        // "%W": the week number of the year (Monday as the first day of the week)
+        // "%Z": the time zone name
     };
+
+    const modificate = (c: string, specifier: string): void => {
+        specifier.split("").forEach(s => handlers[c + s] = handlers["%" + s]);
+    };
+
+    // Modified Conversion Specifiers
+    modificate("%E", "cCxXyY");
+    modificate("%O", "deHImMSuUVwWy");
+
+    return handlers;
 };

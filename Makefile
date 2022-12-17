@@ -1,10 +1,11 @@
 #!/usr/bin/env bash -c make
 
+MINJSGZ=./dist/cdate.min.js.gz
 MINJS=./dist/cdate.min.js
 CJS=./dist/cdate.js
 WRAP=./browser/wrap.cjs
 
-all: $(CJS) $(MINJS)
+all: $(CJS) $(MINJSGZ)
 
 test: test-title mocha test-cjs test-minjs test-browser
 
@@ -24,12 +25,17 @@ test-minjs: ./build/test-minjs.js
 test-browser: ./build/test-browser.js
 	@echo '# open "browser/test.html"'
 
+$(MINJSGZ): $(MINJS)
+	gzip < $< > $@
+	ls -l $@
+
 $(MINJS): ./build/cdate.tmp.js
 	./node_modules/.bin/terser -c -m --ecma 6 -o $@ $<
 	ls -l $@
 
 $(CJS): ./index.js src/cdate.js
 	./node_modules/.bin/rollup -f cjs -p "@rollup/plugin-node-resolve" -o $@ $<
+	ls -l $@
 
 ./src/%.js: ./src/%.ts
 	./node_modules/.bin/tsc -p .
@@ -42,7 +48,6 @@ $(CJS): ./index.js src/cdate.js
 	grep -v END < $(WRAP) > $@
 	cat $< | perl -pe 's#^(const) ((cdate|strftime) =)#/* $$1 */ $$2#' >> $@
 	grep END < $(WRAP) >> $@
-	ls -l $@
 
 ./build/package.json: ./dist/package.json
 	mkdir -p ./build

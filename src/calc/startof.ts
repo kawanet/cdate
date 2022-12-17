@@ -1,6 +1,6 @@
 import type {cdate} from "../../index.js";
 import {add} from "./add.js";
-import {getUnitShort, Unit, unitMS} from "./unit.js";
+import {getShortUnit, Unit, unitMS} from "./unit.js";
 
 const enum d {
     SECOND = 1000,
@@ -31,7 +31,7 @@ const truncate = (dt: cdate.DateLike, unit: number): void => {
 };
 
 export const startOf = (dt: cdate.DateLike, unit: cdate.UnitForStart): void => {
-    const u = getUnitShort(unit);
+    const u = getShortUnit(unit);
     const msec = unitMS[u];
     if (msec) return truncate(dt, msec);
 
@@ -47,6 +47,7 @@ export const startOf = (dt: cdate.DateLike, unit: cdate.UnitForStart): void => {
             startOfDay(dt);
             return add(dt, -dt.getDay(), Unit.day);
 
+        case Unit.date:
         case Unit.day:
             return startOfDay(dt);
     }

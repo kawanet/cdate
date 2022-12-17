@@ -2,27 +2,30 @@
 
 import {strict as assert} from "assert";
 import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat.js";
 import moment from "moment";
 
 import {cdate} from "../index.js";
+
+dayjs.extend(advancedFormat);
 
 const TITLE = "210.format.ts";
 
 describe(TITLE, () => {
     it(`moment().format()`, () => {
-        runTests((dt, format) => moment(dt).format(format));
+        runTests((dt) => moment(dt));
     });
 
     it(`dayjs().format()`, () => {
-        runTests((dt, format) => dayjs(dt).format(format));
+        runTests((dt) => dayjs(dt));
     });
 
     it(`cdate().format()`, () => {
-        runTests((dt, format) => cdate(dt).format(format));
+        runTests((dt) => cdate(dt));
     });
 });
 
-function runTests(fn: (dt: Date, format: string) => string) {
+function runTests(fn: (dt: Date) => { format: (format: string) => string }) {
     const dt = new Date("2023-04-05 06:07:08.090");
 
     const tests = {
@@ -37,9 +40,10 @@ function runTests(fn: (dt: Date, format: string) => string) {
         MMM: "Apr",
         MMMM: "April",
         D: "5",
+        Do: "5th",
         DD: "05",
         d: "3",
-        // dd: "We",
+        dd: "We",
         ddd: "Wed",
         dddd: "Wednesday",
         H: "6",
@@ -56,6 +60,33 @@ function runTests(fn: (dt: Date, format: string) => string) {
     };
 
     Object.keys(tests).forEach((format: keyof typeof tests) => {
-        assert.equal(fn(dt, format), tests[format], format);
+        assert.equal(fn(dt).format(format), tests[format], format);
     });
+
+    // "X" and "x" tests have to run with UTC Date
+    {
+        const dt = new Date(Date.UTC(2023, 3, 5, 6, 7, 8, 90));
+        assert.equal(fn(dt).format("X"), "1680674828", "X");
+        assert.equal(fn(dt).format("x"), "1680674828090", "x");
+    }
+
+    {
+        const January = (date: number) => new Date(2023, 0, date, 0, 0, 0);
+
+        assert.equal(fn(January(1)).format("MMMM Do"), "January 1st");
+        assert.equal(fn(January(2)).format("MMMM Do"), "January 2nd");
+        assert.equal(fn(January(3)).format("MMMM Do"), "January 3rd");
+        assert.equal(fn(January(4)).format("MMMM Do"), "January 4th");
+        assert.equal(fn(January(10)).format("MMMM Do"), "January 10th");
+        assert.equal(fn(January(11)).format("MMMM Do"), "January 11th");
+        assert.equal(fn(January(12)).format("MMMM Do"), "January 12th");
+        assert.equal(fn(January(13)).format("MMMM Do"), "January 13th");
+        assert.equal(fn(January(20)).format("MMMM Do"), "January 20th");
+        assert.equal(fn(January(21)).format("MMMM Do"), "January 21st");
+        assert.equal(fn(January(22)).format("MMMM Do"), "January 22nd");
+        assert.equal(fn(January(23)).format("MMMM Do"), "January 23rd");
+        assert.equal(fn(January(24)).format("MMMM Do"), "January 24th");
+        assert.equal(fn(January(30)).format("MMMM Do"), "January 30th");
+        assert.equal(fn(January(31)).format("MMMM Do"), "January 31st");
+    }
 }

@@ -1,4 +1,4 @@
-*.cjs
+*.js.gz
 *.js.map
 *.swp
 *.tgz

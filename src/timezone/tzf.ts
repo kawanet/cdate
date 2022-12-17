@@ -6,14 +6,7 @@ const enum d {
     MINUTE15 = 15 * MINUTE,
 }
 
-type TZF = (ms: number) => number;
-
-const parseTZ = cached((tz: string): number => {
-    const matched = tz.match(/(?:^|GMT)?(?:([+-])([01]?\d):?(\d[05])|$)|UTC$/);
-    if (!matched) return;
-    const offset = ((+matched[2]) * 60 + (+matched[3])) | 0;
-    return (matched[1] === "-") ? -offset : offset;
-});
+export type TZF = (ms: number) => number;
 
 const shorten = (s: any) => String(s).toLowerCase().substr(0, 2);
 const weekdayMap = {su: 0, mo: 1, tu: 2, we: 3, th: 4, fr: 5, sa: 6};
@@ -34,16 +27,14 @@ const calcTimeZoneOffset = (dtf: Intl.DateTimeFormat, dt: Date) => {
     // difference of minutes:
     const minutes = dt.getUTCMinutes() - index.minute;
 
+    // difference of seconds:
+    const seconds = dt.getUTCSeconds() - index.second;
+
     // difference in minutes:
-    return -((day * 24 + hour) * 60 + minutes);
+    return -((day * 24 + hour) * 60 + minutes + (seconds / 60));
 };
 
 export const getTZF = cached<TZF>(tz => {
-    if (!/\//.test(tz)) {
-        const fixed = parseTZ(tz);
-        return _ => fixed;
-    }
-
     // cache latest results
     let cache: { [minute15: string]: number } = {};
     let count = 0;
@@ -67,7 +58,8 @@ export const getTZF = cached<TZF>(tz => {
 
         // DateTimeFormat is much slow
         if (!dtf) {
-            dtf = new Intl.DateTimeFormat("en-US", {timeZone: tz, hour12: false, weekday: "short", hour: "numeric", minute: "numeric"});
+            const numeric = "numeric";
+            dtf = new Intl.DateTimeFormat("en-US", {timeZone: tz, hour12: false, weekday: "short", hour: numeric, minute: numeric, second: numeric});
         }
         offset = calcTimeZoneOffset(dtf, dt);
 

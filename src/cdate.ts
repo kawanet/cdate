@@ -1,9 +1,7 @@
 import type {cdate as cdateNS} from "../index.js";
 import {formatPlugin} from "./format/texter.js";
 import {calcPlugin} from "./calc/calc.js";
-import {utcPlugin} from "./timezone/dateutc.js";
 import {tzPlugin} from "./timezone/timezone.js";
-import {localePlugin} from "./locale/locale.js";
 
 class CDateCore {
     /**
@@ -29,21 +27,14 @@ class CDateCore {
         if ("number" !== typeof t) {
             this.d = t;
         }
-        this.x = x || {};
+        this.x = x || Object.create({cdate: {}});
     }
 
     /**
-     * creates another CDate object
+     * cdate function factory
      */
-    cdate(dt?: number | string | Date) {
-        if (dt == null) {
-            dt = new Date(); // now
-        } else if ("string" === typeof dt) {
-            dt = new Date(dt); // parse ISO string
-        } else {
-            dt = new Date(+dt); // number or DateLike
-        }
-        return this.create(dt);
+    cdateFn(): cdateNS.cdate {
+        return cdateFn(this);
     }
 
     /**
@@ -70,21 +61,24 @@ class CDateCore {
     }
 
     /**
-     * returns a raw Date object
+     * returns a bare Date object
      */
     toDate(): Date {
         return new Date(+this);
     }
 
     /**
-     * returns a JSON string
+     * returns a JSON representation of Date
      */
     toJSON(): string {
         return this.toDate().toJSON();
     }
 
-    plugin<T, X>(fn: cdateNS.cPlugin<T, X>) {
-        const CDateClass = this.constructor as cdateNS.cClass<{}, X>;
+    /**
+     * returns an instance including the plugin
+     */
+    plugin<T, X>(fn: cdateNS.Plugin<T, X>) {
+        const CDateClass = this.constructor as cdateNS.Class<{}, X>;
         const CDateX = fn(CDateClass) || CDateClass;
         return new CDateX(this.t, this.x as X);
     }
@@ -93,7 +87,7 @@ class CDateCore {
      * creates another CDate object with the DateLike given
      */
     create(dt: number | cdateNS.DateLike) {
-        return new (this.constructor as cdateNS.cClass)(dt, this.x);
+        return new (this.constructor as cdateNS.Class)(dt, this.x);
     }
 
     /**
@@ -107,11 +101,33 @@ class CDateCore {
     }
 }
 
-const root = new CDateCore(0, {})
+const cdateFn = (base: CDateCore): cdateNS.cdate => {
+    return (dt) => {
+        if (dt == null) {
+            dt = new Date(); // now
+        } else if ("string" === typeof dt) {
+            // YYYY-MM-DD as is
+            // YYYY-MM for YYYY-MM-01
+            // YYYY for YYYY-01-01
+            const m = dt.match(/^(\d{4})(?:([-/])(0[1-9]|1[0-2])(?:\2(0[1-9]|12[0-9]|3[01]))?)?$/);
+            if (m) {
+                const year = +m[1];
+                const month = +m[3] || 1;
+                const date = +m[4] || 1;
+                dt = new Date(year, (month - 1), date);
+                if (year < 100) dt.setFullYear(year);
+            } else {
+                dt = new Date(dt); // parse ISO string natively
+            }
+        } else {
+            dt = new Date(+dt); // number or DateLike
+        }
+        return base.create(dt);
+    }
+};
+
+export const cdate: cdateNS.cdate = new CDateCore(0, null)
     .plugin(formatPlugin)
     .plugin(calcPlugin)
-    .plugin(localePlugin)
-    .plugin(utcPlugin)
-    .plugin(tzPlugin);
-
-export const cdate: cdateNS.cdate = (dt) => root.cdate(dt) as unknown as cdateNS.CDate;
+    .plugin(tzPlugin)
+    .cdateFn();
