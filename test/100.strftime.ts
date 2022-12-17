@@ -57,48 +57,37 @@ function runTests(strftime: strftime) {
         })
     };
 
-    /**
-     * %a     The abbreviated weekday name according to the current locale. (en-only)
-     */
+    // "%a": the locale's abbreviated weekday name
     testIt("%a", dt, d.DAY, [
         "Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue"
     ]);
 
-    /**
-     * %A     The full weekday name according to the current locale. (en-only)
-     */
+    // "%A": the locale's full weekday name
     testIt("%A", dt, d.DAY, [
         "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Monday", "Tuesday"
     ]);
 
+    // "%w": the weekday (Sunday as the first day of the week) as a decimal number
     testIt("%w", dt, d.DAY, [
         "3", "4", "5", "6", "0", "1", "2"
     ]);
 
-    /**
-     * %b     The abbreviated month name according to the current locale. (en-only)
-     */
+    // "%b": the locale's abbreviated month name
     testIt("%b", dt, 31 * d.DAY, [
         "Apr", "May", "Jun", "Jul", "Aug", "Sep",
         "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"
     ]);
 
-    /**
-     * %B     The full month name according to the current locale. (en-only)
-     */
+    // "%B": the locale's full month name
     testIt("%B", dt, 31 * d.DAY, [
         "April", "May", "June", "July", "August", "September",
         "October", "November", "December", "January", "February", "March"
     ]);
 
-    /**
-     * %C     The century number (year/100) as a 2-digit integer. (SU)
-     */
+    // "%C": the century as a decimal number
     testIt("%C", dt, -10 * 365 * d.DAY, ["20", "20", "20", "19", "19"]);
 
-    /**
-     * %d     The day of the month as a decimal number (range 01 to 31).
-     */
+    // "%d": the day of the month as a decimal number
     testIt("%d", dt, d.DAY, [
         "05", "06", "07", "08", "09", "10",
         "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
@@ -110,6 +99,7 @@ function runTests(strftime: strftime) {
         "5", "4", "3", "2", "1", "31",
     ]);
 
+    // "%e": the day of month as a decimal number
     testIt("%e", dt, d.DAY, [
         " 5", " 6", " 7", " 8", " 9", "10",
         "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
@@ -117,9 +107,7 @@ function runTests(strftime: strftime) {
         " 1", " 2", " 3", " 4",
     ]);
 
-    /**
-     * %H     The hour as a decimal number using a 24-hour clock (range 00 to 23).
-     */
+    // "%H": the hour (24-hour clock) as a decimal number
     testIt("%H", dt, d.HOUR, [
         "06", "07", "08", "09", "10", "11", "12",
         "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23",
@@ -130,9 +118,7 @@ function runTests(strftime: strftime) {
         "6", "5", "4", "3", "2", "1", "0",
     ]);
 
-    /**
-     * %I     The hour as a decimal number using a 12-hour clock (range 01 to 12).
-     */
+    // "%I": the hour (12-hour clock) as a decimal number
     testIt("%I", dt, d.HOUR, [
         "06", "07", "08", "09", "10", "11", "12",
         "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12",
@@ -143,21 +129,21 @@ function runTests(strftime: strftime) {
         "6", "5", "4", "3", "2", "1", "12",
     ]);
 
+    // "%k": the hour (24-hour clock) as a decimal number
     testIt("%k", dt, d.HOUR, [
         " 6", " 7", " 8", " 9", "10", "11", "12",
         "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23",
         " 0", " 1", " 2", " 3", " 4", " 5",
     ]);
 
+    // "%l": the hour (12-hour clock) as a decimal number
     testIt("%l", dt, d.HOUR, [
         " 6", " 7", " 8", " 9", "10", "11", "12",
         " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9", "10", "11", "12",
         " 1", " 2", " 3", " 4", " 5",
     ]);
 
-    /**
-     * %L - Millisecond of the second (000..999)
-     */
+    // "%L": the millisecond as a decimal number
     testIt("%L", dt, 182, [
         "090", "272", "454", "636", "818", "000"
     ]);
@@ -166,9 +152,7 @@ function runTests(strftime: strftime) {
         "090", "060", "030", "000", "970", "940"
     ]);
 
-    /**
-     * %m     The month as a decimal number (range 01 to 12).
-     */
+    // "%m": the month as a decimal number
     testIt("%m", dt, 31 * d.DAY, [
         "04", "05", "06", "07", "08", "09",
         "10", "11", "12", "01", "02", "03",
@@ -178,9 +162,7 @@ function runTests(strftime: strftime) {
         "4", "3", "2", "1", "12"
     ]);
 
-    /**
-     * %M     The minute as a decimal number (range 00 to 59).
-     */
+    // "%M": the minute as a decimal number
     testIt("%M", dt, 19 * d.MINUTE, [
         "07", "26", "45", "04"
     ]);
@@ -189,9 +171,7 @@ function runTests(strftime: strftime) {
         "7", "6", "5", "4", "3", "2", "1", "0", "59"
     ]);
 
-    /**
-     * %p     Either "AM" or "PM"
-     */
+    // "%p": the locale's equivalent of either `AM` or `PM`
     testIt("%p", dt, d.HOUR, [
         "AM", "AM", "AM", "AM", "AM", "AM",
         "PM", "PM", "PM", "PM", "PM", "PM",
@@ -199,9 +179,7 @@ function runTests(strftime: strftime) {
         "AM", "AM", "AM", "AM", "AM", "AM",
     ]);
 
-    /**
-     * %S     The second as a decimal number (range 00 to 60)
-     */
+    // "%S": the second as a decimal number
     testIt("%S", dt, 13 * d.SECOND, [
         "08", "21", "34", "47", "00"
     ]);
@@ -210,10 +188,7 @@ function runTests(strftime: strftime) {
         "8", "7", "6", "5", "4", "3", "2", "1", "0", "59"
     ]);
 
-    /**
-     * %U     The week number [NOT IMPLEMENTED]
-     * %y     The year as a decimal number without a century (range 00 to 99).
-     */
+    // "%y": the year without century as a decimal number
     testIt("%y", dt, 365 * d.DAY, [
         "23", "24", "25", "26", "27"
     ]);
@@ -222,9 +197,7 @@ function runTests(strftime: strftime) {
         "23", "22", "21", "20", "19"
     ]);
 
-    /**
-     * %Y     The year as a decimal number including the century.
-     */
+    // "%Y": the year with century as a decimal number
     testIt("%Y", dt, 365 * d.DAY, [
         "2023", "2024", "2025", "2026", "2027"
     ]);
@@ -237,10 +210,19 @@ function runTests(strftime: strftime) {
      * Formats
      */
     it("Formats", () => {
+        // "%D": the date in the format `%m/%d/%y`
         testOne(`%D`, dt, `04/05/23`);
+
+        // "%F": the date in the format `%Y-%m-%d`
         testOne(`%F`, dt, `2023-04-05`);
+
+        // "%R": the time in the format `%H:%M`
         testOne(`%R`, dt, `06:07`);
+
+        // "%T": the time in the format `%H:%M:%S`
         testOne(`%T`, dt, `06:07:08`);
+
+        // "%v": the date in the format `%e-%b-%Y`
         testOne(`%v`, dt, ` 5-Apr-2023`);
     });
 
@@ -248,13 +230,13 @@ function runTests(strftime: strftime) {
      * Literals
      */
     it("Literals", () => {
-        // %%     A literal '%' character.
+        // "%%": a literal `%` character
         testOne(`"%%"`, dt, `"%"`);
 
-        // %n     A newline character. (SU
+        // "%n": a newline character
         testOne(`"%n"`, dt, `"\n"`);
 
-        // %t     A tab character. (SU)
+        // "%t": a tab character
         testOne(`"%t"`, dt, `"\t"`);
 
         // unsupported literals
