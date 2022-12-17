@@ -55,7 +55,7 @@ export const strftimeHandlers = (): cdate.Handlers => {
      * %c %r %x and %X are defined at locale files
      */
 
-    return {
+    const handlers: cdate.Handlers = {
         // "%c": the locale's appropriate date and time representation
         "%c": "%a %b %e %T %Y",
 
@@ -154,4 +154,14 @@ export const strftimeHandlers = (): cdate.Handlers => {
         // "%W": the week number of the year (Monday as the first day of the week)
         // "%Z": the time zone name
     };
+
+    const modificate = (c: string, specifier: string): void => {
+        specifier.split("").forEach(s => handlers[c + s] = handlers["%" + s]);
+    };
+
+    // Modified Conversion Specifiers
+    modificate("%E", "cCxXyY");
+    modificate("%O", "deHImMSuUVwWy");
+
+    return handlers;
 };
