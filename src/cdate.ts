@@ -109,7 +109,7 @@ const cdateFn = (base: CDateCore): cdateNS.cdate => {
             // YYYY-MM-DD as is
             // YYYY-MM for YYYY-MM-01
             // YYYY for YYYY-01-01
-            const m = dt.match(/^(\d{4})(?:([-/])(0[1-9]|1[0-2])(?:\2(0[1-9]|12[0-9]|3[01]))?)?$/);
+            const m = dt.match(/^(\d{4})(?:([-/])(\d{2})(?:\2(\d{2}))?)?$/);
             if (m) {
                 const year = +m[1];
                 const month = +m[3] || 1;
