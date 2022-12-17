@@ -27,7 +27,7 @@ class CDateCore {
         if ("number" !== typeof t) {
             this.d = t;
         }
-        this.x = x || {};
+        this.x = x || Object.create({cdate: {}});
     }
 
     /**
@@ -114,7 +114,7 @@ const cdateFn = (base: CDateCore): cdateNS.cdate => {
     }
 };
 
-export const cdate: cdateNS.cdate = new CDateCore(0, {})
+export const cdate: cdateNS.cdate = new CDateCore(0, null)
     .plugin(formatPlugin)
     .plugin(calcPlugin)
     .plugin(tzPlugin)
