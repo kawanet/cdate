@@ -24,26 +24,26 @@ export const strftimeHandlers = (): cdate.Handlers => {
         return prefix + (("00000" + year).substr(-6));
     };
 
+    const getFullYear = getUnit[Unit.year];
+    const getMonth = getUnit[Unit.month];
+    const getDate = getUnit[Unit.date];
     const getDay = getUnit[Unit.day];
+    const getHours = getUnit[Unit.hour];
+    const getMinutes = getUnit[Unit.minute];
+    const getSeconds = getUnit[Unit.second];
+    const getMilliseconds = getUnit[Unit.millisecond];
+    const getTime = getUnit[Unit.time];
+    const getTimezoneOffset = getUnit[Unit.timeZoneOffset];
 
-    const C: ToNumber = dt => Math.floor(Y(dt) / 100);
-    const d = getUnit[Unit.date];
-    const H = getUnit[Unit.hour];
-    const I: ToNumber = dt => (((H(dt) + 11) % 12) + 1);
-    const L = getUnit[Unit.millisecond];
-    const m: ToNumber = dt => (_m(dt) + 1);
-    const _m = getUnit[Unit.month];
-    const M = getUnit[Unit.minute];
-    const S = getUnit[Unit.second];
-    const s = getUnit[Unit.time];
-    const y: ToNumber = dt => (Y(dt) % 100);
-    const Y = getUnit[Unit.year];
-    const tzo = getUnit[Unit.timeZoneOffset];
+    const C: ToNumber = dt => Math.floor(getFullYear(dt) / 100);
+    const I: ToNumber = dt => (((getHours(dt) + 11) % 12) + 1);
+    const m: ToNumber = dt => (getMonth(dt) + 1);
+    const y: ToNumber = dt => (getFullYear(dt) % 100);
     const pad0 = (num: number) => (num < 10 ? "0" + num : num);
 
     const makeZ = (delim: string, hasSecond?: boolean): ToString => {
         return dt => {
-            let offset = -tzo(dt);
+            let offset = -getTimezoneOffset(dt);
             const isMinus = (offset < 0);
             if (isMinus) offset = -offset;
             const hour = Math.floor(offset / 60);
@@ -66,54 +66,54 @@ export const strftimeHandlers = (): cdate.Handlers => {
         "%C": pad2(C),
 
         // "%d": the day of the month as a decimal number
-        "%-d": d,
-        "%d": pad2(d),
+        "%-d": getDate,
+        "%d": pad2(getDate),
 
         // "%D": the date in the format `%m/%d/%y`
         "%D": "%m/%d/%y",
 
         // "%e": the day of month as a decimal number
-        "%e": pad2S(d),
+        "%e": pad2S(getDate),
 
         // "%F": the date in the format `%Y-%m-%d`
         "%F": "%Y-%m-%d", // ISO
 
         // "%H": the hour (24-hour clock) as a decimal number
-        "%-H": H,
-        "%H": pad2(H),
+        "%-H": getHours,
+        "%H": pad2(getHours),
 
         // "%I": the hour (12-hour clock) as a decimal number
         "%-I": I,
         "%I": pad2(I),
 
         // "%k": the hour (24-hour clock) as a decimal number
-        "%k": pad2S(H),
+        "%k": pad2S(getHours),
 
         // "%l": the hour (12-hour clock) as a decimal number
         "%l": pad2S(I),
 
         // "%L": the millisecond as a decimal number
-        "%-L": pad3(L),
-        "%L": pad3(L),
+        "%-L": pad3(getMilliseconds),
+        "%L": pad3(getMilliseconds),
 
         // "%m": the month as a decimal number
         "%-m": m,
         "%m": pad2(m),
 
         // "%M": the minute as a decimal number
-        "%-M": M,
-        "%M": pad2(M),
-        "%P": dt => (H(dt) < 12 ? "am" : "pm"),
+        "%-M": getMinutes,
+        "%M": pad2(getMinutes),
+        "%P": dt => (getHours(dt) < 12 ? "am" : "pm"),
 
         // "%R": the time in the format `%H:%M`
         "%R": "%H:%M",
 
         // "%s": the number of seconds since the Epoch, UTC
-        "%s": dt => Math.floor(s(dt) / 1000),
+        "%s": dt => Math.floor(getTime(dt) / 1000),
 
         // "%S": the second as a decimal number
-        "%-S": S,
-        "%S": pad2(S),
+        "%-S": getSeconds,
+        "%S": pad2(getSeconds),
 
         // "%T": the time in the format `%H:%M:%S`
         "%T": "%H:%M:%S",
@@ -123,8 +123,8 @@ export const strftimeHandlers = (): cdate.Handlers => {
         "%y": pad2(y),
 
         // "%Y": the year with century as a decimal number
-        "%-Y": Y,
-        "%Y": padY(Y),
+        "%-Y": getFullYear,
+        "%Y": padY(getFullYear),
 
         // "%u": the weekday (Monday as the first day of the week) as a decimal number
         "%u": dt => ((getDay(dt) + 6) % 7 + 1),
