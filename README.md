@@ -4,16 +4,20 @@
 [![npm version](https://img.shields.io/npm/v/cdate)](https://www.npmjs.com/package/cdate)
 [![gzip size](https://img.badgesize.io/https://unpkg.com/cdate/dist/cdate.min.js?compression=gzip)](https://unpkg.com/cdate/dist/cdate.min.js)
 
-- Fast: the benchmark results shows that [cdate](https://github.com/kawanet/cdate) is faster
-  than [Moment.js](https://www.npmjs.com/package/moment), [Day.js](https://www.npmjs.com/package/dayjs)
-  and [Luxon](https://www.npmjs.com/package/luxon)
-- Display: `moment`-style `.format("YYYY-MM-DD HH:mm:ss")`
-- Developer friendly display: `strftime`-style `.text("%Y-%m-%d %H:%M:%S")`
-- Manipulation: `.add(1, "month").startOf("week").endOf("day")` like `moment` does but immutable
-- Timezone: names like `America/New_York` supported by `Intl.DateTimeFormat` as well as UTC offset like `GMT-05:00`
-- I18N: `.locale("fr").text("%c")` results `dim. 2 janv. 2022, 03:04:05` managed by `Intl.DateTimeFormat`
-- Small: [8KB minified](https://cdn.jsdelivr.net/npm/cdate/dist/cdate.min.js) and 3KB gzip including time zone supports
-- Fully immutable: no need to take care for the *"dual package hazard"* even for the plugins
+- Fast: the benchmark result shows that [cdate](https://github.com/kawanet/cdate) is 37% faster than 
+  [Moment.js](https://www.npmjs.com/package/moment), 
+  [Day.js](https://www.npmjs.com/package/dayjs) and
+  [Luxon](https://www.npmjs.com/package/luxon)
+- Display: Moment.js-style `.format("YYYY-MM-DD HH:mm:ss")`
+- Developer friendly display: [strftime](https://man.openbsd.org/strftime.3)-style `.text("%Y-%m-%d %H:%M:%S")`
+- Manipulation: `.add(1, "month").startOf("week").endOf("day")` like Moment.js does but immutable
+- Time zones: names like `America/New_York` supported by
+  [Intl.DateTimeFormat](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat)
+  as well as UTC offset like `GMT-05:00`
+- I18N: `.locale("fr").text("%c")` results `dim. 2 janv. 2022, 03:04:05` also managed by Intl.DateTimeFormat
+- Small: [9KB minified](https://cdn.jsdelivr.net/npm/cdate/dist/cdate.min.js) and less than 4KB gzip including time zones supported per default
+- Fully immutable: even plugins never effect cdate's core.
+  None of ["dual package hazard"](https://nodejs.org/api/packages.html#dual-package-hazard)
 - Pure ESM, CommonJS - Node.js, Browsers, TypeScript
 
 ## SYNOPSIS
@@ -69,7 +73,7 @@ for (let day = start; +day < +end;) {
 }
 ```
 
-Results:
+Result:
 
 ```txt
    January 2023
@@ -96,6 +100,35 @@ console.log(tokyo.locale("ja").text("%c"));
 
 See TypeScript declaration [index.d.ts](https://github.com/kawanet/cdate/blob/main/index.d.ts) for detail. API may
 change.
+
+## BENCHMARK
+
+The result shows cdate is 37% faster than moment!
+
+| Library | Version | Minified Size | Local Time Bench | Time Zone Bench | Note             | 
+|---------|---------|--------------:|-----------------:|----------------:|------------------|
+| cdate   | 0.0.3   |          9 KB |    7,907 ops/sec |   5,494 ops/sec | fastest! 🍺      |
+| moment  | 2.29.4  |       100 KB+ |    6,098 ops/sec |   3,660 ops/sec | big tz database  |
+| dayjs   | 1.11.7  |         11 KB |    3,823 ops/sec |      90 ops/sec | DST related bugs |
+| luxon   | 3.1.1   |         74 KB |      955 ops/sec |     158 ops/sec | different API    |
+
+Tested on node v18.12.1, Apple Silicon M1, MacBook Pro.
+"Minified Size" above includes the time zone plugin.
+Each `1 op` above includes:
+
+- 192 ops of `.add()` manipulations
+- 60 ops of `.startOf()` and `.endOf()`
+- 30 ops of `.format()` displaying
+
+Try the benchmark on your environment:
+
+```sh
+git clone --depth=1 https://github.com/kawanet/cdate.git
+cd cdate
+npm install
+npm run build 
+node cli/benchmark.js
+```
 
 ## LINKS
 
