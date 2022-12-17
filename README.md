@@ -16,7 +16,7 @@
   as well as UTC offset like `GMT-05:00`
 - I18N: `.locale("fr").text("%c")` results `dim. 2 janv. 2022, 03:04:05` also managed by Intl.DateTimeFormat
 - Small: [9KB minified](https://cdn.jsdelivr.net/npm/cdate/dist/cdate.min.js) and less than 4KB gzip including time zones supported per default
-- Fully immutable: even plugins never effect cdate's core.
+- Fully immutable: even plugins never effect the cdate's core.
   None of ["dual package hazard"](https://nodejs.org/api/packages.html#dual-package-hazard)
 - Pure ESM, CommonJS - Node.js, Browsers, TypeScript
 
@@ -103,7 +103,7 @@ change.
 
 ## BENCHMARK
 
-The result shows cdate is 37% faster than moment!
+The result shows that cdate is 37% faster than moment!
 
 | Library | Version | Minified Size | Local Time Bench | Time Zone Bench | Note             | 
 |---------|---------|--------------:|-----------------:|----------------:|------------------|
@@ -130,8 +130,35 @@ npm run build
 node cli/benchmark.js
 ```
 
+## PLUGIN SYSTEM
+
+To be minimal, the cdate itself has many missing features compared to Moment.js's gorgeous APIs.
+If you need `subtract()` method, for example, you can add it with your own plugin:
+
+```js
+const cdateS = cdate().plugin(P => class extends P {
+    subtract(diff, unit) {
+        return this.add(-diff, unit);
+    }
+}).cdateFn();
+
+cdateS("2023-01-01").subtract(1, "day").format("YYYY-MM-DD");
+// => '2022-12-31'
+```
+
+Or just call `add()` method simply with a negative value:
+
+```js
+cdate("2023-01-01").add(-1, "day").format("YYYY-MM-DD");
+// => '2022-12-31'
+```
+
+Note that the `subtract()` method implemented above is available only for instances created by `cdateS()` function,
+as the cdate's plugin system is immutable as well.
+
 ## LINKS
 
 - https://github.com/kawanet/cdate
 - https://github.com/kawanet/cdate-locale
+- https://github.com/kawanet/cdate-moment
 - https://www.npmjs.com/package/cdate
