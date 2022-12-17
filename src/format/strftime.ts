@@ -24,6 +24,8 @@ export const strftimeHandlers = (): cdate.Handlers => {
         return prefix + (("00000" + year).substr(-6));
     };
 
+    const getDay = getUnit[Unit.day];
+
     const C: ToNumber = dt => Math.floor(Y(dt) / 100);
     const d = getUnit[Unit.date];
     const H = getUnit[Unit.hour];
@@ -124,11 +126,14 @@ export const strftimeHandlers = (): cdate.Handlers => {
         "%-Y": Y,
         "%Y": padY(Y),
 
+        // "%u": the weekday (Monday as the first day of the week) as a decimal number
+        "%u": dt => ((getDay(dt) + 6) % 7 + 1),
+
         // "%v": the date in the format `%e-%b-%Y`
         "%v": "%e-%b-%Y", // VMS
 
         // "%w": the weekday (Sunday as the first day of the week) as a decimal number
-        "%w": getUnit[Unit.day],
+        "%w": getDay,
 
         // "%z": the offset from UTC in the format `+HHMM` or `-HHMM`
         "%::z": makeZ(":", true),
@@ -144,12 +149,11 @@ export const strftimeHandlers = (): cdate.Handlers => {
         // "%t": a tab character
         "%t": () => "\t",
 
-        // ==== NOT IMPLEMENTED BELOW ====
+        // ==== NOT IMPLEMENTED HANDLERS BELOW ====
         // "%G": the ISO 8601 year with century as a decimal number
         // "%g": the ISO 8601 year without century as a decimal number
         // "%j": the day of the year as a decimal number
         // "%U": the week number of the year (Sunday as the first day of the week)
-        // "%u": the weekday (Monday as the first day of the week) as a decimal number
         // "%V": the week number of the year (Monday as the first day of the week)
         // "%W": the week number of the year (Monday as the first day of the week)
         // "%Z": the time zone name

@@ -72,6 +72,11 @@ function runTests(strftime: strftime) {
         "3", "4", "5", "6", "0", "1", "2"
     ]);
 
+    // "%u": the weekday (Monday as the first day of the week) as a decimal number
+    testIt("%u", dt, d.DAY, [
+        "3", "4", "5", "6", "7", "1", "2"
+    ]);
+
     // "%b": the locale's abbreviated month name
     testIt("%b", dt, 31 * d.DAY, [
         "Apr", "May", "Jun", "Jul", "Aug", "Sep",
