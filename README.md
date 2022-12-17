@@ -4,16 +4,20 @@
 [![npm version](https://img.shields.io/npm/v/cdate)](https://www.npmjs.com/package/cdate)
 [![gzip size](https://img.badgesize.io/https://unpkg.com/cdate/dist/cdate.min.js?compression=gzip)](https://unpkg.com/cdate/dist/cdate.min.js)
 
-- Fast: the benchmark results shows that [cdate](https://github.com/kawanet/cdate) is faster
-  than [Moment.js](https://www.npmjs.com/package/moment), [Day.js](https://www.npmjs.com/package/dayjs)
-  and [Luxon](https://www.npmjs.com/package/luxon)
-- Display: `moment`-style `.format("YYYY-MM-DD HH:mm:ss")`
-- Developer friendly display: `strftime`-style `.text("%Y-%m-%d %H:%M:%S")`
-- Manipulation: `.add(1, "month").startOf("week").endOf("day")` like `moment` does but immutable
-- Timezone: names like `America/New_York` supported by `Intl.DateTimeFormat` as well as UTC offset like `GMT-05:00`
-- I18N: `.locale("fr").text("%c")` results `dim. 2 janv. 2022, 03:04:05` managed by `Intl.DateTimeFormat`
-- Small: [8KB minified](https://cdn.jsdelivr.net/npm/cdate/dist/cdate.min.js) and 3KB gzip including time zone supports
-- Fully immutable: no need to take care for the *"dual package hazard"* even for the plugins
+- Fast: the benchmark result shows that [cdate](https://github.com/kawanet/cdate) is 37% faster than 
+  [Moment.js](https://www.npmjs.com/package/moment), 
+  [Day.js](https://www.npmjs.com/package/dayjs) and
+  [Luxon](https://www.npmjs.com/package/luxon)
+- Display: Moment.js-style `.format("YYYY-MM-DD HH:mm:ss")`
+- Developer friendly display: [strftime](https://man.openbsd.org/strftime.3)-style `.text("%Y-%m-%d %H:%M:%S")`
+- Manipulation: `.add(1, "month").startOf("week").endOf("day")` like Moment.js does but immutable
+- Time zones: names like `America/New_York` supported by
+  [Intl.DateTimeFormat](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat)
+  API as well as UTC offset like `GMT-05:00`
+- I18N: `.locale("fr").text("%c")` results `dim. 2 janv. 2022, 03:04:05` also managed by Intl API
+- Small: [9KB minified](https://cdn.jsdelivr.net/npm/cdate/dist/cdate.min.js) and less than 4KB gzip including time zones supported per default
+- Fully immutable: even plugins never effect the cdate's core.
+  None of ["dual package hazard"](https://nodejs.org/api/packages.html#dual-package-hazard)
 - Pure ESM, CommonJS - Node.js, Browsers, TypeScript
 
 ## SYNOPSIS
@@ -69,7 +73,7 @@ for (let day = start; +day < +end;) {
 }
 ```
 
-Results:
+Result:
 
 ```txt
    January 2023
@@ -80,25 +84,144 @@ Results:
 29 30 31 01 02 03 04
 ```
 
-Locale and time zone:
-
-```js
-const tokyo = cdate("2023-01-01T00:00:00Z").tz("Asia/Tokyo");
-
-console.log(tokyo.text());
-// => 2023-01-01T09:00:00.000+09:00
-
-console.log(tokyo.locale("ja").text("%c"));
-// => 2023年1月1日(日) 09:00:00
-```
-
 ## TYPESCRIPT
 
 See TypeScript declaration [index.d.ts](https://github.com/kawanet/cdate/blob/main/index.d.ts) for detail. API may
 change.
 
+## BENCHMARK
+
+The result shows that cdate is 37% faster than moment!
+
+| Library | Version | Minified Size | Local Time Bench | Time Zone Bench | Note             | 
+|---------|---------|--------------:|-----------------:|----------------:|------------------|
+| cdate   | 0.0.3   |          9 KB |    7,907 ops/sec |   5,494 ops/sec | fastest! 🍺      |
+| moment  | 2.29.4  |       100 KB+ |    6,098 ops/sec |   3,660 ops/sec | big tz database  |
+| dayjs   | 1.11.7  |         11 KB |    3,823 ops/sec |      90 ops/sec | DST related bugs |
+| luxon   | 3.1.1   |         74 KB |      955 ops/sec |     158 ops/sec | different API    |
+
+Tested on node v18.12.1, Apple Silicon M1, MacBook Pro.
+"Minified Size" above includes the time zone plugin.
+Each `1 op` above includes:
+
+- 192 ops of `.add()` manipulations
+- 60 ops of `.startOf()` and `.endOf()`
+- 30 ops of `.format()` displaying
+
+Try the benchmark on your environment:
+
+```sh
+git clone --depth=1 https://github.com/kawanet/cdate.git
+cd cdate
+npm install
+npm run build 
+node cli/benchmark.js
+```
+
+## PLUGIN SYSTEM
+
+To be minimal, the cdate itself has many missing features compared to Moment.js's gorgeous APIs.
+If you need `subtract()` method, for example, you can add it with your own plugin:
+
+```js
+const cdateS = cdate().plugin(P => class extends P {
+    subtract(diff, unit) {
+        return this.add(-diff, unit);
+    }
+}).cdateFn();
+
+cdateS("2023-01-01").subtract(1, "day").format("YYYY-MM-DD");
+// => '2022-12-31'
+```
+
+Or just call `add()` method simply with a negative value:
+
+```js
+cdate("2023-01-01").add(-1, "day").format("YYYY-MM-DD");
+// => '2022-12-31'
+```
+
+Note that the `subtract()` method implemented above is available only for instances created by `cdateS()` function,
+as the cdate's plugin system is immutable as well.
+
+## LOCALES
+
+It supports English names: December, Sunday, etc., per default.
+There are ways to change it.
+The most simple way is to call `.locale()` method which enables I18N via
+[Intl](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat)
+API on demand:
+
+```js
+// English per default
+cdate().format("ddd D MMM");
+// => 'Sun 18 Dec'
+
+cdate().locale("de").format("ddd D MMM");
+// => 'So 18 Dez'
+```
+
+If you still need to support old environments which does not have Intl API, try
+[cdate-locale](https://www.npmjs.com/package/cdate-locale)
+which has a series of locale settings prebuilt via Intl API.
+
+```js
+const {locale_de} = require("cdate-locale/locale/de.js");
+cdate().handler(locale_de).format("ddd D MMM");
+// => 'So 18 Dez'
+```
+
+The last way is for you to code it.
+Call `.handler()` method to customize handlers for `.format()` specifiers:
+
+```js
+const weekday = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+const month = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+const cdateDE = cdate().handler({
+    ddd: (dt) => weekday[dt.getDay()],
+    MMM: (dt) => month[dt.getMonth()],
+}).cdateFn();
+
+cdateDE().format("ddd D MMM");
+// => 'So 18 Dez'
+```
+
+If you prefer `strftime`-style, the same `.handler()` method also works for `.text()` specifiers:
+
+```js
+const cdateDE = cdate().handler({
+    "%a": (dt) => weekday[dt.getDay()],
+    "%b": (dt) => month[dt.getMonth()],
+}).cdateFn();
+
+cdateDE().text("%a %-d %b");
+// => 'So 18 Dez'
+```
+
+## TIMEZONES
+
+It supports both UTC offset and timezone names
+without any external modules and plugins.
+Japan Standard Time (JST) is `GMT+09:00` for instance:
+
+```js
+const dt = new Date("2023-01-01T00:00:00+09:00");
+
+cdate(dt).utcOffset(+9).text(); // hours
+
+cdate(dt).utcOffset(+540).text(); // minutes
+
+cdate(dt).utcOffset("+09:00").text();
+
+cdate(dt).utcOffset("GMT+09:00").text();
+
+cdate(dt).tz("Asia/Tokyo").text();
+// => '2023-01-01T00:00:00.000+09:00'
+```
+
 ## LINKS
 
 - https://github.com/kawanet/cdate
 - https://github.com/kawanet/cdate-locale
+- https://github.com/kawanet/cdate-moment
 - https://www.npmjs.com/package/cdate

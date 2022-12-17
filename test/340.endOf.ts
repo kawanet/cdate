@@ -82,4 +82,20 @@ function runTests(fn: (dt: Date, unit: cdate.UnitForStart) => string) {
             assert.equal(fn(dt3, unit), "2023/12/31 23:59:59.999");
         });
     });
+
+    it(`endOf("millisecond")`, () => {
+        (["millisecond", "milliseconds", "ms"] as unknown as cdate.UnitForStart[]).forEach((unit) => {
+            assert.equal(fn(dt1, unit), "2023/01/01 00:00:00.000");
+            assert.equal(fn(dt2, unit), "2023/04/05 06:07:08.090");
+            assert.equal(fn(dt3, unit), "2023/12/31 23:59:59.999");
+        });
+    });
+
+    it(`endOf("INVALID")`, () => {
+        (["INVALID"] as unknown as cdate.UnitForStart[]).forEach((unit) => {
+            assert.equal(fn(dt1, unit), "2023/01/01 00:00:00.000");
+            assert.equal(fn(dt2, unit), "2023/04/05 06:07:08.090");
+            assert.equal(fn(dt3, unit), "2023/12/31 23:59:59.999");
+        });
+    });
 }

@@ -17,8 +17,8 @@ export const calcPlugin: cdate.Plugin<cdate.CDateCalc> = (Parent) => {
          * setter
          */
         set(unit: cdate.UnitForGet, value: number) {
-            const u = getShortUnit(unit);
-            const fn = getUnit[u];
+            unit = getShortUnit(unit) as cdate.UnitShort;
+            const fn = getUnit[unit];
             if (!fn) return this;
 
             const dt = this.rw();
@@ -30,6 +30,9 @@ export const calcPlugin: cdate.Plugin<cdate.CDateCalc> = (Parent) => {
          * returns a new CDate object manipulated
          */
         startOf(unit: cdate.UnitForStart) {
+            unit = getShortUnit(unit) as cdate.UnitShort;
+            if (!unit) return this;
+
             const dt = this.rw();
             startOf(dt, unit);
             return this.create(dt);
@@ -39,6 +42,9 @@ export const calcPlugin: cdate.Plugin<cdate.CDateCalc> = (Parent) => {
          * returns a new CDate object manipulated
          */
         endOf(unit: cdate.UnitForStart) {
+            unit = getShortUnit(unit) as cdate.UnitShort;
+            if (!unit) return this;
+
             const dt = this.rw();
             startOf(dt, unit);
             add(dt, 1, unit);
@@ -50,6 +56,9 @@ export const calcPlugin: cdate.Plugin<cdate.CDateCalc> = (Parent) => {
          * returns a new CDate object manipulated
          */
         add(diff: number, unit: cdate.UnitForAdd) {
+            unit = getShortUnit(unit) as cdate.UnitShort;
+            if (!unit) return this;
+
             const dt = this.rw();
             add(dt, diff, unit);
             return this.create(dt);

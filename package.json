@@ -1,7 +1,7 @@
 {
   "name": "cdate",
   "description": "a compact calendar date",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "@kawanet",
   "browser": "./dist/cdate.min.js",
   "bugs": {
@@ -11,21 +11,21 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@types/benchmark": "^2.1.2",
     "@types/luxon": "^3.1.0",
-    "@types/mocha": "^10.0.0",
-    "@types/node": "^18.11.9",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.11.16",
     "@types/strftime": "^0.9.4",
     "benchmark": "^2.1.4",
     "browserify": "^17.0.0",
     "browserify-sed": "^0.8.0",
-    "dayjs": "^1.11.6",
+    "dayjs": "^1.11.7",
     "luxon": "^3.1.1",
-    "mocha": "^10.1.0",
+    "mocha": "^10.2.0",
     "moment": "^2.29.4",
-    "moment-timezone": "^0.5.39",
-    "rollup": "^3.7.3",
+    "moment-timezone": "^0.5.40",
+    "rollup": "^3.7.5",
     "strftime": "^0.10.1",
     "terser": "^5.16.1",
-    "typescript": "^4.9.3"
+    "typescript": "^4.9.4"
   },
   "exports": {
     "import": "./index.js",
