@@ -7,6 +7,8 @@ const dd = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const thMap = ["th", "st", "nd", "rd"];
 const thFn = (num: number) => num + (thMap[num] || (num > 20 && thMap[num % 10]) || thMap[0]);
 
+const getTime = getUnit[Unit.time];
+
 export const formatHandlers: cdate.Handlers = {
     YY: "%y", // 18 = Two-digit year
     YYYY: "%Y", // 2018 = Four-digit year
@@ -34,4 +36,6 @@ export const formatHandlers: cdate.Handlers = {
     ZZ: "%z", // +0500 = The offset from UTC, ±HHmm
     A: "%p", // AM PM
     a: "%P", // am pm
+    X: "%s", // Unix Timestamp
+    x: getTime, // Unix Millisecond Timestamp
 };

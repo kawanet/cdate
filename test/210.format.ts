@@ -40,7 +40,7 @@ function runTests(fn: (dt: Date) => { format: (format: string) => string }) {
         MMM: "Apr",
         MMMM: "April",
         D: "5",
-        Do: "5th", // dayjs does not support this
+        Do: "5th",
         DD: "05",
         d: "3",
         dd: "We",
@@ -62,6 +62,13 @@ function runTests(fn: (dt: Date) => { format: (format: string) => string }) {
     Object.keys(tests).forEach((format: keyof typeof tests) => {
         assert.equal(fn(dt).format(format), tests[format], format);
     });
+
+    // "X" and "x" tests have to run with UTC Date
+    {
+        const dt = new Date(Date.UTC(2023, 3, 5, 6, 7, 8, 90));
+        assert.equal(fn(dt).format("X"), "1680674828", "X");
+        assert.equal(fn(dt).format("x"), "1680674828090", "x");
+    }
 
     {
         const January = (date: number) => new Date(2023, 0, date, 0, 0, 0);
