@@ -14,7 +14,7 @@ describe(TITLE, () => {
     });
 
     describe(`dayjs().add()`, () => {
-        runTests((dt, diff, unit) => dayjs(dt).add(diff, unit).format("YYYY/MM/DD HH:mm:ss.SSS"));
+        runTests((dt, diff, unit) => dayjs(dt).add(diff, unit).format("YYYY/MM/DD HH:mm:ss.SSS"), true);
     });
 
     describe(`cdate().add()`, () => {
@@ -22,7 +22,7 @@ describe(TITLE, () => {
     });
 });
 
-function runTests(fn: (dt: Date, diff: number, unit: cdate.UnitForAdd) => string) {
+function runTests(fn: (dt: Date, diff: number, unit: cdate.UnitForAdd) => string, skipInvalid?: boolean) {
     const dt = new Date("2023-12-31 23:59:59.999");
 
     it(`add(number, "year")`, () => {
@@ -187,6 +187,43 @@ function runTests(fn: (dt: Date, diff: number, unit: cdate.UnitForAdd) => string
             assert.equal(fn(dt, 3, unit), "2024/01/01 00:00:02.999");
             assert.equal(fn(dt, 4, unit), "2024/01/01 00:00:03.999");
             assert.equal(fn(dt, 5, unit), "2024/01/01 00:00:04.999");
+        });
+    });
+
+    it(`add(number, "millisecond")`, () => {
+        (["millisecond", "milliseconds", "ms"] as const).forEach((unit) => {
+            assert.equal(fn(dt, -2, unit), "2023/12/31 23:59:59.997");
+            assert.equal(fn(dt, -1, unit), "2023/12/31 23:59:59.998");
+            assert.equal(fn(dt, 0, unit), "2023/12/31 23:59:59.999");
+            assert.equal(fn(dt, 1, unit), "2024/01/01 00:00:00.000");
+            assert.equal(fn(dt, 2, unit), "2024/01/01 00:00:00.001");
+        });
+    });
+
+    /**
+     * It treats undefined unit as a milliseconds.
+     */
+    it(`add(number, null)`, () => {
+        ([null, undefined] as cdate.UnitForAdd[]).forEach((unit) => {
+            assert.equal(fn(dt, -2, unit), "2023/12/31 23:59:59.997");
+            assert.equal(fn(dt, -1, unit), "2023/12/31 23:59:59.998");
+            assert.equal(fn(dt, 0, unit), "2023/12/31 23:59:59.999");
+            assert.equal(fn(dt, 1, unit), "2024/01/01 00:00:00.000");
+            assert.equal(fn(dt, 2, unit), "2024/01/01 00:00:00.001");
+        });
+    });
+
+    /**
+     * dayjs has a different behavior when an invalid unit specified
+     */
+    const IT = skipInvalid ? it.skip : it;
+    IT(`add(number, "INVALID")`, () => {
+        (["INVALID"] as unknown as cdate.UnitForAdd[]).forEach((unit) => {
+            assert.equal(fn(dt, -2, unit), "2023/12/31 23:59:59.999");
+            assert.equal(fn(dt, -1, unit), "2023/12/31 23:59:59.999");
+            assert.equal(fn(dt, 0, unit), "2023/12/31 23:59:59.999");
+            assert.equal(fn(dt, 1, unit), "2023/12/31 23:59:59.999");
+            assert.equal(fn(dt, 2, unit), "2023/12/31 23:59:59.999");
         });
     });
 }
