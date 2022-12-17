@@ -106,7 +106,19 @@ const cdateFn = (base: CDateCore): cdateNS.cdate => {
         if (dt == null) {
             dt = new Date(); // now
         } else if ("string" === typeof dt) {
-            dt = new Date(dt); // parse ISO string
+            // YYYY-MM-DD as is
+            // YYYY-MM for YYYY-MM-01
+            // YYYY for YYYY-01-01
+            const m = dt.match(/^(\d{4})(?:([-/])(0[1-9]|1[0-2])(?:\2(0[1-9]|12[0-9]|3[01]))?)?$/);
+            if (m) {
+                const year = +m[1];
+                const month = +m[3] || 1;
+                const date = +m[4] || 1;
+                dt = new Date(year, (month - 1), date);
+                if (year < 100) dt.setFullYear(year);
+            } else {
+                dt = new Date(dt); // parse ISO string natively
+            }
         } else {
             dt = new Date(+dt); // number or DateLike
         }
