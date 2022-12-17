@@ -13,8 +13,8 @@
 - Manipulation: `.add(1, "month").startOf("week").endOf("day")` like Moment.js does but immutable
 - Time zones: names like `America/New_York` supported by
   [Intl.DateTimeFormat](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat)
-  as well as UTC offset like `GMT-05:00`
-- I18N: `.locale("fr").text("%c")` results `dim. 2 janv. 2022, 03:04:05` also managed by Intl.DateTimeFormat
+  API as well as UTC offset like `GMT-05:00`
+- I18N: `.locale("fr").text("%c")` results `dim. 2 janv. 2022, 03:04:05` also managed by Intl API
 - Small: [9KB minified](https://cdn.jsdelivr.net/npm/cdate/dist/cdate.min.js) and less than 4KB gzip including time zones supported per default
 - Fully immutable: even plugins never effect the cdate's core.
   None of ["dual package hazard"](https://nodejs.org/api/packages.html#dual-package-hazard)
@@ -155,6 +155,60 @@ cdate("2023-01-01").add(-1, "day").format("YYYY-MM-DD");
 
 Note that the `subtract()` method implemented above is available only for instances created by `cdateS()` function,
 as the cdate's plugin system is immutable as well.
+
+## LOCALES
+
+It supports English names: December, Sunday, etc., per default.
+There are ways to change it.
+The most simple way is to call `.locale()` method which enables I18N via
+[Intl](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat)
+API on demand:
+
+```js
+// English per default
+cdate().format("ddd D MMM");
+// => 'Sun 18 Dec'
+
+cdate().locale("de").format("ddd D MMM");
+// => 'So 18 Dez'
+```
+
+If you still need to support old environments which does not have Intl API, try
+[cdate-locale](https://www.npmjs.com/package/cdate-locale)
+which has a series of locale settings prebuilt via Intl API.
+
+```js
+const {locale_de} = require("cdate-locale/locale/de.js");
+cdate().handler(locale_de).format("ddd D MMM");
+// => 'So 18 Dez'
+```
+
+The last way is for you to code it.
+Call `.handler()` method to customize handlers for `.format()` specifiers:
+
+```js
+const weekday = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+const month = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+const cdateDE = cdate().handler({
+    ddd: (dt) => weekday[dt.getDay()],
+    MMM: (dt) => month[dt.getMonth()],
+}).cdateFn();
+
+cdateDE().format("ddd D MMM");
+// => 'So 18 Dez'
+```
+
+If you prefer `strftime`-style, the same `.handler()` method also works for `.text()` specifiers:
+
+```js
+const cdateDE = cdate().handler({
+    "%a": (dt) => weekday[dt.getDay()],
+    "%b": (dt) => month[dt.getMonth()],
+}).cdateFn();
+
+cdateDE().text("%a %-d %b");
+// => 'So 18 Dez'
+```
 
 ## LINKS
 
