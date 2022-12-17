@@ -84,18 +84,6 @@ Result:
 29 30 31 01 02 03 04
 ```
 
-Locale and time zone:
-
-```js
-const tokyo = cdate("2023-01-01T00:00:00Z").tz("Asia/Tokyo");
-
-console.log(tokyo.text());
-// => 2023-01-01T09:00:00.000+09:00
-
-console.log(tokyo.locale("ja").text("%c"));
-// => 2023年1月1日(日) 09:00:00
-```
-
 ## TYPESCRIPT
 
 See TypeScript declaration [index.d.ts](https://github.com/kawanet/cdate/blob/main/index.d.ts) for detail. API may
@@ -208,6 +196,27 @@ const cdateDE = cdate().handler({
 
 cdateDE().text("%a %-d %b");
 // => 'So 18 Dez'
+```
+
+## TIMEZONES
+
+It supports both UTC offset and timezone names
+without any external modules and plugins.
+Japan Standard Time (JST) is `GMT+09:00` for instance:
+
+```js
+const dt = new Date("2023-01-01T00:00:00+09:00");
+
+cdate(dt).utcOffset(+9).text(); // hours
+
+cdate(dt).utcOffset(+540).text(); // minutes
+
+cdate(dt).utcOffset("+09:00").text();
+
+cdate(dt).utcOffset("GMT+09:00").text();
+
+cdate(dt).tz("Asia/Tokyo").text();
+// => '2023-01-01T00:00:00.000+09:00'
 ```
 
 ## LINKS
