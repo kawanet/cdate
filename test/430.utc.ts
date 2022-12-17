@@ -73,7 +73,9 @@ describe(TITLE, () => {
     });
 
     it(`cdate().utc()`, () => {
-        assert.equal(cdate(std).utc().format(), "2022-03-27T00:59:59.000+00:00");
+        // .format() doesn't display milliseconds per default
+        assert.equal(cdate(std).utc().format(), "2022-03-27T00:59:59+00:00");
+
         assert.equal(cdate(std).utc().format(format), "2022/03/27 00:59:59 +00:00");
         assert.equal(cdate(dst).utc().format(format), "2022/03/27 01:00:01 +00:00");
 

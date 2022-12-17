@@ -26,7 +26,13 @@ const makeFormatRE = () => {
 const formatRE = makeFormatRE();
 
 const baseHandlers: cdate.Handlers = {
+    // default specifiers for .text() .strftime() with milliseconds
     ISO: "%Y-%m-%dT%H:%M:%S.%L%:z",
+
+    // default specifiers for .format() without milliseconds
+    undef: "YYYY-MM-DDTHH:mm:ssZ",
+
+    // Invalid Date
     NaN: (new Date(NaN) + ""),
 };
 
@@ -70,7 +76,7 @@ const makeTexter = (router?: Router): Texter => {
 
     out.format = (fmt, dt) => {
         if (isNaN(+dt)) return one("NaN", dt);
-        if (fmt == null) return one("ISO", dt);
+        if (fmt == null) fmt = String(router("undef"));
         return fmt.replace(formatRE, (specifier, raw) => (raw || one(specifier, dt)));
     };
 
