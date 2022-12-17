@@ -12,7 +12,8 @@ export const enum Unit {
     minute = "m",
     second = "s",
     millisecond = "ms",
-    timeZoneOffset = "tzo",
+    timeZoneOffset = "TZO",
+    time = "T",
 }
 
 const unitMap = {
@@ -60,5 +61,6 @@ export const getUnit: { [unit in Unit]?: (dt: cdate.DateLike) => number } = {
     m: dt => dt.getMinutes(),
     s: dt => dt.getSeconds(),
     ms: dt => dt.getMilliseconds(),
-    tzo: dt => dt.getTimezoneOffset(),
+    TZO: dt => dt.getTimezoneOffset(),
+    T: dt => dt.getTime(),
 };

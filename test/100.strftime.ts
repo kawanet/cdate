@@ -30,9 +30,14 @@ type strftime = (fmt: string, dt?: Date) => string;
 function runTests(strftime: strftime) {
     const dt = new Date("2023-04-05 06:07:08.090");
 
-    it(`strftime("%Y")`, () => {
+    it(`strftime`, () => {
+        // without Date given
         const year = String(new Date().getFullYear());
         assert.equal(strftime("%Y"), year);
+
+        // UNIX time
+        const dt = new Date();
+        assert.equal(strftime("%s", dt), String(Math.floor(+dt / 1000)));
     });
 
     const testOne = (fmt: string, dt: Date, expected: string | RegExp) => {
@@ -92,7 +97,6 @@ function runTests(strftime: strftime) {
     testIt("%C", dt, -10 * 365 * d.DAY, ["20", "20", "20", "19", "19"]);
 
     /**
-     * %c     The preferred date and time representation for the current locale. [NOT IMPLEMENTED]
      * %d     The day of the month as a decimal number (range 01 to 31).
      */
     testIt("%d", dt, d.DAY, [

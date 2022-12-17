@@ -64,6 +64,7 @@ export const strftimeHandlers = (): cdate.Handlers => {
      * %S     The second as a decimal number (range 00 to 60)
      */
     const S = getUnit[Unit.second];
+    const s = getUnit[Unit.time];
 
     /**
      * %U     The week number [NOT IMPLEMENTED]
@@ -120,6 +121,7 @@ export const strftimeHandlers = (): cdate.Handlers => {
         "%M": pad2(M),
         "%P": dt => (H(dt) < 12 ? "am" : "pm"),
         "%R": "%H:%M",
+        "%s": dt => Math.floor(s(dt) / 1000),
         "%-S": S,
         "%S": pad2(S),
         "%T": "%H:%M:%S",
