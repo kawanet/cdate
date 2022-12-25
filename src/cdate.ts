@@ -109,12 +109,16 @@ const cdateFn = (base: CDateCore): cdateNS.cdate => {
             // YYYY-MM-DD as is
             // YYYY-MM for YYYY-MM-01
             // YYYY for YYYY-01-01
-            const m = dt.match(/^(\d{4})(?:([-/])(\d{2})(?:\2(\d{2}))?)?$/);
+            const m = dt.match(/^(\d{4})(?:([-/])(\d{2})(?:\2(\d{2})(?:[T\s]((\d{2}):(\d{2})(?::(\d{2})(\.\d+)?)?))?)?)?$/);
             if (m) {
                 const year = +m[1];
                 const month = +m[3] || 1;
                 const date = +m[4] || 1;
-                dt = new Date(year, (month - 1), date);
+                const hour = +m[6] || 0;
+                const minute = +m[7] || 0;
+                const second = +m[8] || 0;
+                const ms = (+m[9]) * 1000 || 0;
+                dt = new Date(year, (month - 1), date, hour, minute, second, ms);
                 if (year < 100) dt.setFullYear(year);
             } else {
                 dt = new Date(dt); // parse ISO string natively
@@ -123,7 +127,7 @@ const cdateFn = (base: CDateCore): cdateNS.cdate => {
             dt = new Date(+dt); // number or DateLike
         }
         return base.create(dt);
-    }
+    };
 };
 
 export const cdate: cdateNS.cdate = new CDateCore(0, null)
