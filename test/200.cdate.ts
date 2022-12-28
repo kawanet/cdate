@@ -44,29 +44,4 @@ describe(TITLE, () => {
         assert.equal(dt.format(), "Invalid Date");
         assert.equal(dt.text(), "Invalid Date");
     });
-
-    it(`cdate(ISODate)`, () => {
-        assert.equal(cdate("2023-04-05T06:07:08.009").text("%Y-%m-%d %H:%M:%S.%L"), "2023-04-05 06:07:08.009");
-        assert.equal(cdate("2023-04-05T06:07:08.09").text("%Y-%m-%d %H:%M:%S.%L"), "2023-04-05 06:07:08.090");
-        assert.equal(cdate("2023-04-05T06:07:08.9").text("%Y-%m-%d %H:%M:%S.%L"), "2023-04-05 06:07:08.900");
-        assert.equal(cdate("2023-04-05T06:07:08").text("%Y-%m-%d %H:%M:%S.%L"), "2023-04-05 06:07:08.000");
-        assert.equal(cdate("2023-04-05T06:07").text("%Y-%m-%d %H:%M:%S.%L"), "2023-04-05 06:07:00.000");
-
-        // YYYY-MM-DD as is
-        assert.equal(cdate("2023-04-05").text("%Y-%m-%d %H:%M:%S.%L"), "2023-04-05 00:00:00.000");
-
-        // YYYY-MM for YYYY-MM-01
-        assert.equal(cdate("2023-04").text("%Y-%m-%d %H:%M:%S.%L"), "2023-04-01 00:00:00.000");
-
-        // YYYY for YYYY-01-01
-        assert.equal(cdate("2023").text("%Y-%m-%d %H:%M:%S.%L"), "2023-01-01 00:00:00.000");
-
-        // more
-        assert.equal(cdate("0001-01-01").text("%Y-%m-%d %H:%M:%S.%L"), "0001-01-01 00:00:00.000");
-        assert.equal(cdate("0099-01-01").text("%Y-%m-%d %H:%M:%S.%L"), "0099-01-01 00:00:00.000");
-        assert.equal(cdate("0100-01-01").text("%Y-%m-%d %H:%M:%S.%L"), "0100-01-01 00:00:00.000");
-        assert.equal(cdate("1900-01-01").text("%Y-%m-%d %H:%M:%S.%L"), "1900-01-01 00:00:00.000");
-        assert.equal(cdate("1999-01-01").text("%Y-%m-%d %H:%M:%S.%L"), "1999-01-01 00:00:00.000");
-        assert.equal(cdate("2000-01-01").text("%Y-%m-%d %H:%M:%S.%L"), "2000-01-01 00:00:00.000");
-    });
 });

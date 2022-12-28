@@ -102,6 +102,8 @@ class CDateCore {
 }
 
 const cdateFn = (base: CDateCore): cdateNS.cdate => {
+    const isUTC = !!base.x.rw;
+
     return (dt) => {
         if (dt == null) {
             dt = new Date(); // now
@@ -118,14 +120,25 @@ const cdateFn = (base: CDateCore): cdateNS.cdate => {
                 const minute = +m[7] || 0;
                 const second = +m[8] || 0;
                 const ms = (+m[9]) * 1000 || 0;
-                dt = new Date(year, (month - 1), date, hour, minute, second, ms);
-                if (year < 100) dt.setFullYear(year);
+
+                if (isUTC) {
+                    // UTC
+                    dt = new Date(Date.UTC(year, (month - 1), date, hour, minute, second, ms));
+                    if (year < 100) dt.setUTCFullYear(year);
+                    const out = base.create(+dt);
+                    return out.add(-out.utcOffset(), "m");
+                } else {
+                    // local time
+                    dt = new Date(year, (month - 1), date, hour, minute, second, ms);
+                    if (year < 100) dt.setFullYear(year);
+                }
             } else {
                 dt = new Date(dt); // parse ISO string natively
             }
         } else {
             dt = new Date(+dt); // number or DateLike
         }
+        if (isUTC) dt = +dt;
         return base.create(dt);
     };
 };
