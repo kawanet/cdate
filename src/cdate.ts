@@ -120,18 +120,22 @@ const cdateFn = (base: CDateCore): cdateNS.cdate => {
                 const minute = +m[7] || 0;
                 const second = +m[8] || 0;
                 const ms = (+m[9]) * 1000 || 0;
+                const yoffset = (0 <= year && year < 100) ? 100 : 0;
+                let out: cdateNS.CDate;
 
                 if (isUTC) {
                     // UTC
-                    dt = new Date(Date.UTC(year, (month - 1), date, hour, minute, second, ms));
-                    if (year < 100) dt.setUTCFullYear(year);
-                    const out = base.create(+dt);
-                    return out.add(-out.utcOffset(), "m");
+                    dt = new Date(Date.UTC(year + yoffset, (month - 1), date, hour, minute, second, ms));
+                    if (yoffset) dt.setUTCFullYear(year);
+                    out = base.create(+dt);
+                    out = out.add(-out.utcOffset(), "m");
                 } else {
                     // local time
-                    dt = new Date(year, (month - 1), date, hour, minute, second, ms);
-                    if (year < 100) dt.setFullYear(year);
+                    dt = new Date(year + yoffset, (month - 1), date, hour, minute, second, ms);
+                    if (yoffset) dt.setFullYear(year);
+                    out = base.create(+dt);
                 }
+                return out;
             } else {
                 dt = new Date(dt); // parse ISO string natively
             }
