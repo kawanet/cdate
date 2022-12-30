@@ -34,7 +34,7 @@ class CDateCore {
      * cdate function factory
      */
     cdateFn(): cdateNS.cdate {
-        return cdateFn(this);
+        return cdateFn(this as unknown as cdateNS.CDate);
     }
 
     /**
@@ -101,9 +101,7 @@ class CDateCore {
     }
 }
 
-const cdateFn = (base: CDateCore): cdateNS.cdate => {
-    const isUTC = !!base.x.rw;
-
+const cdateFn = (base: cdateNS.CDate): cdateNS.cdate => {
     return (dt) => {
         if (dt == null) {
             dt = new Date(); // now
@@ -113,37 +111,21 @@ const cdateFn = (base: CDateCore): cdateNS.cdate => {
             // YYYY for YYYY-01-01
             const m = dt.match(/^(\d{4})(?:([-/])(\d{2})(?:\2(\d{2})(?:[T\s]((\d{2}):(\d{2})(?::(\d{2})(\.\d+)?)?))?)?)?$/);
             if (m) {
-                const year = +m[1];
-                const month = +m[3] || 1;
+                const year = +m[1] || 0;
+                const month = +m[3] - 1 || 0;
                 const date = +m[4] || 1;
                 const hour = +m[6] || 0;
                 const minute = +m[7] || 0;
                 const second = +m[8] || 0;
                 const ms = (+m[9]) * 1000 || 0;
-                const yoffset = (0 <= year && year < 100) ? 100 : 0;
-                let out: cdateNS.CDate;
-
-                if (isUTC) {
-                    // UTC
-                    dt = new Date(Date.UTC(year + yoffset, (month - 1), date, hour, minute, second, ms));
-                    if (yoffset) dt.setUTCFullYear(year);
-                    out = base.create(+dt);
-                    out = out.add(-out.utcOffset(), "m");
-                } else {
-                    // local time
-                    dt = new Date(year + yoffset, (month - 1), date, hour, minute, second, ms);
-                    if (yoffset) dt.setFullYear(year);
-                    out = base.create(+dt);
-                }
-                return out;
+                return base.set([year, month, date, hour, minute, second, ms]);
             } else {
                 dt = new Date(dt); // parse ISO string natively
             }
         } else {
             dt = new Date(+dt); // number or DateLike
         }
-        if (isUTC) dt = +dt;
-        return base.create(dt);
+        return (base as cdateNS.Internal).create(+dt);
     };
 };
 

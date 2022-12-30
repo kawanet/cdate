@@ -16,8 +16,28 @@ export const calcPlugin: cdate.Plugin<cdate.CDateCalc> = (Parent) => {
         /**
          * setter
          */
-        set(unit: cdate.UnitForGet, value: number) {
-            unit = getShortUnit(unit) as cdate.UnitShort;
+        set(unit: cdate.UnitForGet, value: number): this;
+        set(array: number[]): this;
+        set(unit: cdate.UnitForGet | number[], value?: number) {
+            if (unit && (unit as number[]).length === 7 && "number" === typeof unit[0]) {
+                const isUTC = !!this.x.rw;
+                const [year, month, date, hour, minute, second, ms] = unit as number[];
+                const yoffset = (0 <= year && year < 100) ? 100 : 0;
+                if (isUTC) {
+                    // UTC
+                    const tmp = new Date(Date.UTC(year + yoffset, month, date, hour, minute, second, ms));
+                    if (yoffset) tmp.setUTCFullYear(year);
+                    const out: cdate.CDate = this.create(+tmp);
+                    return out.add(-out.utcOffset(), "m") as cdate.Internal;
+                } else {
+                    // local time
+                    const dt = new Date(year + yoffset, month, date, hour, minute, second, ms);
+                    if (yoffset) (dt as Date).setFullYear(year);
+                    return this.create(dt);
+                }
+            }
+
+            unit = getShortUnit(unit as cdate.UnitForGet) as cdate.UnitShort;
             const fn = getUnit[unit];
             if (!fn) return this;
 
