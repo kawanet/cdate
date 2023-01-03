@@ -74,8 +74,6 @@ export declare namespace cdate {
          */
         set(unit: UnitForGet, value: number): this;
 
-        set(array: number[]): this;
-
         /**
          * add(1, "day"), add(2, "hours"),...
          */
