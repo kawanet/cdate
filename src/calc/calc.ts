@@ -16,8 +16,8 @@ export const calcPlugin: cdate.Plugin<cdate.CDateCalc> = (Parent) => {
         /**
          * setter
          */
-        set(unit: cdate.UnitForGet, value: number) {
-            unit = getShortUnit(unit) as cdate.UnitShort;
+        set(unit: cdate.UnitForGet, value?: number) {
+            unit = getShortUnit(unit as cdate.UnitForGet) as cdate.UnitShort;
             const fn = getUnit[unit];
             if (!fn) return this;
 

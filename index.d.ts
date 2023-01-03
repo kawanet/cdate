@@ -133,7 +133,7 @@ export declare namespace cdate {
         readonly t: number | DateLike;
         readonly x: Options & X;
 
-        create(dt: DateLike): this;
+        create(dt: number | DateLike): this;
 
         inherit(): this & T;
 

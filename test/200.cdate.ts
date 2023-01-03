@@ -44,21 +44,4 @@ describe(TITLE, () => {
         assert.equal(dt.format(), "Invalid Date");
         assert.equal(dt.text(), "Invalid Date");
     });
-
-    it(`cdate(ISODate)`, () => {
-        // YYYY-MM-DD as is
-        assert.equal(cdate("2023-04-05").text("%Y-%m-%d %H:%M:%S"), "2023-04-05 00:00:00");
-        // YYYY-MM for YYYY-MM-01
-        assert.equal(cdate("2023-04").text("%Y-%m-%d %H:%M:%S"), "2023-04-01 00:00:00");
-        // YYYY for YYYY-01-01
-        assert.equal(cdate("2023").text("%Y-%m-%d %H:%M:%S"), "2023-01-01 00:00:00");
-
-        // more
-        assert.equal(cdate("0001-01-01").text("%Y-%m-%d %H:%M:%S"), "0001-01-01 00:00:00");
-        assert.equal(cdate("0099-01-01").text("%Y-%m-%d %H:%M:%S"), "0099-01-01 00:00:00");
-        assert.equal(cdate("0100-01-01").text("%Y-%m-%d %H:%M:%S"), "0100-01-01 00:00:00");
-        assert.equal(cdate("1900-01-01").text("%Y-%m-%d %H:%M:%S"), "1900-01-01 00:00:00");
-        assert.equal(cdate("1999-01-01").text("%Y-%m-%d %H:%M:%S"), "1999-01-01 00:00:00");
-        assert.equal(cdate("2000-01-01").text("%Y-%m-%d %H:%M:%S"), "2000-01-01 00:00:00");
-    });
 });

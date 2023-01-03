@@ -1,7 +1,7 @@
 {
   "name": "cdate",
   "description": "a compact calendar date",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "@kawanet",
   "browser": "./dist/cdate.min.js",
   "bugs": {
@@ -10,19 +10,19 @@
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@types/benchmark": "^2.1.2",
-    "@types/luxon": "^3.1.0",
+    "@types/luxon": "^3.2.0",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^18.11.16",
+    "@types/node": "^18.11.18",
     "@types/strftime": "^0.9.4",
     "benchmark": "^2.1.4",
     "browserify": "^17.0.0",
     "browserify-sed": "^0.8.0",
     "dayjs": "^1.11.7",
-    "luxon": "^3.1.1",
+    "luxon": "^3.2.0",
     "mocha": "^10.2.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.40",
-    "rollup": "^3.7.5",
+    "rollup": "^3.9.1",
     "strftime": "^0.10.1",
     "terser": "^5.16.1",
     "typescript": "^4.9.4"
@@ -56,6 +56,7 @@
     "url": "git+https://github.com/kawanet/cdate.git"
   },
   "scripts": {
+    "benchmark": "node cli/benchmark.js",
     "build": "tsc -p .",
     "build-cjs": "make clean all",
     "fixpack": "fixpack",

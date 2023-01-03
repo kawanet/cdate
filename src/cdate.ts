@@ -1,7 +1,8 @@
 import type {cdate as cdateNS} from "../index.js";
 import {formatPlugin} from "./format/texter.js";
 import {calcPlugin} from "./calc/calc.js";
-import {tzPlugin} from "./timezone/timezone.js";
+import {adjustDateLike, tzPlugin} from "./timezone/timezone.js";
+import {DateUTC} from "./timezone/dateutc.js";
 
 class CDateCore {
     /**
@@ -34,7 +35,7 @@ class CDateCore {
      * cdate function factory
      */
     cdateFn(): cdateNS.cdate {
-        return cdateFn(this);
+        return cdateFn(this as unknown as cdateNS.Internal);
     }
 
     /**
@@ -101,30 +102,49 @@ class CDateCore {
     }
 }
 
-const cdateFn = (base: CDateCore): cdateNS.cdate => {
+const cdateFn = (base: cdateNS.Internal): cdateNS.cdate => {
     return (dt) => {
         if (dt == null) {
             dt = new Date(); // now
         } else if ("string" === typeof dt) {
-            // YYYY-MM-DD as is
-            // YYYY-MM for YYYY-MM-01
-            // YYYY for YYYY-01-01
-            const m = dt.match(/^(\d{4})(?:([-/])(\d{2})(?:\2(\d{2}))?)?$/);
-            if (m) {
-                const year = +m[1];
-                const month = +m[3] || 1;
-                const date = +m[4] || 1;
-                dt = new Date(year, (month - 1), date);
-                if (year < 100) dt.setFullYear(year);
-            } else {
-                dt = new Date(dt); // parse ISO string natively
-            }
-        } else {
-            dt = new Date(+dt); // number or DateLike
+            dt = +parseDate(dt, base.x.rw);
         }
-        return base.create(dt);
-    }
+
+        return base.create(+dt);
+    };
 };
+
+const parseDate = (dt: string, rwFn: (t: number) => cdateNS.DateLike): cdateNS.DateLike => {
+    const matched = dt.match(/^(\d{4})(?:([-/])(\d{2})(?:\2(\d{2})(?:[T\s]((\d{2}):(\d{2})(?::(\d{2})(\.\d+)?)?))?)?)?$/);
+    if (!matched) {
+        return new Date(dt); // native parser
+    }
+
+    // ISO 8601 parser
+    const year = +matched[1] || 0;
+    const month = +matched[3] - 1 || 0;
+    const date = +matched[4] || 1;
+    const hour = +matched[6] || 0;
+    const minute = +matched[7] || 0;
+    const second = +matched[8] || 0;
+    const ms = (+matched[9]) * 1000 || 0;
+    const yoffset = (0 <= year && year < 100) ? 100 : 0;
+
+    if (rwFn) {
+        // UTC
+        const tmp = new Date(Date.UTC(year + yoffset, month, date, hour, minute, second, ms));
+        if (yoffset) tmp.setUTCFullYear(year);
+        const dt1 = new DateUTC(+tmp); // DateUTC only
+        const dt2 = rwFn(+tmp); // DateUTC or DateTZ
+        adjustDateLike(dt1, dt2, true);
+        return dt2;
+    } else {
+        // local time
+        const dt = new Date(year + yoffset, month, date, hour, minute, second, ms);
+        if (yoffset) dt.setFullYear(year);
+        return dt;
+    }
+}
 
 export const cdate: cdateNS.cdate = new CDateCore(0, null)
     .plugin(formatPlugin)
