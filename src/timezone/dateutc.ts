@@ -1,8 +1,10 @@
 import type {cdate} from "../../index.js";
 
 export class DateUTC implements cdate.DateLike {
-    constructor(protected dt: Date) {
-        //
+    protected dt: Date;
+
+    constructor(t: number) {
+        this.dt = new Date(t);
     }
 
     valueOf(): number {

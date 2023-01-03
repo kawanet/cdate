@@ -15,10 +15,9 @@ class DateTZ extends DateUTC {
     private tzf: TZF;
     private tzo: number;
 
-    constructor(dt: Date, tzf: TZF) {
-        const t = +dt;
+    constructor(t: number, tzf: TZF) {
         const tzo = tzf(t);
-        super(new Date(t + tzo * d.MINUTE));
+        super(t + tzo * d.MINUTE);
         this.t = t;
         this.tzf = tzf;
         this.tzo = tzo;
@@ -43,7 +42,7 @@ export const tzPlugin: cdate.Plugin<cdate.CDateTZ> = (Parent) => {
     return class CDateTZ extends Parent implements cdate.CDateTZ {
         utc(keepLocalTime?: boolean): this {
             const out = this.inherit();
-            out.x.rw = (dt) => new DateUTC(new Date(+dt));
+            out.x.rw = (dt) => new DateUTC(+dt);
             if (keepLocalTime) return adjustTimeZoneOffset(this, out) as this;
             return out;
         }
@@ -57,7 +56,7 @@ export const tzPlugin: cdate.Plugin<cdate.CDateTZ> = (Parent) => {
             }
 
             const out = this.inherit();
-            out.x.rw = (dt) => new DateTZ(new Date(+dt), parseTZ(offset));
+            out.x.rw = (dt) => new DateTZ(+dt, parseTZ(offset));
             if (keepLocalTime) return adjustTimeZoneOffset(this, out) as this;
             return out;
         }
@@ -67,7 +66,7 @@ export const tzPlugin: cdate.Plugin<cdate.CDateTZ> = (Parent) => {
          */
         tz(timeZoneName: string, keepLocalTime?: boolean): this {
             const out = this.inherit();
-            out.x.rw = (dt) => new DateTZ(new Date(+dt), getTZF(timeZoneName));
+            out.x.rw = (dt) => new DateTZ(+dt, getTZF(timeZoneName));
             if (keepLocalTime) return adjustTimeZoneOffset(this, out, true) as this;
             return out;
         }
@@ -81,7 +80,7 @@ const adjustTimeZoneOffset = (before: cdate.Internal, after: cdate.Internal, has
     return after.create(dt2);
 };
 
-const adjustDateLike = (before: cdate.DateLike, after: cdate.DateLike, hasDST: boolean): void => {
+export const adjustDateLike = (before: cdate.DateLike, after: cdate.DateLike, hasDST: boolean): void => {
     const tz1 = getTimezoneOffset(before);
     const tz2 = getTimezoneOffset(after);
     if (tz1 === tz2) return;
