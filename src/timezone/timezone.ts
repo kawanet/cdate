@@ -2,7 +2,8 @@ import type {cdate} from "../../index.js";
 import {getTZF, TZF} from "./tzf.js";
 import {DateUTC} from "./dateutc.js";
 import {cached} from "../cache.js";
-import {Unit} from "../calc/unit.js";
+import {getUnit, Unit} from "../calc/unit.js";
+import {add} from "../calc/add.js";
 
 const enum d {
     SECOND = 1000,
@@ -52,12 +53,12 @@ export const tzPlugin: cdate.Plugin<cdate.CDateTZ> = (Parent) => {
          */
         utcOffset(offset?: string | number, keepLocalTime?: boolean): number | any {
             if (offset == null) {
-                return getTimezoneOffset(this);
+                return 0 - getTimezoneOffset(this.ro());
             }
 
             const out = this.inherit();
             out.x.rw = (dt) => new DateTZ(new Date(+dt), parseTZ(offset));
-            if (keepLocalTime) return adjustTimeZoneOffset(this, out);
+            if (keepLocalTime) return adjustTimeZoneOffset(this, out) as this;
             return out;
         }
 
@@ -74,23 +75,28 @@ export const tzPlugin: cdate.Plugin<cdate.CDateTZ> = (Parent) => {
 };
 
 const adjustTimeZoneOffset = (before: cdate.Internal, after: cdate.Internal, hasDST?: boolean) => {
+    const dt1 = before.ro();
+    const dt2 = after.rw();
+    adjustDateLike(dt1, dt2, hasDST);
+    return after.create(dt2);
+};
+
+const adjustDateLike = (before: cdate.DateLike, after: cdate.DateLike, hasDST: boolean): void => {
     const tz1 = getTimezoneOffset(before);
     const tz2 = getTimezoneOffset(after);
-    if (tz1 === tz2) return after;
+    if (tz1 === tz2) return;
 
-    const then = after.add(tz1 - tz2, Unit.minute);
-    if (!hasDST) return then;
+    add(after, tz2 - tz1, Unit.minute);
+    if (!hasDST) return;
 
-    const tz3 = getTimezoneOffset(then);
-    if (tz2 === tz3) return then;
+    const tz3 = getTimezoneOffset(after);
+    if (tz2 === tz3) return;
 
     // adjustment for Daylight Saving Time (DST)
-    return then.add(tz2 - tz3, Unit.minute);
+    add(after, tz3 - tz2, Unit.minute);
 };
 
-const getTimezoneOffset = (that: cdate.Internal): number => {
-    return 0 - that.ro().getTimezoneOffset();
-};
+const getTimezoneOffset = getUnit.TZO;
 
 const parseTZ = cached((offset: string | number): TZF => {
     if ("number" === typeof offset) {
