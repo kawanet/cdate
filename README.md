@@ -95,10 +95,10 @@ The result shows that cdate is 37% faster than moment!
 
 | Library | Version | Minified Size | Local Time Bench | Time Zone Bench | Note             | 
 |---------|---------|--------------:|-----------------:|----------------:|------------------|
-| cdate   | 0.0.3   |          9 KB |    7,907 ops/sec |   5,494 ops/sec | fastest! 🍺      |
-| moment  | 2.29.4  |       100 KB+ |    6,098 ops/sec |   3,660 ops/sec | big tz database  |
-| dayjs   | 1.11.7  |         11 KB |    3,823 ops/sec |      90 ops/sec | DST related bugs |
-| luxon   | 3.1.1   |         74 KB |      955 ops/sec |     158 ops/sec | different API    |
+| cdate   | 0.0.4   |          9 KB |    7,936 ops/sec |   6,380 ops/sec | fastest! 🍺      |
+| moment  | 2.29.4  |       100 KB+ |    5,702 ops/sec |   3,573 ops/sec | big tz database  |
+| dayjs   | 1.11.7  |         11 KB |    3,841 ops/sec |      88 ops/sec | DST related bugs |
+| luxon   | 3.2.0   |         74 KB |      914 ops/sec |     156 ops/sec | different API    |
 
 Tested on node v18.12.1, Apple Silicon M1, MacBook Pro.
 "Minified Size" above includes the time zone plugin.
