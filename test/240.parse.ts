@@ -35,6 +35,18 @@ describe(TITLE, () => {
         runTests(cdate().tz("America/Panama").cdateFn(), "-05:00");
     });
 
+    /**
+     * Clock Changes in Los Angeles, California, USA 2022
+     * Sunday, 13 March 2022, 02:00:00 clocks were turned forward 1 hour to
+     * Sunday, 13 March 2022, 03:00:00 local daylight time instead.
+     * Sunday, 6 November 2022, 02:00:00 clocks were turned backward 1 hour to
+     * Sunday, 6 November 2022, 01:00:00 local standard time instead.
+     * @see https://www.timeanddate.com/time/change/usa/los-angeles?year=2022
+     */
+    it(`cdate().tz("America/Los_Angeles")`, () => {
+        runTests(cdate().tz("America/Los_Angeles").cdateFn(), null);
+    });
+
     function runTests(cdateFn: cdate.cdate, tzo: string) {
         if (tzo) {
             assert.equal(cdateFn().text("%:z"), tzo);
@@ -62,5 +74,14 @@ describe(TITLE, () => {
         assert.equal(cdateFn("1900-01-01").text("%Y-%m-%d %H:%M:%S.%L"), "1900-01-01 00:00:00.000");
         assert.equal(cdateFn("1999-01-01").text("%Y-%m-%d %H:%M:%S.%L"), "1999-01-01 00:00:00.000");
         assert.equal(cdateFn("2000-01-01").text("%Y-%m-%d %H:%M:%S.%L"), "2000-01-01 00:00:00.000");
+
+        // MySQL DATETIME does not have separator "T"
+        assert.equal(cdateFn("2023-04-05 06:07:08").text("%Y-%m-%d %H:%M:%S.%L"), "2023-04-05 06:07:08.000");
+
+        // Clock Changes in Los Angeles
+        assert.equal(cdateFn("2022-03-13 01:59:59.999").text("%Y-%m-%d %H:%M:%S.%L"), "2022-03-13 01:59:59.999");
+        assert.equal(cdateFn("2022-03-13 03:00:00.001").text("%Y-%m-%d %H:%M:%S.%L"), "2022-03-13 03:00:00.001");
+        assert.equal(cdateFn("2022-11-06 00:59:59.999").text("%Y-%m-%d %H:%M:%S.%L"), "2022-11-06 00:59:59.999");
+        assert.equal(cdateFn("2022-11-06 02:00:00.001").text("%Y-%m-%d %H:%M:%S.%L"), "2022-11-06 02:00:00.001");
     }
 });
