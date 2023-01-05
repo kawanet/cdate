@@ -291,7 +291,7 @@ const runMixedTZ = async () => {
 };
 
 const runParse = async () => {
-    console.warn(`#### parse()`);
+    console.warn(`#### parse().format()`);
     await runBenchmark({
         cdate: () => cdate("2022-01-01 00:00:00").format(COMPAT_FORMAT),
         moment: () => moment("2022-01-01 00:00:00").format(COMPAT_FORMAT),
