@@ -17,7 +17,7 @@ describe(TITLE, () => {
 });
 
 function runTests(fn: (dt: Date) => { set: (unit: cdate.UnitForGet, value: number) => { format: (fmt: string) => string } }) {
-    const dt = new Date("2022-01-31 01:02:03.004");
+    const dt = new Date("2022-01-31T01:02:03.004"); // local time
 
     it(`set("year")`, () => {
         (["year", "y"] as const).forEach(unit => {

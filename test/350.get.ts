@@ -18,8 +18,8 @@ describe(TITLE, () => {
 
 
 function runTests(fn: (dt: Date) => { get: (unit: cdate.UnitForGet) => number }) {
-    const dt1 = new Date("2022-01-02 03:04:05.006");
-    const dt2 = new Date("2022-12-31 23:59:58.999");
+    const dt1 = new Date("2022-01-02T03:04:05.006"); // local time
+    const dt2 = new Date("2022-12-31T23:59:58.999");
 
     it(`get("year")`, () => {
         (["year", "y"] as const).forEach(unit => {

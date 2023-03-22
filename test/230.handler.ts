@@ -7,7 +7,7 @@ import {cdate} from "../index.js";
 const TITLE = "230.handler.ts";
 
 describe(TITLE, () => {
-    const dt = new Date("2023-04-05 06:07:08.090");
+    const dt = new Date("2023-04-05T06:07:08.090"); // local time
     const fmt = "%Y/%m/%d %H:%M:%S.%L";
 
     it("fr_FR", () => {

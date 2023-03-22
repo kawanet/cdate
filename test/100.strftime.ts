@@ -28,7 +28,7 @@ describe(TITLE, () => {
 type strftime = (fmt: string, dt?: Date) => string;
 
 function runTests(strftime: strftime) {
-    const dt = new Date("2023-04-05 06:07:08.090");
+    const dt = new Date("2023-04-05T06:07:08.090"); // local time
 
     it(`strftime`, () => {
         // without Date given
