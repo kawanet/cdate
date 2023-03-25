@@ -214,6 +214,8 @@ const main = async () => {
     if (!RUN_EACH) {
         await runMixedTZ();
     }
+
+    await runParse()
 };
 
 const runEachLocal = async () => {
@@ -287,5 +289,15 @@ const runMixedTZ = async () => {
         luxon: () => luxonMixed(() => DateTime.fromJSDate(dt, {zone: "America/New_York"})),
     });
 };
+
+const runParse = async () => {
+    console.warn(`#### parse().format()`);
+    await runBenchmark({
+        cdate: () => cdate("2022-01-01 00:00:00").format(COMPAT_FORMAT),
+        moment: () => moment("2022-01-01 00:00:00").format(COMPAT_FORMAT),
+        dayjs: () => dayjs("2022-01-01 00:00:00").format(COMPAT_FORMAT),
+        luxon: () => DateTime.fromSQL("2022-01-01 00:00:00").toFormat(LUXON_FORMAT),
+    })
+}
 
 main().catch(console.error);
