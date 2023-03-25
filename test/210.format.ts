@@ -26,7 +26,7 @@ describe(TITLE, () => {
 });
 
 function runTests(fn: (dt: Date) => { format: (format: string) => string }) {
-    const dt = new Date("2023-04-05 06:07:08.090");
+    const dt = new Date("2023-04-05T06:07:08.090"); // local time
 
     const tests = {
         "YYYY/MM/DD HH:mm:ss.SSS": "2023/04/05 06:07:08.090",

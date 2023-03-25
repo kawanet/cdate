@@ -197,7 +197,7 @@ const luxonMixed = (fn: () => DateTime): string => {
     return luxonFormat(fn());
 };
 
-const dt = new Date("2022-01-01 00:00:00");
+const dt = new Date("2022-01-01T00:00:00"); // local time
 
 const main = async () => {
     const RUN_EACH = !!process.env.EACH;

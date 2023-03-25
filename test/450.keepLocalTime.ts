@@ -32,7 +32,7 @@ describe(TITLE, () => {
 });
 
 function testFn(fn: (dt: Date) => Common, supportsDST?: boolean) {
-    const dt = new Date("2023-01-01 12:00:00");
+    const dt = new Date("2023-01-01T12:00:00"); // local time
     const format = "YYYY/MM/DD HH:mm:ss";
     const formatZ = "YYYY/MM/DD HH:mm:ss Z";
     const IT = supportsDST ? it : it.skip;

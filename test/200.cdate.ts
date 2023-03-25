@@ -7,7 +7,7 @@ import {cdate} from "../index.js";
 const TITLE = "200.cdate.ts";
 
 describe(TITLE, () => {
-    const date = new Date("2023-04-05 06:07:08.090");
+    const date = new Date("2023-04-05T06:07:08.090"); // local time
 
     it(`cdate(number)`, () => {
         const dt = cdate(+date);

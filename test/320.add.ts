@@ -23,7 +23,7 @@ describe(TITLE, () => {
 });
 
 function runTests(fn: (dt: Date, diff: number, unit: cdate.UnitForAdd) => string, skipInvalid?: boolean) {
-    const dt = new Date("2023-12-31 23:59:59.999");
+    const dt = new Date("2023-12-31T23:59:59.999"); // local time
 
     it(`add(number, "year")`, () => {
         (["year", "years", "y"] as const).forEach(unit => {
@@ -53,7 +53,7 @@ function runTests(fn: (dt: Date, diff: number, unit: cdate.UnitForAdd) => string
 
     it(`add(number, "year") // leap year`, () => {
         (["year"] as const).forEach(unit => {
-            const dt = new Date("2024-02-29 12:34:56.789");
+            const dt = new Date("2024-02-29T12:34:56.789"); // local time
             assert.equal(fn(dt, -8, unit), "2016/02/29 12:34:56.789");
             assert.equal(fn(dt, -7, unit), "2017/02/28 12:34:56.789");
             assert.equal(fn(dt, -6, unit), "2018/02/28 12:34:56.789");
