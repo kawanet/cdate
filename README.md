@@ -4,8 +4,8 @@
 [![npm version](https://img.shields.io/npm/v/cdate)](https://www.npmjs.com/package/cdate)
 [![gzip size](https://img.badgesize.io/https://unpkg.com/cdate/dist/cdate.min.js?compression=gzip)](https://unpkg.com/cdate/dist/cdate.min.js)
 
-- Fast: the benchmark result shows that [cdate](https://github.com/kawanet/cdate) is 37% faster than 
-  [Moment.js](https://www.npmjs.com/package/moment), 
+- Fast: the benchmark result shows that [cdate](https://github.com/kawanet/cdate) is 37% faster than
+  [Moment.js](https://www.npmjs.com/package/moment),
   [Day.js](https://www.npmjs.com/package/dayjs) and
   [Luxon](https://www.npmjs.com/package/luxon)
 - Display: Moment.js-style `.format("YYYY-MM-DD HH:mm:ss")`
@@ -27,7 +27,7 @@
 import {cdate} from "cdate";
 
 // CommonJS
-const {cdate} = require("cdate"); 
+const {cdate} = require("cdate");
 ```
 
 Display:
@@ -93,15 +93,15 @@ change.
 
 The result shows that cdate is 37% faster than moment!
 
-| Library | Version | Minified Size | Local Time Bench | Time Zone Bench | Note             | 
+| Library | Version | Minified Size | Local Time Bench | Time Zone Bench | Note             |
 |---------|---------|--------------:|-----------------:|----------------:|------------------|
-| cdate   | 0.0.4   |          9 KB |    7,936 ops/sec |   6,380 ops/sec | fastest! 🍺      |
-| moment  | 2.29.4  |       100 KB+ |    5,702 ops/sec |   3,573 ops/sec | big tz database  |
-| dayjs   | 1.11.7  |         11 KB |    3,841 ops/sec |      88 ops/sec | DST related bugs |
-| luxon   | 3.2.0   |         74 KB |      914 ops/sec |     156 ops/sec | different API    |
+| cdate   | 0.0.5   |          9 KB |    7,868 ops/sec |   6,471 ops/sec | fastest! 🍺      |
+| moment  | 2.29.4  |       100 KB+ |    5,744 ops/sec |   3,622 ops/sec | big tz database  |
+| dayjs   | 1.11.7  |         13 KB |    3,875 ops/sec |      89 ops/sec | DST related bugs |
+| luxon   | 3.3.0   |         74 KB |      930 ops/sec |     158 ops/sec | different API    |
 
-Tested on node v18.12.1, Apple Silicon M1, MacBook Pro.
-"Minified Size" above includes the time zone plugin.
+Tested on node v18.14.2, Apple Silicon M1, MacBook Pro.
+"Minified Size" for dayjs includes its utc and time zone plugins.
 Each `1 op` above includes:
 
 - 192 ops of `.add()` manipulations
@@ -114,7 +114,7 @@ Try the benchmark on your environment:
 git clone --depth=1 https://github.com/kawanet/cdate.git
 cd cdate
 npm install
-npm run build 
+npm run build
 node cli/benchmark.js
 ```
 

@@ -83,6 +83,12 @@ $(CJS): ./index.js src/cdate.js
 test-title:
 	perl -i -pe '@f = split("/",$$ARGV); s#^const TITLE =.*#const TITLE = "$$f[-1]";#' ./test/*.ts
 
+show-versions:
+	@node -e 'console.log("cdate:", require("./package.json").version)'
+	@node -e 'console.log("moment:", require("moment/package.json").version)'
+	@node -e 'console.log("dayjs:", require("dayjs/package.json").version)'
+	@node -e 'console.log("luxon:", require("luxon/package.json").version)'
+
 clean:
 	/bin/rm -fr ./build $(CJS) $(MINJS)
 
