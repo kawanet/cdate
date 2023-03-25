@@ -7,6 +7,10 @@
   "bugs": {
     "url": "https://github.com/kawanet/cdate/issues"
   },
+  "contributors": [
+    "Yusuke Kawasaki <u-suke@kawa.net>",
+    "CasheeeewNuts <casheeeewnuts+tech@gmail.com>"
+  ],
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@types/benchmark": "^2.1.2",
