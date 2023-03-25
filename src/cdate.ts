@@ -115,7 +115,11 @@ const cdateFn = (base: cdateNS.Internal): cdateNS.cdate => {
 };
 
 const parseDate = (dt: string, rwFn: (t: number) => cdateNS.DateLike): cdateNS.DateLike => {
-    const matched = dt.match(/^(\d{4})(?:([-/])(\d{2})(?:\2(\d{2})(?:[T\s]((\d{2}):(\d{2})(?::(\d{2})(\.\d+)?)?))?)?)?$/);
+    const matched =
+        // ISO 8601
+        dt.match(/^(\d{4}|[-+]\d{4,6})(?:(-)(\d{2})(?:-(\d{2})(?:T((\d{2}):(\d{2})(?::(\d{2})(\.\d+)?)?))?)?)?$/) ||
+        // Loose format
+        dt.match(/^(\d{4}|[-+]\d{4,6})(?:([-/])(\d+)(?:\2(\d+)(?:\s+((\d+):(\d+)(?::(\d+)(\.\d+)?)?))?)?)?$/);
     if (!matched) {
         return new Date(dt); // native parser
     }

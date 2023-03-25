@@ -75,6 +75,12 @@ describe(TITLE, () => {
         assert.equal(cdateFn("1999-01-01").text("%Y-%m-%d %H:%M:%S.%L"), "1999-01-01 00:00:00.000");
         assert.equal(cdateFn("2000-01-01").text("%Y-%m-%d %H:%M:%S.%L"), "2000-01-01 00:00:00.000");
 
+        // far future
+        assert.equal(cdateFn("9999-12-30").text("%Y-%m-%d %H:%M:%S.%L"), "9999-12-30 00:00:00.000");
+        assert.equal(cdateFn("+9999-12-31").text("%Y-%m-%d %H:%M:%S.%L"), "9999-12-31 00:00:00.000");
+        assert.equal(cdateFn("+010000-01-01").text("%Y-%m-%d %H:%M:%S.%L"), "+010000-01-01 00:00:00.000");
+        assert.equal(cdateFn("+271821-01-01").text("%Y-%m-%d %H:%M:%S.%L"), "+271821-01-01 00:00:00.000");
+
         // MySQL DATETIME does not have separator "T"
         assert.equal(cdateFn("2023-04-05 06:07:08").text("%Y-%m-%d %H:%M:%S.%L"), "2023-04-05 06:07:08.000");
 
@@ -83,5 +89,14 @@ describe(TITLE, () => {
         assert.equal(cdateFn("2022-03-13 03:00:00.001").text("%Y-%m-%d %H:%M:%S.%L"), "2022-03-13 03:00:00.001");
         assert.equal(cdateFn("2022-11-06 00:59:59.999").text("%Y-%m-%d %H:%M:%S.%L"), "2022-11-06 00:59:59.999");
         assert.equal(cdateFn("2022-11-06 02:00:00.001").text("%Y-%m-%d %H:%M:%S.%L"), "2022-11-06 02:00:00.001");
+
+        // Loose formats
+        // @see https://github.com/kawanet/cdate/issues/5
+        assert.equal(cdateFn("2023-1-2").text("%Y-%m-%d %H:%M:%S.%L"), "2023-01-02 00:00:00.000");
+        assert.equal(cdateFn("2023-1-3 3:4:5").text("%Y-%m-%d %H:%M:%S.%L"), "2023-01-03 03:04:05.000");
+        assert.equal(cdateFn("2023-1-004 005:006:007").text("%Y-%m-%d %H:%M:%S.%L"), "2023-01-04 05:06:07.000");
+        assert.equal(cdateFn("2023/1/5").text("%Y-%m-%d %H:%M:%S.%L"), "2023-01-05 00:00:00.000");
+        assert.equal(cdateFn("2023/1/6 7:8:9").text("%Y-%m-%d %H:%M:%S.%L"), "2023-01-06 07:08:09.000");
+        assert.equal(cdateFn("2023/001/007 008:009:010").text("%Y-%m-%d %H:%M:%S.%L"), "2023-01-07 08:09:10.000");
     }
 });
