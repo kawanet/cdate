@@ -202,7 +202,7 @@ cdateDE().text("%a %-d %b");
 
 It supports both UTC offset and timezone names
 without any external modules and plugins.
-Japan Standard Time (JST) is `GMT+09:00` for instance:
+If you use Japan Standard Time (JST) `GMT+09:00` for instance:
 
 ```js
 const dt = new Date("2023-01-01T00:00:00+09:00");
@@ -219,7 +219,7 @@ cdate(dt).tz("Asia/Tokyo").text();
 // => '2023-01-01T00:00:00.000+09:00'
 ```
 
-If your app is designed to use a constant UTC offset value, call `.utcOffset(+9).cdateFn()` to preset the offset for JST. It runs faster.
+If your app is designed to use a constant UTC offset value, call like `.utcOffset(+9).cdateFn()` to preset the offset. It runs faster.
 
 ```js
 const cdateJST = cdate().utcOffset(+9).cdateFn();
