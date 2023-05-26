@@ -207,9 +207,9 @@ Japan Standard Time (JST) is `GMT+09:00` for instance:
 ```js
 const dt = new Date("2023-01-01T00:00:00+09:00");
 
-cdate(dt).utcOffset(+9).text(); // hours
+cdate(dt).utcOffset(+9).text(); // +9 hours
 
-cdate(dt).utcOffset(+540).text(); // minutes
+cdate(dt).utcOffset(+540).text(); // +540 minutes
 
 cdate(dt).utcOffset("+09:00").text();
 
@@ -217,6 +217,14 @@ cdate(dt).utcOffset("GMT+09:00").text();
 
 cdate(dt).tz("Asia/Tokyo").text();
 // => '2023-01-01T00:00:00.000+09:00'
+```
+
+If your app is designed to use a constant UTC offset value, call `.utcOffset(+9).cdateFn()` to preset the offset for JST. It runs faster.
+
+```js
+const cdateJST = cdate().utcOffset(+9).cdateFn();
+
+cdateJST(dt).text(); // fast
 ```
 
 ## LINKS
