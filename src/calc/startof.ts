@@ -27,7 +27,7 @@ const startOfDay = (dt: cdate.DateLike): void => {
 
 const truncate = (dt: cdate.DateLike, unit: number): void => {
     const tz = dt.getTimezoneOffset() * d.MINUTE;
-    dt.setTime(Math.trunc((+dt - tz) / unit) * unit + tz);
+    dt.setTime(Math.floor((+dt - tz) / unit) * unit + tz);
 };
 
 export const startOf = (dt: cdate.DateLike, unit: cdate.UnitForStart): void => {
